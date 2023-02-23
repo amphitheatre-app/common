@@ -5,4 +5,6 @@ components and libraries. They are considered internal to Amphitheatre, without
 any stability guarantees for external usage.
 
 - *config*: Common configuration structures.
-- *filesystem*: File system-related structures and helpers.
+- *docker*: Docker container & Registry wrappers.
+- *filesystem*: File system related structures and helpers.
+- *utils*: A variety of miscellaneous tools or functions.

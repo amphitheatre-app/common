@@ -12,6 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod config;
-pub mod docker;
-pub mod utils;
+mod docker_config;
+pub use docker_config::{AuthConfig, DockerConfig};

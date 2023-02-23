@@ -12,6 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod config;
-pub mod docker;
-pub mod utils;
+use std::collections::HashMap;
+
+use k8s_openapi::api::core::v1::EnvVar;
+
+/// Converting key-value pairs to EnvVars
+pub fn to_env_var<T: ToString>(env: &HashMap<T, T>) -> Vec<EnvVar> {
+    env.iter()
+        .map(|(key, value)| EnvVar {
+            name: key.to_string(),
+            value: Some(value.to_string()),
+            value_from: None,
+        })
+        .collect()
+}

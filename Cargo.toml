@@ -6,3 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+base64 = "0.21.0"
+k8s-openapi = { version = "0.16.0", features = ["schemars", "v1_24"] }
+serde = { version = "1.0", features = ["derive"] }

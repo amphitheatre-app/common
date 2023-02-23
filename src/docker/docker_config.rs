@@ -12,6 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod config;
-pub mod docker;
-pub mod utils;
+use std::collections::HashMap;
+
+use serde::Serialize;
+
+/// AuthConfig contains authorization information for connecting to a Registry
+/// Inlined what we use from github.com/docker/cli/cli/config/types
+#[derive(Serialize)]
+pub struct AuthConfig {
+    pub username: Option<String>,
+    pub password: Option<String>,
+    pub auth: Option<String>,
+}
+
+/// DockerConfig ~/.docker/config.json file info
+#[derive(Serialize)]
+pub struct DockerConfig {
+    pub auths: Option<HashMap<String, AuthConfig>>,
+}

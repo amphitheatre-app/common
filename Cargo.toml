@@ -1,7 +1,12 @@
 [package]
 name = "amp-common"
+description = "Rust libraries shared across Amphitheatre components and libraries"
 version = "0.1.0"
 edition = "2021"
+license = "Apache-2.0"
+homepage = "https://amphitheatre.app"
+repository = "https://github.com/amphitheatre-app/common"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

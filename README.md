@@ -8,3 +8,7 @@ any stability guarantees for external usage.
 - **docker**: Docker container & Registry wrappers.
 - **filesystem**: File system related structures and helpers.
 - **utils**: A variety of miscellaneous tools or functions.
+
+## License
+
+Licensed under the [Apache License 2.0](https://github.com/amphitheatre-app/common/blob/master/LICENSE)

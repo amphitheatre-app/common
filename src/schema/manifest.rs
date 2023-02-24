@@ -13,10 +13,11 @@
 // limitations under the License.
 
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use super::character::Character;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize, ToSchema)]
 #[serde(rename_all = "kebab-case")]
 pub struct Manifest {
     pub character: Character,

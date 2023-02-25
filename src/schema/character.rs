@@ -15,24 +15,38 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
-#[derive(Clone, Debug, Default, Serialize, Deserialize, ToSchema)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Character {
+    /// The name of the character.
     pub name: String,
+    /// The version of the character.
     pub version: Option<String>,
+    /// The authors of the character.
     pub authors: Option<Vec<String>>,
+    /// A description of the character.
     pub description: Option<String>,
+    /// Path to the character's README file.
     pub readme: Option<String>,
+    /// URL of the character homepage.
     pub homepage: Option<String>,
+    /// URL of the character source repository.
+    /// e.g. https://github.com/amphitheatre-app/amphitheatre.git.
     pub repository: String,
+    /// The character license.
     pub license: Option<String>,
+    /// Path to the text of the license.
     pub license_file: Option<String>,
+    /// Keywords for the character.
     pub keywords: Option<Vec<String>>,
+    /// Categories of the character.
     pub categories: Option<Vec<String>>,
+    /// Files to exclude when publishing.
     pub exclude: Option<Vec<String>>,
+    /// Files to include when publishing.
     pub include: Option<Vec<String>>,
+    /// Can be used to prevent publishing the character.
     pub publish: Option<Vec<String>>,
 }
 

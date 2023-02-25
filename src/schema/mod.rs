@@ -14,13 +14,9 @@
 
 mod character;
 mod manifest;
-mod playbook;
-mod workspace;
 
 pub use character::*;
 pub use manifest::*;
-pub use playbook::*;
-pub use workspace::*;
 
 pub mod errors {
     pub use anyhow::*;

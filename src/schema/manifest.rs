@@ -13,15 +13,13 @@
 // limitations under the License.
 
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
 use super::character::Character;
 
-#[derive(Debug, Default, Deserialize, Serialize, ToSchema)]
+/// The .amp.toml file for each character is called its manifest. It is written
+/// in the TOML format. It contains metadata that is needed to compile the character.
+#[derive(Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Manifest {
     pub character: Character,
 }
-
-#[derive(Clone, Debug)]
-pub struct VirtualManifest {}

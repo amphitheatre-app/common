@@ -15,4 +15,3 @@ anyhow = "1.0.66"
 base64 = "0.21.0"
 k8s-openapi = { version = "0.16.0", features = ["schemars", "v1_24"] }
 serde = { version = "1.0", features = ["derive"] }
-utoipa = { version = "3" }

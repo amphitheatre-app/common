@@ -40,6 +40,12 @@ impl<'a> Finder<'a> {
     }
 }
 
+impl<'a> Default for Finder<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Searches for `filename` in `directory` and parent directories until found or root is reached.
 pub fn find(directory: &Path, filename: &Path) -> Result<PathBuf> {
     let candidate = directory.join(filename);

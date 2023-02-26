@@ -12,17 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod actor;
 mod build;
 mod character;
 mod manifest;
-mod partner;
+mod playbook;
 mod service;
+mod source;
 
+pub use actor::*;
 pub use build::*;
 pub use character::*;
 pub use manifest::*;
-pub use partner::*;
+pub use playbook::*;
 pub use service::*;
+pub use source::*;
 
 pub mod errors {
     pub use anyhow::*;

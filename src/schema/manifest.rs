@@ -18,8 +18,8 @@ use serde::{Deserialize, Serialize};
 
 use super::build::Build;
 use super::character::Character;
-use super::partner::Partner;
 use super::service::Service;
+use super::source::Source;
 
 /// The .amp.toml file for each character is called its manifest. It is written
 /// in the TOML format. It contains metadata that is needed to compile the character.
@@ -34,10 +34,10 @@ pub struct Manifest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub environments: Option<HashMap<String, String>>,
 
-    /// Depend on other partners from other repositories, or subdirectories on
-    /// your local file system.
+    /// Depend on other partners from other repositories,
+    /// or subdirectories on your local file system.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub partners: Option<Vec<HashMap<String, Partner>>>,
+    pub partners: Option<HashMap<String, Source>>,
 
     /// Defines the behavior of a service
     #[serde(skip_serializing_if = "Option::is_none")]

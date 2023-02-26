@@ -26,7 +26,7 @@ pub enum Error {
 impl Error {
     pub fn not_found(&self) -> bool {
         match self {
-            Error::Io(io_error) => return io_error.kind() == io::ErrorKind::NotFound,
+            Error::Io(io_error) => io_error.kind() == io::ErrorKind::NotFound,
         }
     }
 }

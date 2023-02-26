@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use k8s_openapi::api::core::v1::{ContainerPort, ServicePort};
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Defines the behavior of a service
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, JsonSchema, PartialEq)]
 pub struct Service {
     /// Type determines how the Service is exposed. Defaults to ClusterIP.
     /// Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
@@ -26,8 +28,18 @@ pub struct Service {
     pub ports: Vec<Port>,
 }
 
+pub enum Error {}
+
+impl TryInto<Vec<ContainerPort>> for Service {
+    type Error = Error;
+
+    fn try_into(self) -> Result<Vec<ContainerPort>, Self::Error> {
+        todo!()
+    }
+}
+
 /// List of ports to expose from the container.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, JsonSchema, PartialEq)]
 pub struct Port {
     /// The port that will be exposed by this service.
     pub port: i32,
@@ -40,3 +52,43 @@ pub struct Port {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expose: Option<bool>,
 }
+
+// impl Into<ContainerPort> for &Port {
+//     fn into(self) -> ContainerPort {
+//         ContainerPort {
+//             container_port: self.port,
+//             protocol: self.protocol.clone(),
+//             ..Default::default()
+//         }
+//     }
+// }
+
+impl From<&Port> for ContainerPort {
+    fn from(val: &Port) -> Self {
+        ContainerPort {
+            container_port: val.port,
+            protocol: val.protocol.clone(),
+            ..Default::default()
+        }
+    }
+}
+
+impl From<&Port> for ServicePort {
+    fn from(val: &Port) -> Self {
+        ServicePort {
+            port: val.port,
+            protocol: val.protocol.clone(),
+            ..Default::default()
+        }
+    }
+}
+
+// impl Into<ServicePort> for &Port {
+//     fn into(self) -> ServicePort {
+//         ServicePort {
+//             port: self.port,
+//             protocol: self.protocol.clone(),
+//             ..Default::default()
+//         }
+//     }
+// }

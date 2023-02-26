@@ -14,10 +14,11 @@
 
 use std::collections::HashMap;
 
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Describes how images are built.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, JsonSchema, Serialize, PartialEq)]
 pub struct Build {
     /// Directory containing the artifact's sources.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,4 +37,12 @@ pub struct Build {
     /// which Cluster Builder image used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub builder: Option<String>,
+
+    /// Files to exclude when building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<Vec<String>>,
+
+    /// Files to include when building.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include: Option<Vec<String>>,
 }

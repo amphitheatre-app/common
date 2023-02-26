@@ -61,14 +61,6 @@ pub struct Character {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<String>>,
 
-    /// Files to exclude when publishing.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub exclude: Option<Vec<String>>,
-
-    /// Files to include when publishing.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub include: Option<Vec<String>>,
-
     /// Can be used to prevent publishing the character.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish: Option<Vec<String>>,

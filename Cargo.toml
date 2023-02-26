@@ -13,5 +13,10 @@ readme = "README.md"
 [dependencies]
 anyhow = "1.0.66"
 base64 = "0.21.0"
+convert_case = "0.6.0"
+kube = { version = "0.77.0", features = ["runtime", "derive"] }
 k8s-openapi = { version = "0.16.0", features = ["schemars", "v1_24"] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.89"
+schemars = "0.8.11"
+validator = { version = "0.16.0", features = ["derive"] }

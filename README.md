@@ -8,6 +8,7 @@ any stability guarantees for external usage.
 - **docker**: Docker container & Registry wrappers.
 - **filesystem**: File system related structures and helpers.
 - **schema**: The core schema includes manifest, playbook, and workspace.
+- **scm**: Provides a unified interface to multiple source code management systems.
 - **utils**: A variety of miscellaneous tools or functions.
 
 ## License

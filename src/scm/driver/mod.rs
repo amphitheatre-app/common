@@ -12,9 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod config;
-pub mod docker;
-pub mod filesystem;
-pub mod schema;
-pub mod scm;
-pub mod utils;
+pub mod github;

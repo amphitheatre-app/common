@@ -1,15 +1,15 @@
 # common
 
-This repository contains Rust libraries that are shared across Amphtheatre 
+This repository contains Rust libraries that are shared across Amphitheatre
 components and libraries. They are considered internal to Amphitheatre, without
 any stability guarantees for external usage.
 
-- **config**: Common configuration structures.
-- **docker**: Docker container & Registry wrappers.
-- **filesystem**: File system related structures and helpers.
-- **schema**: The core schema includes manifest, playbook, and workspace.
-- **scm**: Provides a unified interface to multiple source code management systems.
-- **utils**: A variety of miscellaneous tools or functions.
+- [**config**](src/config/): Common configuration structures.
+- [**docker**](src/docker/): Docker container & Registry wrappers.
+- [**filesystem**](src/filesystem/): File system related structures and helpers.
+- [**schema**](src/s): The core schema includes manifest, playbook, and workspace.
+- [**scm**](src/scm): Provides a unified interface to multiple source code management systems.
+- [**utils**](src/utils/): A variety of miscellaneous tools or functions.
 
 ## License
 

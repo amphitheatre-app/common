@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod client;
+mod driver;
+mod git;
 
-use self::client::GithubClient;
-use crate::scm::client::Client;
+use self::driver::GithubDriver;
 
 /// Returnes a new GitHub API client.
-pub fn new(_uri: &str) -> anyhow::Result<impl Client> {
-    Ok(GithubClient {})
+pub fn new(url: &str, token: &str) -> GithubDriver {
+    GithubDriver {
+        client: crate::client::Client::new(url, token),
+    }
 }
 
 /// Returns a new GitHub API client using the default api.github.com address.
-pub fn default() -> anyhow::Result<impl Client> {
-    new("https://api.github.com")
+pub fn default() -> GithubDriver {
+    new("https://api.github.com", "")
 }
 
 #[cfg(test)]
@@ -32,12 +34,12 @@ mod test {
     use crate::scm::driver::github;
 
     #[test]
-    fn create_github_client() {
-        let _client = github::default();
+    fn create_github_driver() {
+        let _driver = github::default();
     }
 
     #[test]
-    fn create_github_enterprise_client() {
-        let _client = github::new("https://github.company.com/api/v3");
+    fn create_github_enterprise_driver() {
+        let _driver = github::new("https://github.company.com/api/v3", "");
     }
 }

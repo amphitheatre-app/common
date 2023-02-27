@@ -14,3 +14,4 @@
 
 pub mod client;
 pub mod driver;
+pub mod git;

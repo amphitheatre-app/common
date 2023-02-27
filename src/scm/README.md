@@ -7,66 +7,66 @@ Gitee, Gitea and Gogs.
 Create a GitHub client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::github;
 
 fn main() {
-	let client = github::default();
+	let client = Client::new(github::default());
 }
 ```
 
 Create a GitHub Enterprise client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::github;
 
 fn main() {
-	let client = github::new("https://github.company.com/api/v3");
+	let client = Client::new(github::new("https://github.company.com/api/v3"));
 }
 ```
 
 Create a Bitbucket client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::bitbucket;
 
 fn main() {
-	let client = bitbucket::default();
+	let client = Client::new(bitbucket::default());
 }
 ```
 
 Create a Bitbucket Server (Stash) client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::bitbucket;
 
 fn main() {
-	let client = bitbucket::new("https://stash.company.com");
+	let client = Client::new(bitbucket::new("https://stash.company.com"));
 }
 ```
 
 Create a Gitea client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::gitea;
 
 fn main() {
-	let client = gitea::new("https://gitea.company.com");
+	let client = Client::new(gitea::new("https://gitea.company.com"));
 }
 ```
 
 Create a Gitee client:
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::gitee;
 
 fn main() {
-	let client = gitee::new("https://gitee.com/api/v5");
+	let client = Client::new(gitee::new("https://gitee.com/api/v5"));
 }
 ```
 
@@ -78,13 +78,13 @@ For convenience, this library includes oauth1 and oauth2 implementations that
 can be used to authenticate requests.
 
 ```rust
-use amp_common::scm;
+use amp_common::scm::client::Client;
 use amp_common::scm::driver::github;
 use amp_common::scm::transport;
 use amp_common::scm::transport::oauth2;
 
 fn main() {
-	let mut client = github::default();
+	let mut client = Client::new(github::default());
 
     // provide a custom http.Client with a transport
     // that injects the oauth2 token.
@@ -115,33 +115,19 @@ fn main() {
 The scm client exposes dozens of endpoints for working with repositories,
 issues, comments, files and more.
 
-Example code to get an issue:
+Example code to get a commit:
 
 ```rust
-let issue = client.issues.find("octocat/Hello-World", 1);
-```
+use amp_common::scm::client::Client;
+use amp_common::scm::driver::github;
+use amp_common::scm::git::GitService;
 
-Example code to get a list of issues:
+fn main() {
+	let client = Client::new(github::default());
+    let commit = client.git().find_commit("octocat/Hello-World", "master");
 
-```rust
-let opts = scm.IssueListOptions{
-  page:   1,
-  size:   30,
-  open:   true,
-  closed: false,
+    assert!(commit.is_ok());
 }
-
-let issues = client.issues.list("octocat/Hello-World", opts);
-```
-
-Example code to create an issue comment:
-
-```rust
-let input = scm.CommentInput{
-  body: "Found a bug",
-}
-
-let comment = client.issues.create_comment("octocat/Hello-World", 1, input);
 ```
 
 ## Useful links

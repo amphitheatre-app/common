@@ -13,3 +13,9 @@
 // limitations under the License.
 
 pub mod github;
+
+use crate::scm::git::GitService;
+
+pub trait Driver {
+    fn git(&self) -> impl GitService;
+}

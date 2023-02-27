@@ -12,8 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::scm::client::Client;
+use super::git::GitHubGitService;
+use crate::client::Client;
+use crate::scm::driver::Driver;
+use crate::scm::git::GitService;
 
-pub struct GithubClient {}
+pub struct GithubDriver {
+    pub client: Client,
+}
 
-impl Client for GithubClient {}
+impl Driver for GithubDriver {
+    fn git(&self) -> impl GitService {
+        GitHubGitService {
+            client: self.client.clone(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::scm::driver::{github, Driver};
+
+    #[test]
+    fn return_git_service() {
+        github::default().git();
+    }
+}

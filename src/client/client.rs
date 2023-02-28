@@ -24,8 +24,6 @@ use super::ClientError;
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "amp/";
 
-const API_VERSION: &str = "v1";
-
 /// Represents the Rust client for the API
 ///
 /// The client is your entrypoint to the API. Using it you will be
@@ -36,13 +34,14 @@ const API_VERSION: &str = "v1";
 /// ```no_run
 /// use amp_common::client::Client;
 ///
-/// let client = Client::new("https://cloud.amphitheatre.app", "AUTH_TOKEN");
+/// let token = Some("AUTH_TOKEN".to_string());
+/// let client = Client::new("https://cloud.amphitheatre.app", token);
 /// ```
 #[derive(Clone)]
 pub struct Client {
     base_url: String,
     user_agent: String,
-    auth_token: String,
+    auth_token: Option<String>,
     pub _agent: ureq::Agent,
 }
 
@@ -99,7 +98,7 @@ pub struct RequestOptions {
     pub paginate: Option<Paginate>,
 }
 
-/// Represents an empty response from the Amphitheatre API
+/// Represents an empty response from the API
 /// (_these type of response happen when issuing DELETE commands for example_)
 pub struct EmptyResponse {
     /// The maximum number of requests you can perform per hour.
@@ -163,32 +162,25 @@ impl Client {
     ///
     /// ```no_run
     /// use amp_common::client::Client;
-    /// let client = Client::new("https://cloud.amphitheatre.app", "AUTH_TOKEN");
+    /// let token = Some("AUTH_TOKEN".to_string());
+    /// let client = Client::new("https://cloud.amphitheatre.app", token);
     /// ```
     ///
     /// # Arguments
     ///
     /// `token`: the bearer authentication token
-    pub fn new(base_url: &str, token: &str) -> Client {
+    pub fn new(base_url: &str, token: Option<String>) -> Client {
         Client {
             base_url: String::from(base_url),
             user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
-            auth_token: String::from(token),
+            auth_token: token,
             _agent: ureq::Agent::new(),
         }
-    }
-
-    /// Returns the current url (including the `API_VERSION` as part of the path).
-    pub fn versioned_url(&self) -> String {
-        let mut url = String::from(&self.base_url);
-        url.push('/');
-        url.push_str(API_VERSION);
-        url
     }
 }
 
 impl Client {
-    /// Sends a GET request to the Amphitheatre API
+    /// Sends a GET request to the API
     ///
     /// # Arguments
     ///
@@ -203,7 +195,7 @@ impl Client {
         self.call::<E>(self.build_get_request(&path, options))
     }
 
-    /// Sends a POST request to the Amphitheatre API
+    /// Sends a POST request to the API
     ///
     /// # Arguments
     ///
@@ -217,7 +209,7 @@ impl Client {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
-    /// Sends a POST request to the Amphitheatre API without any payload
+    /// Sends a POST request to the API without any payload
     ///
     /// # Arguments
     ///
@@ -226,7 +218,7 @@ impl Client {
         self.call_empty(self.build_post_request(&path))
     }
 
-    /// Sends a PUT request to the Amphitheatre API
+    /// Sends a PUT request to the API
     ///
     /// # Arguments
     ///
@@ -240,7 +232,7 @@ impl Client {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
-    /// Sends a PUT request to the Amphitheatre API without any payload
+    /// Sends a PUT request to the API without any payload
     ///
     /// # Arguments
     ///
@@ -249,7 +241,7 @@ impl Client {
         self.call_empty(self.build_put_request(&path))
     }
 
-    /// Sends a PATCH request to the Amphitheatre API
+    /// Sends a PATCH request to the API
     ///
     /// # Arguments
     ///
@@ -263,7 +255,7 @@ impl Client {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
 
-    /// Sends a DELETE request to the Amphitheatre API
+    /// Sends a DELETE request to the API
     ///
     /// # Arguments
     ///
@@ -272,7 +264,7 @@ impl Client {
         self.call_empty(self.build_delete_request(&path))
     }
 
-    /// Sends a DELETE request to the Amphitheatre API returning a response containing a `Response`
+    /// Sends a DELETE request to the API returning a response containing a `Response`
     ///
     /// # Arguments
     ///
@@ -322,8 +314,8 @@ impl Client {
         let json = resp
             .into_json::<Value>()
             .map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let data = serde_json::from_value(json!(json.get("data")))
-            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let data =
+            serde_json::from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
         let pagination = serde_json::from_value(json!(json.get("pagination")))
             .map_err(|e| ClientError::Deserialization(e.to_string()))?;
         let body = serde_json::from_value(json).map_err(|e| ClientError::Deserialization(e.to_string()))?;
@@ -434,12 +426,18 @@ impl Client {
     }
 
     fn add_headers_to_request(&self, request: Request) -> Request {
-        let auth_token = &format!("Bearer {}", self.auth_token);
-        request.set("Authorization", auth_token.as_str())
+        let mut request = request;
+        if let Some(token) = &self.auth_token {
+            let auth_token = &format!("Bearer {}", token);
+            request = request.set("Authorization", auth_token.as_str());
+        }
+
+        request
     }
 
     pub fn url(&self, path: &str) -> String {
-        let mut url = self.versioned_url();
+        let mut url = String::from(&self.base_url);
+        url.push('/');
         url.push_str(path);
 
         println!("url = {}", url);
@@ -455,10 +453,10 @@ mod tests {
     #[test]
     fn creates_a_client() {
         let token = "some-auth-token";
-        let client = Client::new(BASE_URL, token);
+        let client = Client::new(BASE_URL, Some(token.to_string()));
 
         assert_eq!(client.base_url, BASE_URL);
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
-        assert_eq!(client.auth_token, token);
+        assert_eq!(client.auth_token, Some(token.to_string()));
     }
 }

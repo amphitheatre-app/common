@@ -14,11 +14,13 @@
 
 mod driver;
 mod git;
+mod pr;
 
 use self::driver::GithubDriver;
+pub use self::pr::GitHubFile;
 
 /// Returnes a new GitHub API client.
-pub fn new(url: &str, token: &str) -> GithubDriver {
+pub fn new(url: &str, token: Option<String>) -> GithubDriver {
     GithubDriver {
         client: crate::client::Client::new(url, token),
     }
@@ -26,7 +28,7 @@ pub fn new(url: &str, token: &str) -> GithubDriver {
 
 /// Returns a new GitHub API client using the default api.github.com address.
 pub fn default() -> GithubDriver {
-    new("https://api.github.com", "")
+    new("https://api.github.com", None)
 }
 
 #[cfg(test)]
@@ -40,6 +42,6 @@ mod test {
 
     #[test]
     fn create_github_enterprise_driver() {
-        let _driver = github::new("https://github.company.com/api/v3", "");
+        let _driver = github::new("https://github.company.com/api/v3", None);
     }
 }

@@ -12,7 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod client;
-pub mod driver;
-pub mod git;
-pub mod utils;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GitHubFile {
+    pub sha: String,
+    pub filename: String,
+    pub status: String,
+    pub additions: i32,
+    pub deletions: i32,
+    pub changes: i32,
+}

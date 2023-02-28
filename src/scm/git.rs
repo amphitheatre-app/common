@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use chrono::{DateTime, Utc};
-
 /// Represents a git reference.
 #[derive(Debug, PartialEq)]
 pub struct Reference {
@@ -27,7 +25,7 @@ pub struct Reference {
 pub struct Commit {
     pub sha: String,
     pub message: String,
-    pub author: String,
+    pub author: Signature,
     pub committer: Signature,
     pub link: String,
 }
@@ -36,7 +34,7 @@ pub struct Commit {
 pub struct Signature {
     pub name: String,
     pub email: String,
-    pub date: DateTime<Utc>,
+    pub date: String,
     // Fields are optional. The provider may choose to
     // include account information in the response.
     pub login: Option<String>,
@@ -51,5 +49,5 @@ pub trait GitService {
     fn list_tags(&self, repo: &str) -> anyhow::Result<Vec<Reference>>;
 
     /// Finds a git commit by reference
-    fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Commit>;
+    fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;
 }

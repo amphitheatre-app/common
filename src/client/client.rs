@@ -15,14 +15,13 @@
 use std::collections::HashMap;
 
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{from_value, json, Value};
 use ureq::Request;
 
 use super::ClientError;
 
 const VERSION: &str = "0.1.0";
-const DEFAULT_USER_AGENT: &str = "amp/";
+const DEFAULT_USER_AGENT: &str = "amp";
 
 /// Represents the Rust client for the API
 ///
@@ -53,106 +52,12 @@ pub trait Endpoint {
 /// Represents the response from an API call
 #[derive(Debug)]
 pub struct Response<T> {
-    /// The maximum number of requests you can perform per hour.
-    pub rate_limit: String,
-    /// The number of requests remaining in the current rate limit window.
-    pub rate_limit_remaining: String,
-    /// The time at which the current rate limit window in [Unix
-    /// time](https://en.wikipedia.org/wiki/Unix_time) format.
-    pub rate_limit_reset: Option<String>,
     /// The HTTP Status Code
     pub status: u16,
     /// The object or a Vec<T> objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
-    /// Any API endpoint that returns a list of items requires pagination.
-    pub pagination: Option<Pagination>,
     /// The body as a JSON `Value`
     pub body: Option<Value>,
-}
-
-/// Any API endpoint that returns a list of items requires pagination.
-/// By default we will return 30 records from any listing endpoint. If an API
-/// endpoint returns a list of items, then it will include a pagination object
-/// that contains pagination information.
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Pagination {
-    /// The page currently returned (default: 1)
-    pub current_page: u64,
-    /// The number of entries returned per page (default: 30)
-    pub per_page: u64,
-    /// The Total number of entries available in the entrire collection.
-    pub total_entries: u64,
-    /// The total number of pages available given the current `per_page` value
-    pub total_pages: u64,
-}
-
-/// When you can send some options into the request (i.e. for pagination).
-pub struct RequestOptions {
-    /// Filtering makes it possible to ask only for the exact subset of data
-    /// that you're looking for.
-    pub filters: Option<Filters>,
-    /// API results are implicitly sorted according to policies that very from
-    /// endpoint to endpoint.
-    pub sort: Option<Sort>,
-    /// Pagination options
-    pub paginate: Option<Paginate>,
-}
-
-/// Represents an empty response from the API
-/// (_these type of response happen when issuing DELETE commands for example_)
-pub struct EmptyResponse {
-    /// The maximum number of requests you can perform per hour.
-    pub rate_limit: String,
-    /// The number of requests remaining in the current rate limit window.
-    pub rate_limit_remaining: String,
-    /// The time at which the current rate limit window in [Unix time](https://en.wikipedia.org/wiki/Unix_time) format.
-    pub rate_limit_reset: Option<String>,
-    /// The HTTP Status Code
-    pub status: u16,
-}
-
-/// Filtering makes it possible to ask only for exact subset of data that you're
-/// looking for.
-///
-/// With potential hundreds of result entries, it's convenient to apply a filter
-/// and receive only the interesting data.
-#[derive(Debug)]
-pub struct Filters {
-    pub filters: HashMap<String, String>,
-}
-
-impl Filters {
-    pub fn new(filters: HashMap<String, String>) -> Filters {
-        Filters { filters }
-    }
-}
-
-/// API results are implicitly sorted according to policies that very from
-/// endpoint to endpoint.
-///
-/// You can decide your own sorting policy for each single API call via the sort paramter.
-/// this paramter accepts a set of comma separated key-value pairs: the name of
-/// a field and the order criteria (asc for ascending and desc for descending).
-///
-/// The order of fields is relevant, as it will determine the priority of the
-/// sorting policies.
-#[derive(Debug)]
-pub struct Sort {
-    pub sort_by: String,
-}
-
-impl Sort {
-    pub fn new(sort_by: String) -> Sort {
-        Sort { sort_by }
-    }
-}
-
-/// The pagination instructions for the request
-pub struct Paginate {
-    /// The number of items you want
-    pub per_page: u32,
-    /// The page number
-    pub page: u32,
 }
 
 impl Client {
@@ -172,7 +77,7 @@ impl Client {
     pub fn new(base_url: &str, token: Option<String>) -> Client {
         Client {
             base_url: String::from(base_url),
-            user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
+            user_agent: DEFAULT_USER_AGENT.to_owned() + "/" + VERSION,
             auth_token: token,
             _agent: ureq::Agent::new(),
         }
@@ -190,7 +95,7 @@ impl Client {
     pub fn get<E: Endpoint>(
         &self,
         path: &str,
-        options: Option<RequestOptions>,
+        options: Option<HashMap<String, String>>,
     ) -> Result<Response<E::Output>, ClientError> {
         self.call::<E>(self.build_get_request(&path, options))
     }
@@ -214,7 +119,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_post(&self, path: &str) -> Result<EmptyResponse, ClientError> {
+    pub fn empty_post(&self, path: &str) -> Result<Response<()>, ClientError> {
         self.call_empty(self.build_post_request(&path))
     }
 
@@ -237,7 +142,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_put(&self, path: &str) -> Result<EmptyResponse, ClientError> {
+    pub fn empty_put(&self, path: &str) -> Result<Response<()>, ClientError> {
         self.call_empty(self.build_put_request(&path))
     }
 
@@ -260,7 +165,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete(&self, path: &str) -> Result<EmptyResponse, ClientError> {
+    pub fn delete(&self, path: &str) -> Result<Response<()>, ClientError> {
         self.call_empty(self.build_delete_request(&path))
     }
 
@@ -296,7 +201,7 @@ impl Client {
         }
     }
 
-    fn call_empty(&self, request: Request) -> Result<EmptyResponse, ClientError> {
+    fn call_empty(&self, request: Request) -> Result<Response<()>, ClientError> {
         match request.call() {
             Ok(response) => Self::build_empty_response(response),
             Err(ureq::Error::Status(code, response)) => Err(ClientError::parse_response(code, response)),
@@ -305,64 +210,26 @@ impl Client {
     }
 
     fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, ClientError> {
-        let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
-        let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
-        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp);
-
         let status = resp.status();
 
         let json = resp
             .into_json::<Value>()
             .map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let data =
-            serde_json::from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let pagination = serde_json::from_value(json!(json.get("pagination")))
-            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let body = serde_json::from_value(json).map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let data = from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let body = from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
+        Ok(Response { status, data, body })
+    }
+
+    fn build_empty_response(res: ureq::Response) -> Result<Response<()>, ClientError> {
         Ok(Response {
-            rate_limit,
-            rate_limit_remaining,
-            rate_limit_reset,
-            status,
-            data,
-            pagination,
-            body,
+            status: res.status(),
+            data: None,
+            body: None,
         })
     }
 
-    fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Option<String> {
-        resp.header("x-ratelimit-after").map(|header| header.to_string())
-    }
-
-    fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("x-ratelimit-remaining") {
-            Some(header) => Ok(header.to_string()),
-            None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the x-ratelimit-remaining header",
-            ))),
-        }
-    }
-
-    fn extract_rate_limit_limit_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("x-ratelimit-limit") {
-            Some(header) => Ok(header.to_string()),
-            None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the x-ratelimit-limit header",
-            ))),
-        }
-    }
-
-    fn build_empty_response(response: ureq::Response) -> Result<EmptyResponse, ClientError> {
-        Ok(EmptyResponse {
-            rate_limit: Self::extract_rate_limit_limit_header(&response)?,
-            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
-            rate_limit_reset: Self::extract_rate_limit_reset_header(&response),
-            status: response.status(),
-        })
-    }
-
-    fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
+    fn build_get_request(&self, path: &&str, options: Option<HashMap<String, String>>) -> Request {
         let mut request = self
             ._agent
             .get(&self.url(path))
@@ -370,19 +237,8 @@ impl Client {
             .set("Accept", "application/json");
 
         if let Some(options) = options {
-            if let Some(pagination) = options.paginate {
-                request = request.query("page", &pagination.page.to_string());
-                request = request.query("per_page", &pagination.per_page.to_string())
-            }
-
-            if let Some(filters) = options.filters {
-                for (key, value) in filters.filters {
-                    request = request.query(&key, &value);
-                }
-            }
-
-            if let Some(sort) = options.sort {
-                request = request.query("sort", &sort.sort_by);
+            for (key, value) in options {
+                request = request.query(&key, &value);
             }
         }
 
@@ -436,9 +292,7 @@ impl Client {
     }
 
     pub fn url(&self, path: &str) -> String {
-        let url = format!("{}{}", self.base_url, path);
-        println!("url = {}", url);
-        url
+        format!("{}{}", self.base_url, path)
     }
 }
 
@@ -453,7 +307,7 @@ mod tests {
         let client = Client::new(BASE_URL, Some(token.to_string()));
 
         assert_eq!(client.base_url, BASE_URL);
-        assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
+        assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + "/" + VERSION);
         assert_eq!(client.auth_token, Some(token.to_string()));
     }
 }

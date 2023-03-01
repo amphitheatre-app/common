@@ -436,10 +436,7 @@ impl Client {
     }
 
     pub fn url(&self, path: &str) -> String {
-        let mut url = String::from(&self.base_url);
-        url.push('/');
-        url.push_str(path);
-
+        let url = format!("{}{}", self.base_url, path);
         println!("url = {}", url);
         url
     }

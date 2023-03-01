@@ -21,7 +21,7 @@ use crate::scm::utils;
 
 impl GitService for GitHubGitService {
     fn list_branches(&self, repo: &str) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("repos/{}/branches", repo);
+        let path = format!("/repos/{}/branches", repo);
         let res = self.client.get::<GitHubBranchsEndpoint>(&path, None)?;
 
         if let Some(branches) = res.data {
@@ -32,7 +32,7 @@ impl GitService for GitHubGitService {
     }
 
     fn list_tags(&self, repo: &str) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("repos/{}/tags", repo);
+        let path = format!("/repos/{}/tags", repo);
         let res = self.client.get::<GitHubBranchsEndpoint>(&path, None)?;
 
         if let Some(tags) = res.data {
@@ -43,7 +43,7 @@ impl GitService for GitHubGitService {
     }
 
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
-        let path = format!("repos/{}/commits/{}", repo, reference);
+        let path = format!("/repos/{}/commits/{}", repo, reference);
         let res = self.client.get::<GitHubCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))

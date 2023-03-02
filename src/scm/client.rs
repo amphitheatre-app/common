@@ -15,6 +15,23 @@
 use super::driver::Driver;
 use super::git::GitService;
 
+/// Specifies optional pagination
+pub struct ListOptions {
+    pub url: Option<String>,
+    pub page: i32,
+    pub size: i32,
+}
+
+impl Default for ListOptions {
+    fn default() -> Self {
+        Self {
+            url: None,
+            page: 1,
+            size: 30,
+        }
+    }
+}
+
 pub struct Client<T: Driver> {
     driver: T,
 }

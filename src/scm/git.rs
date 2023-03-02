@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::client::ListOptions;
+
 /// Represents a git reference.
 #[derive(Debug, PartialEq)]
 pub struct Reference {
@@ -41,12 +43,13 @@ pub struct Signature {
     pub avatar: Option<String>,
 }
 
+/// Provides access to git resources.
 pub trait GitService {
     /// Returns a list of git branches.
-    fn list_branches(&self, repo: &str) -> anyhow::Result<Vec<Reference>>;
+    fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>>;
 
     /// Returns a list of git tags.
-    fn list_tags(&self, repo: &str) -> anyhow::Result<Vec<Reference>>;
+    fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>>;
 
     /// Finds a git commit by reference
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;

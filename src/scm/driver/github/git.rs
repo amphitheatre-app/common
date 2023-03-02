@@ -14,15 +14,18 @@
 
 use serde::{Deserialize, Serialize};
 
+use super::utils::encode_list_options;
 use super::GitHubFile;
 use crate::client::{Client, Endpoint};
+use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature};
 use crate::scm::utils;
 
 impl GitService for GitHubGitService {
-    fn list_branches(&self, repo: &str) -> anyhow::Result<Vec<Reference>> {
+    fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/branches", repo);
-        let res = self.client.get::<GitHubBranchsEndpoint>(&path, None)?;
+        let options = Some(encode_list_options(opts));
+        let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -31,9 +34,10 @@ impl GitService for GitHubGitService {
         Ok(vec![])
     }
 
-    fn list_tags(&self, repo: &str) -> anyhow::Result<Vec<Reference>> {
+    fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/tags", repo);
-        let res = self.client.get::<GitHubBranchsEndpoint>(&path, None)?;
+        let options = Some(encode_list_options(opts));
+        let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -147,6 +151,7 @@ pub struct GitHubGitService {
 mod test {
     use super::GitHubGitService;
     use crate::client::Client;
+    use crate::scm::client::ListOptions;
     use crate::scm::git::GitService;
 
     #[test]
@@ -154,7 +159,7 @@ mod test {
         let service = GitHubGitService {
             client: Client::new("https://api.github.com", None),
         };
-        let result = service.list_branches("octocat/Hello-World");
+        let result = service.list_branches("octocat/Hello-World", ListOptions::default());
         assert!(result.is_ok());
         assert!(result
             .unwrap()
@@ -168,7 +173,7 @@ mod test {
         let service = GitHubGitService {
             client: Client::new("https://api.github.com", None),
         };
-        let result = service.list_tags("octocat/Hello-World");
+        let result = service.list_tags("octocat/Hello-World", ListOptions::default());
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), vec![]);
     }

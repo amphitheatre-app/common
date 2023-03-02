@@ -43,6 +43,16 @@ pub struct Source {
 }
 
 impl Source {
+    pub fn new(repo: String) -> Self {
+        Self {
+            repo,
+            branch: None,
+            tag: None,
+            rev: "".into(),
+            path: None,
+        }
+    }
+
     /// The Uniform Resource Identifier of this Source.
     #[inline]
     pub fn uri(&self) -> String {

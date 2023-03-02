@@ -17,25 +17,25 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Endpoint};
 use crate::scm::repo::{Repository, RepositoryService};
 
-pub struct GitHubRepoService {
+pub struct GithubRepoService {
     pub client: Client,
 }
 
-impl RepositoryService for GitHubRepoService {
+impl RepositoryService for GithubRepoService {
     /// Returns a repository by name.
     fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
         let path = format!("/repos/{}", repo);
-        let res = self.client.get::<GitHubRepoEndpoint>(&path, None)?;
+        let res = self.client.get::<GithubRepoEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
     }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubRepository {
+pub struct GithubRepository {
     pub id: u64,
     pub name: String,
-    pub owner: GitHubOwner,
+    pub owner: GithubOwner,
     pub html_url: String,
     pub archived: bool,
     pub visibility: String,
@@ -47,14 +47,14 @@ pub struct GitHubRepository {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubOwner {
+pub struct GithubOwner {
     pub id: u64,
     pub login: String,
     pub avatar_url: String,
 }
 
-impl From<GitHubRepository> for Repository {
-    fn from(val: GitHubRepository) -> Self {
+impl From<GithubRepository> for Repository {
+    fn from(val: GithubRepository) -> Self {
         Self {
             id: val.id.to_string(),
             namespace: val.owner.login,
@@ -71,21 +71,21 @@ impl From<GitHubRepository> for Repository {
     }
 }
 
-struct GitHubRepoEndpoint;
+struct GithubRepoEndpoint;
 
-impl Endpoint for GitHubRepoEndpoint {
-    type Output = GitHubRepository;
+impl Endpoint for GithubRepoEndpoint {
+    type Output = GithubRepository;
 }
 
 #[cfg(test)]
 mod test {
-    use super::GitHubRepoService;
+    use super::GithubRepoService;
     use crate::client::Client;
     use crate::scm::repo::RepositoryService;
 
     #[test]
     fn test_find() {
-        let service = GitHubRepoService {
+        let service = GithubRepoService {
             client: Client::new("https://api.github.com", None),
         };
         let result = service.find("octocat/Hello-World");

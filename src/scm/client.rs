@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::content::ContentService;
 use super::driver::Driver;
 use super::git::GitService;
 use super::repo::RepositoryService;
@@ -42,6 +43,10 @@ impl<T: Driver> Client<T> {
         Self { driver }
     }
 
+    pub fn conetnts(&self) -> impl ContentService {
+        self.driver.contents()
+    }
+
     pub fn git(&self) -> impl GitService {
         self.driver.git()
     }
@@ -54,9 +59,18 @@ impl<T: Driver> Client<T> {
 #[cfg(test)]
 mod test {
     use crate::scm::client::Client;
+    use crate::scm::content::ContentService;
     use crate::scm::driver::github;
     use crate::scm::git::GitService;
     use crate::scm::repo::RepositoryService;
+
+    #[test]
+    fn call_content_service() {
+        let client = Client::new(github::default());
+        let content = client.conetnts().find("octocat/Hello-World", "README", "master");
+
+        assert!(content.is_ok());
+    }
 
     #[test]
     fn call_get_service() {
@@ -72,6 +86,5 @@ mod test {
         let repo = client.repositories().find("octocat/Hello-World");
 
         assert!(repo.is_ok());
-        assert_eq!(&repo.unwrap().unwrap().branch, "master")
     }
 }

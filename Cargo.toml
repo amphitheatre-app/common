@@ -12,7 +12,7 @@ readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.66"
-base64 = "0.21.0"
+data-encoding = "2.3.3"
 chrono = "0.4.23"
 convert_case = "0.6.0"
 kube = { version = "0.77.0", features = ["runtime", "derive"] }

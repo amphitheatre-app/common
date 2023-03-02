@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod content;
 mod driver;
 mod git;
 mod pr;
@@ -19,7 +20,7 @@ mod repo;
 mod utils;
 
 use self::driver::GithubDriver;
-pub use self::pr::GitHubFile;
+pub use self::pr::GithubFile;
 
 /// Returnes a new GitHub API client.
 pub fn new(url: &str, token: Option<String>) -> GithubDriver {

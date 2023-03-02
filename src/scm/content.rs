@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod github;
+/// represents a git repository.
+#[derive(Debug)]
+pub struct Content {
+    pub path: String,
+    pub data: Vec<u8>,
+    pub sha: String,
+    pub blob_id: String,
+}
 
-use super::content::ContentService;
-use super::repo::RepositoryService;
-use crate::scm::git::GitService;
-
-pub trait Driver {
-    fn contents(&self) -> impl ContentService;
-    fn git(&self) -> impl GitService;
-    fn repositories(&self) -> impl RepositoryService;
+/// Provides access to repository content.
+pub trait ContentService {
+    /// Returns the repository file content by path.
+    fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content>;
 }

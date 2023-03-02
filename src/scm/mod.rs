@@ -14,6 +14,7 @@
 
 pub mod client;
 pub mod constants;
+pub mod content;
 pub mod driver;
 pub mod git;
 pub mod repo;

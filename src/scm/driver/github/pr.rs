@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubFile {
+pub struct GithubFile {
     pub sha: String,
     pub filename: String,
     pub status: String,

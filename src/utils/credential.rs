@@ -14,8 +14,7 @@
 
 use std::collections::HashMap;
 
-use base64::engine::general_purpose::STANDARD as BASE64;
-use base64::Engine as _;
+use data_encoding::BASE64;
 
 use crate::config::Credential;
 use crate::docker::{AuthConfig, DockerConfig};
@@ -25,11 +24,8 @@ pub fn build_docker_config(entries: &HashMap<String, Credential>) -> DockerConfi
     let mut auths = HashMap::new();
 
     for (endpoint, credential) in entries.iter() {
-        let auth = BASE64.encode(format!(
-            "{}:{}",
-            credential.username_any(),
-            credential.password_any()
-        ));
+        let pair = format!("{}:{}", credential.username_any(), credential.password_any());
+        let auth = BASE64.encode(pair.as_bytes());
         auths.insert(
             endpoint.clone(),
             AuthConfig {

@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::git::GitHubGitService;
-use super::repo::GitHubRepoService;
+use super::content::GithubContentService;
+use super::git::GithubGitService;
+use super::repo::GithubRepoService;
 use crate::client::Client;
+use crate::scm::content::ContentService;
 use crate::scm::driver::Driver;
 use crate::scm::git::GitService;
 use crate::scm::repo::RepositoryService;
@@ -24,14 +26,20 @@ pub struct GithubDriver {
 }
 
 impl Driver for GithubDriver {
+    fn contents(&self) -> impl ContentService {
+        GithubContentService {
+            client: self.client.clone(),
+        }
+    }
+
     fn git(&self) -> impl GitService {
-        GitHubGitService {
+        GithubGitService {
             client: self.client.clone(),
         }
     }
 
     fn repositories(&self) -> impl RepositoryService {
-        GitHubRepoService {
+        GithubRepoService {
             client: self.client.clone(),
         }
     }

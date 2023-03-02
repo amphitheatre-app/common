@@ -15,21 +15,21 @@
 use serde::{Deserialize, Serialize};
 
 use super::utils::convert_list_options;
-use super::GitHubFile;
+use super::GithubFile;
 use crate::client::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature};
 use crate::scm::utils;
 
-pub struct GitHubGitService {
+pub struct GithubGitService {
     pub client: Client,
 }
 
-impl GitService for GitHubGitService {
+impl GitService for GithubGitService {
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/branches", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -41,7 +41,7 @@ impl GitService for GitHubGitService {
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/tags", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -52,21 +52,21 @@ impl GitService for GitHubGitService {
 
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
         let path = format!("/repos/{}/commits/{}", repo, reference);
-        let res = self.client.get::<GitHubCommitEndpoint>(&path, None)?;
+        let res = self.client.get::<GithubCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
     }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubBranch {
+pub struct GithubBranch {
     pub name: String,
-    pub commit: GitHubSimpleCommit,
+    pub commit: GithubSimpleCommit,
     pub protected: bool,
 }
 
-impl From<&GitHubBranch> for Reference {
-    fn from(val: &GitHubBranch) -> Self {
+impl From<&GithubBranch> for Reference {
+    fn from(val: &GithubBranch) -> Self {
         Self {
             name: utils::trim_ref(&val.name),
             path: utils::expand_ref(&val.name, "refs/heads/"),
@@ -76,23 +76,23 @@ impl From<&GitHubBranch> for Reference {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubSimpleCommit {
+pub struct GithubSimpleCommit {
     pub sha: String,
     pub url: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubCommit {
+pub struct GithubCommit {
     pub sha: String,
     pub html_url: String,
-    pub commit: GitHubCommitObject,
-    pub author: GitHubAuthor,
-    pub committer: GitHubAuthor,
-    pub files: Vec<GitHubFile>,
+    pub commit: GithubCommitObject,
+    pub author: GithubAuthor,
+    pub committer: GithubAuthor,
+    pub files: Vec<GithubFile>,
 }
 
-impl From<GitHubCommit> for Commit {
-    fn from(val: GitHubCommit) -> Self {
+impl From<GithubCommit> for Commit {
+    fn from(val: GithubCommit) -> Self {
         Self {
             sha: val.sha,
             message: val.commit.message,
@@ -116,47 +116,47 @@ impl From<GitHubCommit> for Commit {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubCommitObject {
-    pub author: GitHubCommitObjectAuthor,
-    pub committer: GitHubCommitObjectAuthor,
+pub struct GithubCommitObject {
+    pub author: GithubCommitObjectAuthor,
+    pub committer: GithubCommitObjectAuthor,
     pub message: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubCommitObjectAuthor {
+pub struct GithubCommitObjectAuthor {
     pub name: String,
     pub email: String,
     pub date: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GitHubAuthor {
+pub struct GithubAuthor {
     pub avatar_url: String,
     pub login: String,
 }
 
-struct GitHubBranchsEndpoint;
+struct GithubBranchsEndpoint;
 
-impl Endpoint for GitHubBranchsEndpoint {
-    type Output = Vec<GitHubBranch>;
+impl Endpoint for GithubBranchsEndpoint {
+    type Output = Vec<GithubBranch>;
 }
 
-struct GitHubCommitEndpoint;
+struct GithubCommitEndpoint;
 
-impl Endpoint for GitHubCommitEndpoint {
-    type Output = GitHubCommit;
+impl Endpoint for GithubCommitEndpoint {
+    type Output = GithubCommit;
 }
 
 #[cfg(test)]
 mod test {
-    use super::GitHubGitService;
+    use super::GithubGitService;
     use crate::client::Client;
     use crate::scm::client::ListOptions;
     use crate::scm::git::GitService;
 
     #[test]
     fn test_list_branches() {
-        let service = GitHubGitService {
+        let service = GithubGitService {
             client: Client::new("https://api.github.com", None),
         };
         let result = service.list_branches("octocat/Hello-World", ListOptions::default());
@@ -170,7 +170,7 @@ mod test {
 
     #[test]
     fn test_list_tags() {
-        let service = GitHubGitService {
+        let service = GithubGitService {
             client: Client::new("https://api.github.com", None),
         };
         let result = service.list_tags("octocat/Hello-World", ListOptions::default());
@@ -180,7 +180,7 @@ mod test {
 
     #[test]
     fn test_find_commit() {
-        let service = GitHubGitService {
+        let service = GithubGitService {
             client: Client::new("https://api.github.com", None),
         };
         let result = service.find_commit("octocat/Hello-World", "master");

@@ -14,8 +14,10 @@
 
 pub mod github;
 
+use super::repo::RepositoryService;
 use crate::scm::git::GitService;
 
 pub trait Driver {
     fn git(&self) -> impl GitService;
+    fn repositories(&self) -> impl RepositoryService;
 }

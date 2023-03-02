@@ -14,6 +14,7 @@
 
 use super::driver::Driver;
 use super::git::GitService;
+use super::repo::RepositoryService;
 
 /// Specifies optional pagination
 pub struct ListOptions {
@@ -44,6 +45,10 @@ impl<T: Driver> Client<T> {
     pub fn git(&self) -> impl GitService {
         self.driver.git()
     }
+
+    pub fn repositories(&self) -> impl RepositoryService {
+        self.driver.repositories()
+    }
 }
 
 #[cfg(test)]
@@ -51,6 +56,7 @@ mod test {
     use crate::scm::client::Client;
     use crate::scm::driver::github;
     use crate::scm::git::GitService;
+    use crate::scm::repo::RepositoryService;
 
     #[test]
     fn call_get_service() {
@@ -58,5 +64,14 @@ mod test {
         let commit = client.git().find_commit("octocat/Hello-World", "master");
 
         assert!(commit.is_ok());
+    }
+
+    #[test]
+    fn call_repo_service() {
+        let client = Client::new(github::default());
+        let repo = client.repositories().find("octocat/Hello-World");
+
+        assert!(repo.is_ok());
+        assert_eq!(&repo.unwrap().unwrap().branch, "master")
     }
 }

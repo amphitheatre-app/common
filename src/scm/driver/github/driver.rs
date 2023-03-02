@@ -13,9 +13,11 @@
 // limitations under the License.
 
 use super::git::GitHubGitService;
+use super::repo::GitHubRepoService;
 use crate::client::Client;
 use crate::scm::driver::Driver;
 use crate::scm::git::GitService;
+use crate::scm::repo::RepositoryService;
 
 pub struct GithubDriver {
     pub client: Client,
@@ -24,6 +26,12 @@ pub struct GithubDriver {
 impl Driver for GithubDriver {
     fn git(&self) -> impl GitService {
         GitHubGitService {
+            client: self.client.clone(),
+        }
+    }
+
+    fn repositories(&self) -> impl RepositoryService {
+        GitHubRepoService {
             client: self.client.clone(),
         }
     }
@@ -36,5 +44,10 @@ mod test {
     #[test]
     fn return_git_service() {
         github::default().git();
+    }
+
+    #[test]
+    fn return_repo_service() {
+        github::default().repositories();
     }
 }

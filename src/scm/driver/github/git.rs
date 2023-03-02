@@ -14,17 +14,21 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::utils::encode_list_options;
+use super::utils::convert_list_options;
 use super::GitHubFile;
 use crate::client::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature};
 use crate::scm::utils;
 
+pub struct GitHubGitService {
+    pub client: Client,
+}
+
 impl GitService for GitHubGitService {
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/branches", repo);
-        let options = Some(encode_list_options(opts));
+        let options = Some(convert_list_options(opts));
         let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
@@ -36,7 +40,7 @@ impl GitService for GitHubGitService {
 
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = format!("/repos/{}/tags", repo);
-        let options = Some(encode_list_options(opts));
+        let options = Some(convert_list_options(opts));
         let res = self.client.get::<GitHubBranchsEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
@@ -80,7 +84,7 @@ pub struct GitHubSimpleCommit {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GitHubCommit {
     pub sha: String,
-    pub url: String,
+    pub html_url: String,
     pub commit: GitHubCommitObject,
     pub author: GitHubAuthor,
     pub committer: GitHubAuthor,
@@ -106,7 +110,7 @@ impl From<GitHubCommit> for Commit {
                 login: Some(val.committer.login),
                 avatar: Some(val.committer.avatar_url),
             },
-            link: val.url,
+            link: val.html_url,
         }
     }
 }
@@ -141,10 +145,6 @@ struct GitHubCommitEndpoint;
 
 impl Endpoint for GitHubCommitEndpoint {
     type Output = GitHubCommit;
-}
-
-pub struct GitHubGitService {
-    pub client: Client,
 }
 
 #[cfg(test)]

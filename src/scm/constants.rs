@@ -12,9 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod client;
-pub mod constants;
-pub mod driver;
-pub mod git;
-pub mod repo;
-pub mod utils;
+#[derive(Debug)]
+pub enum Visibility {
+    Public,
+    Internal,
+    Private,
+    Unknown,
+}
+
+impl From<String> for Visibility {
+    fn from(value: String) -> Self {
+        match value.as_str() {
+            "public" => Visibility::Public,
+            "internal" => Visibility::Internal,
+            "private" => Visibility::Private,
+            _ => Visibility::Unknown,
+        }
+    }
+}

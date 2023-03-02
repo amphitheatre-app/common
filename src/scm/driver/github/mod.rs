@@ -15,6 +15,7 @@
 mod driver;
 mod git;
 mod pr;
+mod repo;
 mod utils;
 
 use self::driver::GithubDriver;

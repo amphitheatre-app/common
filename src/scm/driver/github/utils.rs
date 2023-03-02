@@ -16,7 +16,7 @@ use std::collections::HashMap;
 
 use crate::scm::client::ListOptions;
 
-pub fn encode_list_options(opts: ListOptions) -> HashMap<String, String> {
+pub fn convert_list_options(opts: ListOptions) -> HashMap<String, String> {
     let mut options: HashMap<String, String> = HashMap::new();
 
     if opts.page != 0 {

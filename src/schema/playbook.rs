@@ -64,8 +64,8 @@ impl PlaybookStatus {
     }
 
     #[inline]
-    pub fn solving(&self) -> bool {
-        self.state(PlaybookState::Solving, true)
+    pub fn resolving(&self) -> bool {
+        self.state(PlaybookState::Resolving, true)
     }
 
     #[inline]
@@ -97,7 +97,7 @@ impl PlaybookStatus {
 
 pub enum PlaybookState {
     Pending,
-    Solving,
+    Resolving,
     Ready,
     Running,
     Succeeded,
@@ -111,13 +111,13 @@ impl PlaybookState {
     }
 
     #[inline]
-    pub fn solving() -> Condition {
-        PlaybookState::create(PlaybookState::Solving, true, "Solve", None)
+    pub fn resolving() -> Condition {
+        PlaybookState::create(PlaybookState::Resolving, true, "Resolving", None)
     }
 
     #[inline]
     pub fn ready() -> Condition {
-        PlaybookState::create(PlaybookState::Ready, true, "Solved", None)
+        PlaybookState::create(PlaybookState::Ready, true, "Resolved", None)
     }
 
     #[inline]
@@ -154,7 +154,7 @@ impl Display for PlaybookState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             PlaybookState::Pending => f.write_str("Pending"),
-            PlaybookState::Solving => f.write_str("Solving"),
+            PlaybookState::Resolving => f.write_str("Resolving"),
             PlaybookState::Ready => f.write_str("Ready"),
             PlaybookState::Running => f.write_str("Running"),
             PlaybookState::Succeeded => f.write_str("Succeeded"),

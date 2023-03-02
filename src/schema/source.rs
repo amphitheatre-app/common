@@ -37,7 +37,7 @@ pub struct Source {
     pub rev: String,
 
     /// Relative path from the repo root to the configuration file.
-    /// eg. getting-started/.amp.toml. default is `./.amp.toml`.
+    /// eg. getting-started/.amp.toml. default is `.amp.toml`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }

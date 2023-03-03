@@ -88,12 +88,12 @@ pub struct ActorSpec {
 impl ActorSpec {
     #[inline]
     pub fn build_name(&self) -> String {
-        format!("{}-{}", self.name, self.source.rev)
+        format!("{}-{}", self.name, self.source.rev())
     }
 
     #[inline]
     pub fn docker_tag(&self) -> String {
-        format!("{}:{}", self.image, self.source.rev)
+        format!("{}:{}", self.image, self.source.rev())
     }
 }
 

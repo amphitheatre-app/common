@@ -34,7 +34,7 @@ pub struct Source {
     /// A commit hash like rev = "4c59b707", or a named reference exposed by
     /// the remote repository such as rev = "refs/pull/493/head". What references
     /// are available varies by where the repo is hosted.
-    pub rev: String,
+    pub rev: Option<String>,
 
     /// Relative path from the repo root to the configuration file.
     /// eg. getting-started/.amp.toml. default is `.amp.toml`.
@@ -46,10 +46,7 @@ impl Source {
     pub fn new(repo: String) -> Self {
         Self {
             repo,
-            branch: None,
-            tag: None,
-            rev: "".into(),
-            path: None,
+            ..Default::default()
         }
     }
 
@@ -75,7 +72,7 @@ impl Source {
         url
     }
 
-    fn reference(&self) -> Option<String> {
+    pub fn reference(&self) -> Option<String> {
         if self.branch.is_some() {
             return self.branch.to_owned();
         }
@@ -84,6 +81,10 @@ impl Source {
             return self.tag.to_owned();
         }
 
-        Some(self.rev.to_owned())
+        self.rev.to_owned()
+    }
+
+    pub fn rev(&self) -> &String {
+        self.rev.as_ref().unwrap()
     }
 }

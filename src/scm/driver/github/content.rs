@@ -85,6 +85,6 @@ mod test {
 
         let repo = result.unwrap();
         assert_eq!(repo.sha, "980a0d5f19a64b4b30a87d4206aade58726b60e3".to_string());
-        assert_eq!(repo.data, "Hello World!".as_bytes());
+        assert_eq!(repo.data, "Hello World!\n".as_bytes());
     }
 }

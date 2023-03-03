@@ -23,6 +23,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use super::actor::ActorSpec;
+use super::source::Source;
 
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, JsonSchema, Serialize, Validate)]
 #[kube(
@@ -41,14 +42,17 @@ pub struct PlaybookSpec {
     /// Namespace for its managed resources and Actor deployment instances
     pub namespace: String,
 
+    /// The starting character for this playbook
+    pub preface: Source,
+
     /// Global sync mode, if enabled, pulls the latest code from source version
     /// control in real time via Webhook, etc. and then rebuilds and deploys it
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
 
     /// All the actors involved in this playbook
-    #[validate(length(min = 1))]
-    pub actors: Vec<ActorSpec>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub actors: Option<Vec<ActorSpec>>,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, JsonSchema, PartialEq)]

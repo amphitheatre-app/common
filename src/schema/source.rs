@@ -34,6 +34,7 @@ pub struct Source {
     /// A commit hash like rev = "4c59b707", or a named reference exposed by
     /// the remote repository such as rev = "refs/pull/493/head". What references
     /// are available varies by where the repo is hosted.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rev: Option<String>,
 
     /// Relative path from the repo root to the configuration file.

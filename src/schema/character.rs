@@ -65,6 +65,15 @@ pub struct Character {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish: Option<Vec<String>>,
 
+    /// Specify the external image to be launched when it’s a reference kind of manifest.
+    /// Or by default, leave it empty and Amphitheatre will automatically create it
+    /// based on the current registry and name.
+    ///
+    /// The image must follow the Open Container Specification addressable image format.
+    /// such as: [<registry>/][<project>/]<image>[:<tag>|@<digest>].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+
     /// overrides the default command declared by the container image
     /// (i.e. by Dockerfile’s CMD)
     #[serde(skip_serializing_if = "Option::is_none")]

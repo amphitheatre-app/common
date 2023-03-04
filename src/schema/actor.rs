@@ -184,13 +184,8 @@ impl From<&Manifest> for ActorSpec {
         Self {
             name: manifest.character.name.clone(),
             description: manifest.character.description.clone(),
-            // TODO: repo + rev
-            source: Source {
-                repo: manifest.character.repository.clone(),
-                ..Source::default()
-            },
-            // TODO: registry + project + image
-            image: manifest.character.name.clone(),
+            source: Source::new(manifest.character.repository.clone()),
+            image: manifest.character.image.clone().unwrap_or_default(),
             command: manifest.character.command.clone(),
             environments: manifest.environments.clone(),
             partners: manifest.partners.clone(),

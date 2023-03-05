@@ -21,7 +21,7 @@ use super::credential::Credential;
 /// Configuration is used to store user configurations on the client side,
 /// such as Docker registry and SCM  credentials, and other propeaties
 /// that need to be kept in sync with the server.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Configuration {
     /// Each cluster must have a Docker registry, here is its access credential
     pub registry: HashMap<String, Credential>,

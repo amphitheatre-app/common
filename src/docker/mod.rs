@@ -14,3 +14,5 @@
 
 mod docker_config;
 pub use docker_config::{AuthConfig, DockerConfig};
+
+pub mod registry;

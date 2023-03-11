@@ -30,3 +30,43 @@ pub struct AuthConfig {
 pub struct DockerConfig {
     pub auths: Option<HashMap<String, AuthConfig>>,
 }
+
+impl DockerConfig {
+    pub fn get_auth(&self, image_registry: &str) -> Option<&String> {
+        if let Some(auths) = &self.auths {
+            if let Some(credential) = auths.get(image_registry) {
+                return credential.auth.as_ref();
+            }
+
+            let image_registry = normalize_registry(image_registry);
+            if let Some((_, auth_str)) = auths
+                .iter()
+                .find(|(key, _)| normalize_key_to_registry(key) == image_registry)
+            {
+                return auth_str.auth.as_ref();
+            }
+        }
+
+        None
+    }
+}
+
+/// Normalizes a given key (image reference) into its resulting registry
+fn normalize_key_to_registry(key: &str) -> &str {
+    let stripped = key.strip_prefix("http://").unwrap_or(key);
+    let mut stripped = key.strip_prefix("https://").unwrap_or(stripped);
+    if stripped != key {
+        stripped = stripped.split_once('/').unwrap_or((stripped, "")).0;
+    }
+
+    normalize_registry(stripped)
+}
+
+/// Converts the provided registry if a known `docker.io` host
+/// is provided.
+fn normalize_registry(registry: &str) -> &str {
+    match registry {
+        "registry-1.docker.io" | "docker.io" => "index.docker.io",
+        _ => registry,
+    }
+}

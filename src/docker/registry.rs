@@ -17,15 +17,24 @@ use std::str::FromStr;
 use oci_distribution::client::ClientConfig;
 use oci_distribution::secrets::RegistryAuth;
 use oci_distribution::{Client, Reference};
-use tracing::{debug, error};
+use tracing::{debug, error, warn};
+
+use super::DockerCredential;
 
 /// Check if the docker image exists on remote registry.
-pub async fn exists(image: &str, secret: Option<(String, String)>) -> anyhow::Result<bool> {
+pub async fn exists(image: &str, credential: Option<DockerCredential>) -> anyhow::Result<bool> {
     let mut client = Client::new(ClientConfig::default());
     let reference = Reference::from_str(image)?;
 
-    let auth = match secret {
-        Some((username, password)) => RegistryAuth::Basic(username, password),
+    let auth = match credential {
+        Some(DockerCredential::UsernamePassword(username, password)) => {
+            debug!("Found docker credentials");
+            RegistryAuth::Basic(username, password)
+        }
+        Some(DockerCredential::IdentityToken(_)) => {
+            warn!("Cannot use contents of docker config, identity token not supported. Using anonymous auth");
+            RegistryAuth::Anonymous
+        }
         None => RegistryAuth::Anonymous,
     };
 

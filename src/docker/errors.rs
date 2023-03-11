@@ -12,11 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod docker_config;
-pub use docker_config::{AuthConfig, DockerConfig};
+use thiserror::Error;
 
-mod docker_credential;
-pub use docker_credential::{get_credential, DockerCredential};
-
-pub mod errors;
-pub mod registry;
+/// An error that occurred whilst attempting to retrieve a credential.
+#[derive(Error, Debug, PartialEq)]
+pub enum CredentialError {
+    #[error("Unable to decode credential")]
+    CredentialDecodingError,
+    #[error("User has no credential configured")]
+    NoCredentialConfigured,
+    #[error("No config file found")]
+    ConfigNotFound,
+    #[error("No config file found")]
+    ReferenceParseError(#[source] oci_distribution::ParseError),
+}

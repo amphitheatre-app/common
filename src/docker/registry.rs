@@ -20,10 +20,14 @@ use oci_distribution::{Client, Reference};
 use tracing::{debug, error};
 
 /// Check if the docker image exists on remote registry.
-pub async fn exists(image: &str) -> anyhow::Result<bool> {
+pub async fn exists(image: &str, secret: Option<(String, String)>) -> anyhow::Result<bool> {
     let mut client = Client::new(ClientConfig::default());
     let reference = Reference::from_str(image)?;
-    let auth = RegistryAuth::Anonymous;
+
+    let auth = match secret {
+        Some((username, password)) => RegistryAuth::Basic(username, password),
+        None => RegistryAuth::Anonymous,
+    };
 
     match client.fetch_manifest_digest(&reference, &auth).await {
         Ok(digest) => {

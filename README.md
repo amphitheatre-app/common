@@ -8,8 +8,8 @@ any stability guarantees for external usage.
 - [**config**](src/config/): Common configuration structures.
 - [**docker**](src/docker/): Docker container & Registry wrappers.
 - [**filesystem**](src/filesystem/): File system related structures and helpers.
-- [**schema**](src/s): The core schema includes manifest, playbook, and workspace.
-- [**scm**](src/scm): Provides a unified interface to multiple source code management systems.
+- [**schema**](src/schema/): The core schema includes manifest, playbook, and workspace.
+- [**scm**](src/scm/): Provides a unified interface to multiple source code management systems.
 - [**utils**](src/utils/): A variety of miscellaneous tools or functions.
 
 ## License

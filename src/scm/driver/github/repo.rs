@@ -90,7 +90,7 @@ mod test {
         };
         let result = service.find("octocat/Hello-World");
 
-        println!("{:#?}", result);
+        println!("{:?}", result);
         assert!(result.is_ok());
 
         let repo = result.unwrap().unwrap();

@@ -80,7 +80,7 @@ mod test {
             client: Client::new("https://api.github.com", None),
         };
         let result = service.find("octocat/Hello-World", "README", "master");
-        println!("{:#?}", result);
+        println!("{:?}", result);
         assert!(result.is_ok());
 
         let repo = result.unwrap();

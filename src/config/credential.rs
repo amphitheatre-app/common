@@ -14,55 +14,104 @@
 
 use serde::{Deserialize, Serialize};
 
-/// Abstract credentials that can be used for Docker registry, source code repositories,
-/// or other addresses that need to be accessed, indicating basic authentication
-/// when there is only a username and password, otherwise bearer authentication.
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Credential {
+/// `Credential` is used to provide common methods for accessing credentials.
+pub trait Credential {
+    /// Get the username of the credential
+    fn username(&self) -> Option<String>;
+    /// Get the password of the credential
+    fn password(&self) -> Option<String>;
+    /// Get the token of the credential
+    fn token(&self) -> Option<String>;
+
+    fn username_any(&self) -> String {
+        self.username().unwrap_or_default()
+    }
+
+    fn password_any(&self) -> String {
+        self.password().unwrap_or_default()
+    }
+
+    fn token_any(&self) -> String {
+        self.token().unwrap_or_default()
+    }
+}
+
+/// `CredentialConfiguration` is used to store access credentials on the client side,
+/// such as Docker registry and SCM credentials, and other propeaties
+/// that need to be kept in sync with the server.
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct CredentialConfiguration {
+    /// Access credentials for multiple docker registries.
+    pub registries: Vec<RegistryCredentialConfig>,
+    /// Access credentials for multiple code repositories.
+    pub repositories: Vec<RepositoryCredentialConfig>,
+}
+
+/// Access credentials for multiple docker registries.
+/// indicating basic authentication when there is only a
+/// username and password, otherwise bearer authentication.
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct RegistryCredentialConfig {
+    /// the name of the registry
+    name: String,
+    /// whether it is the default registry
+    default: bool,
+    /// server address
+    server: String,
+    /// the optional username of the registry
     username: Option<String>,
+    /// the optional password of the registry
     password: Option<String>,
+    /// the optional token of the registry
     token: Option<String>,
 }
 
-impl Credential {
-    /// Constructe a basic credential
-    pub fn basic(username: String, password: String) -> Self {
-        Self {
-            username: Some(username),
-            password: Some(password),
-            token: None,
-        }
+/// `RegistryCredentialConfig` implements `CredentialConfigTrait`
+impl Credential for RegistryCredentialConfig {
+    fn username(&self) -> Option<String> {
+        self.username.to_owned()
     }
 
-    /// Constructe a bearer credential
-    pub fn bearer(token: String) -> Self {
-        Self {
-            username: None,
-            password: None,
-            token: Some(token),
-        }
+    fn password(&self) -> Option<String> {
+        self.password.to_owned()
     }
 
-    pub fn scheme(&self) -> Scheme {
-        if self.username.is_none() && self.token.is_some() {
-            Scheme::Bearer
-        } else if self.username.is_some() && self.password.is_some() {
-            Scheme::Basic
-        } else {
-            Scheme::Unknown
-        }
+    fn token(&self) -> Option<String> {
+        self.token.to_owned()
+    }
+}
+
+/// Access credentials for multiple code repositories.
+/// indicating basic authentication when there is only a
+/// username and password, otherwise bearer authentication.
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct RepositoryCredentialConfig {
+    /// the name of the repository
+    name: String,
+    /// the driver for connecting to the repository
+    driver: String,
+    /// server address of the repository
+    server: String,
+    /// the optional username of the repository
+    username: Option<String>,
+    /// the optional password of the repository
+    password: Option<String>,
+    /// the optional token of the repository
+    token: Option<String>,
+}
+
+/// `RepositoryCredentialConfig` implements `CredentialConfigTrait`
+impl Credential for RepositoryCredentialConfig {
+    fn username(&self) -> Option<String> {
+        self.username.to_owned()
     }
 
-    pub fn username_any(&self) -> String {
-        self.username.clone().unwrap_or_default()
+    fn password(&self) -> Option<String> {
+        self.password.to_owned()
     }
 
-    pub fn password_any(&self) -> String {
-        self.password.clone().unwrap_or_default()
-    }
-
-    pub fn token_any(&self) -> String {
-        self.token.clone().unwrap_or_default()
+    fn token(&self) -> Option<String> {
+        self.token.to_owned()
     }
 }
 
@@ -76,4 +125,15 @@ pub enum Scheme {
     Bearer,
     /// Username or token is empty, or other cases
     Unknown,
+}
+
+/// Get the authentication scheme based on the credential
+pub fn scheme(credential: impl Credential) -> Scheme {
+    if credential.username().is_none() && credential.token().is_some() {
+        Scheme::Bearer
+    } else if credential.username().is_some() && credential.password().is_some() {
+        Scheme::Basic
+    } else {
+        Scheme::Unknown
+    }
 }

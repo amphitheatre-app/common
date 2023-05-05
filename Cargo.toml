@@ -14,7 +14,9 @@ readme = "README.md"
 anyhow = "1.0.66"
 data-encoding = "2.3.3"
 chrono = "0.4.23"
+confy = "0.5.1"
 convert_case = "0.6.0"
+directories = "5.0.1"
 kube = { version = "0.77.0", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
 k8s-openapi = { version = "0.16.0", default-features = false, features = ["schemars", "v1_24"] }
 oci-distribution = { version = "0.9.4", default-features = false, features = ["rustls-tls", "test-registry"] }

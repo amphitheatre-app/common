@@ -18,6 +18,7 @@ use data_encoding::BASE64;
 use serde::Serialize;
 
 use crate::config::Credential;
+
 /// AuthConfig contains authorization information for connecting to a Registry
 /// Inlined what we use from github.com/docker/cli/cli/config/types
 #[derive(Serialize)]
@@ -74,8 +75,11 @@ fn normalize_registry(registry: &str) -> &str {
 }
 
 /// Build a configuration that conforms to the `.dockerconfigjson` specification
-impl From<&HashMap<String, Credential>> for DockerConfig {
-    fn from(entries: &HashMap<String, Credential>) -> Self {
+impl<T> From<&HashMap<String, T>> for DockerConfig
+where
+    T: Credential,
+{
+    fn from(entries: &HashMap<String, T>) -> Self {
         let mut auths = HashMap::new();
 
         for (endpoint, credential) in entries.iter() {

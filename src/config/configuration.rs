@@ -12,19 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
+use anyhow::Context;
+use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 
-use super::credential::Credential;
+use super::ContextConfiguration;
 
-/// Configuration is used to store user configurations on the client side,
-/// such as Docker registry and SCM  credentials, and other propeaties
-/// that need to be kept in sync with the server.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize)]
 pub struct Configuration {
-    /// Each cluster must have a Docker registry, here is its access credential
-    pub registry: HashMap<String, Credential>,
-    /// Access credentials for multiple code repositories will be matched based on endpoint.
-    pub repositories: HashMap<String, Credential>,
+    /// the configuration of the context
+    pub context: Option<ContextConfiguration>,
+}
+
+impl Configuration {
+    /// get the default configuration path
+    pub fn path() -> Result<PathBuf, confy::ConfyError> {
+        let project = ProjectDirs::from("", "", "Amphitheatre").ok_or_else(|| {
+            confy::ConfyError::BadConfigDirectory("could not determine home directory path".to_string())
+        })?;
+
+        let config_dir_str = get_configuration_directory_str(&project)?;
+
+        let path = [config_dir_str, "config.toml"].iter().collect();
+
+        Ok(path)
+    }
+
+    /// load configuration from the specified path
+    pub fn load(path: impl AsRef<Path>) -> anyhow::Result<Configuration> {
+        confy::load_path(path).with_context(|| "unable to load configuration")
+    }
+
+    /// save configuration to the specified path
+    pub fn save(&self, path: impl AsRef<Path>) -> anyhow::Result<()> {
+        confy::store_path(path, self).with_context(|| "unable to save configuration")
+    }
+}
+
+fn get_configuration_directory_str(project: &ProjectDirs) -> Result<&str, confy::ConfyError> {
+    let path = project.config_dir();
+    path.to_str()
+        .ok_or_else(|| confy::ConfyError::BadConfigDirectory(format!("{:?} is not valid Unicode", path)))
 }

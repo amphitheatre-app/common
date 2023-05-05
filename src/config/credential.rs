@@ -58,6 +58,12 @@ pub struct CredentialConfiguration {
     pub repositories: Vec<RepositoryCredentialConfig>,
 }
 
+impl CredentialConfiguration {
+    pub fn default_registry(&self) -> Option<&RegistryCredentialConfig> {
+        self.registries.iter().find(|registry| registry.default)
+    }
+}
+
 /// Access credentials for multiple docker registries.
 /// indicating basic authentication when there is only a
 /// username and password, otherwise bearer authentication.

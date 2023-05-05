@@ -34,6 +34,17 @@ pub trait Credential {
     fn token_any(&self) -> String {
         self.token().unwrap_or_default()
     }
+
+    /// Get the authentication scheme based on the credential
+    fn scheme(&self) -> Scheme {
+        if self.username().is_none() && self.token().is_some() {
+            Scheme::Bearer
+        } else if self.username().is_some() && self.password().is_some() {
+            Scheme::Basic
+        } else {
+            Scheme::Unknown
+        }
+    }
 }
 
 /// `CredentialConfiguration` is used to store access credentials on the client side,
@@ -125,15 +136,4 @@ pub enum Scheme {
     Bearer,
     /// Username or token is empty, or other cases
     Unknown,
-}
-
-/// Get the authentication scheme based on the credential
-pub fn scheme(credential: impl Credential) -> Scheme {
-    if credential.username().is_none() && credential.token().is_some() {
-        Scheme::Bearer
-    } else if credential.username().is_some() && credential.password().is_some() {
-        Scheme::Basic
-    } else {
-        Scheme::Unknown
-    }
 }

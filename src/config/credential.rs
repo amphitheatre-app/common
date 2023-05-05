@@ -53,17 +53,17 @@ pub struct CredentialConfiguration {
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct RegistryCredentialConfig {
     /// the name of the registry
-    name: String,
+    pub name: String,
     /// whether it is the default registry
-    default: bool,
+    pub default: bool,
     /// server address
-    server: String,
+    pub server: String,
     /// the optional username of the registry
-    username: Option<String>,
+    pub username: Option<String>,
     /// the optional password of the registry
-    password: Option<String>,
+    pub password: Option<String>,
     /// the optional token of the registry
-    token: Option<String>,
+    pub token: Option<String>,
 }
 
 /// `RegistryCredentialConfig` implements `CredentialConfigTrait`
@@ -87,17 +87,17 @@ impl Credential for RegistryCredentialConfig {
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct RepositoryCredentialConfig {
     /// the name of the repository
-    name: String,
+    pub name: String,
     /// the driver for connecting to the repository
-    driver: String,
+    pub driver: String,
     /// server address of the repository
-    server: String,
+    pub server: String,
     /// the optional username of the repository
-    username: Option<String>,
+    pub username: Option<String>,
     /// the optional password of the repository
-    password: Option<String>,
+    pub password: Option<String>,
     /// the optional token of the repository
-    token: Option<String>,
+    pub token: Option<String>,
 }
 
 /// `RepositoryCredentialConfig` implements `CredentialConfigTrait`

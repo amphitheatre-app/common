@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 use super::CredentialConfiguration;
 
 /// The `Cluster` is used to store the server address and access token of the cluster.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Cluster {
     /// the name of the cluster
     pub title: String,
@@ -33,7 +33,7 @@ pub struct Cluster {
 }
 
 /// `ContextConfiguration` is used to store the configuration of the context.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ContextConfiguration {
     /// the selected context name of the cluster
     current: Option<String>,

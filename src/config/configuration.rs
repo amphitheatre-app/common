@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ContextConfiguration;
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Clone, Default, Debug, Deserialize, Serialize)]
 pub struct Configuration {
     /// the configuration of the context
     pub context: Option<ContextConfiguration>,

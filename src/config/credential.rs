@@ -50,7 +50,7 @@ pub trait Credential {
 /// `CredentialConfiguration` is used to store access credentials on the client side,
 /// such as Docker registry and SCM credentials, and other propeaties
 /// that need to be kept in sync with the server.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CredentialConfiguration {
     /// Access credentials for multiple docker registries.
     pub registries: Vec<RegistryCredentialConfig>,
@@ -67,7 +67,7 @@ impl CredentialConfiguration {
 /// Access credentials for multiple docker registries.
 /// indicating basic authentication when there is only a
 /// username and password, otherwise bearer authentication.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RegistryCredentialConfig {
     /// the name of the registry
     pub name: String,
@@ -101,7 +101,7 @@ impl Credential for RegistryCredentialConfig {
 /// Access credentials for multiple code repositories.
 /// indicating basic authentication when there is only a
 /// username and password, otherwise bearer authentication.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RepositoryCredentialConfig {
     /// the name of the repository
     pub name: String,

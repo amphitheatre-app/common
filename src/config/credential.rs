@@ -55,7 +55,7 @@ pub struct CredentialConfiguration {
     /// Access credentials for multiple docker registries.
     pub registries: Vec<RegistryCredentialConfig>,
     /// Access credentials for multiple code repositories.
-    pub repositories: Vec<RepositoryCredentialConfig>,
+    pub repositories: Option<Vec<RepositoryCredentialConfig>>,
 }
 
 impl CredentialConfiguration {

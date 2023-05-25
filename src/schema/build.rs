@@ -30,7 +30,7 @@ pub struct Build {
 
     /// Arguments, in the key=value form, passed to the build.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<Vec<(String, String)>>,
+    pub arguments: Option<HashMap<String, ArgValue>>,
 
     /// Builds images using kaniko.
     /// Locates the Dockerfile relative to workspace.
@@ -49,4 +49,12 @@ pub struct Build {
     /// Files to include when building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include: Option<Vec<String>>,
+}
+
+/// The varient value of the argument.
+#[derive(Clone, Debug, Deserialize, JsonSchema, Serialize, PartialEq)]
+#[serde(untagged)]
+pub enum ArgValue {
+    String(String),
+    Map(HashMap<String, String>),
 }

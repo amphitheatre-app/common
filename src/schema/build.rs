@@ -55,6 +55,22 @@ pub struct Build {
 #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize, PartialEq)]
 #[serde(untagged)]
 pub enum ArgValue {
+    /// ```toml
+    /// [spec.build.arguments]
+    /// foo = "bar"
+    /// ```
+    /// /bin/command --foo=bar
     String(String),
+    /// ```toml
+    /// [spec.build.arguments]
+    /// foo = { bar = "baz", qux = "quux" }
+    /// ```
+    /// /bin/command --foo="bar=baz" --foo="qux=quux"
     Map(HashMap<String, String>),
+    /// ```toml
+    /// [spec.build.arguments]
+    /// foo = ["bar", "baz"]
+    /// ```
+    /// /bin/command --foo=bar --foo=baz
+    List(Vec<String>),
 }

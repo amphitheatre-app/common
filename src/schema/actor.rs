@@ -172,7 +172,7 @@ impl ActorSpec {
 
     pub fn build_env(&self) -> Option<Vec<EnvVar>> {
         if let Some(build) = &self.build {
-            return build.env.as_ref().map(to_env_var);
+            return build.environments.as_ref().map(to_env_var);
         }
 
         None

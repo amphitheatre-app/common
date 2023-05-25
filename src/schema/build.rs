@@ -26,7 +26,11 @@ pub struct Build {
 
     /// Environment variables, in the key=value form, passed to the build.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub env: Option<HashMap<String, String>>,
+    pub environments: Option<HashMap<String, String>>,
+
+    /// Arguments, in the key=value form, passed to the build.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub arguments: Option<Vec<(String, String)>>,
 
     /// Builds images using kaniko.
     /// Locates the Dockerfile relative to workspace.

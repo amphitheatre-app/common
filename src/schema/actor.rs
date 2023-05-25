@@ -27,7 +27,7 @@ use validator::Validate;
 use super::build::Build;
 use super::service::Service;
 use super::source::Source;
-use super::{ArgValue, Manifest};
+use super::Manifest;
 use crate::utils::kubernetes::to_env_var;
 
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, Serialize, JsonSchema, Validate, PartialEq)]
@@ -178,28 +178,9 @@ impl ActorSpec {
         None
     }
 
-    pub fn build_args(&self) -> Option<Vec<(String, String)>> {
-        let mut args: Vec<(String, String)> = vec![];
-
+    pub fn build_args(&self) -> Option<Vec<String>> {
         if let Some(build) = &self.build {
-            if let Some(arguments) = &build.arguments {
-                for (key, value) in arguments {
-                    match value {
-                        ArgValue::String(v) => args.push((key.clone(), v.clone())),
-                        ArgValue::Map(entries) => {
-                            for (k, v) in entries {
-                                args.push((key.clone(), format!("{}={}", k, v)));
-                            }
-                        }
-                        ArgValue::List(values) => {
-                            for v in values {
-                                args.push((key.clone(), v.clone()));
-                            }
-                        }
-                    }
-                }
-                return Some(args);
-            }
+            return build.arguments.to_owned();
         }
 
         None

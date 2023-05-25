@@ -28,9 +28,9 @@ pub struct Build {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub environments: Option<HashMap<String, String>>,
 
-    /// Arguments, in the key=value form, passed to the build.
+    /// Arguments passed to the build.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<HashMap<String, ArgValue>>,
+    pub arguments: Option<Vec<String>>,
 
     /// Builds images using kaniko.
     /// Locates the Dockerfile relative to workspace.
@@ -49,28 +49,4 @@ pub struct Build {
     /// Files to include when building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include: Option<Vec<String>>,
-}
-
-/// The varient value of the argument.
-#[derive(Clone, Debug, Deserialize, JsonSchema, Serialize, PartialEq)]
-#[serde(untagged)]
-pub enum ArgValue {
-    /// ```toml
-    /// [spec.build.arguments]
-    /// foo = "bar"
-    /// ```
-    /// /bin/command --foo=bar
-    String(String),
-    /// ```toml
-    /// [spec.build.arguments]
-    /// foo = { bar = "baz", qux = "quux" }
-    /// ```
-    /// /bin/command --foo="bar=baz" --foo="qux=quux"
-    Map(HashMap<String, String>),
-    /// ```toml
-    /// [spec.build.arguments]
-    /// foo = ["bar", "baz"]
-    /// ```
-    /// /bin/command --foo=bar --foo=baz
-    List(Vec<String>),
 }

@@ -17,11 +17,11 @@ use std::collections::HashMap;
 use crate::scm::client::ListOptions;
 
 pub fn encode(s: &str) -> String {
-    s.replace("/", "%2F")
+    s.replace('/', "%2F")
 }
 
 pub fn encode_path(s: &str) -> String {
-    s.replace(".", "%2E")
+    s.replace('.', "%2E")
 }
 
 pub fn convert_list_options(opts: ListOptions) -> HashMap<String, String> {

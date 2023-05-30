@@ -12,15 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod github;
-pub mod gitlab;
+use std::collections::HashMap;
 
-use super::content::ContentService;
-use super::repo::RepositoryService;
-use crate::scm::git::GitService;
+use crate::scm::client::ListOptions;
 
-pub trait Driver {
-    fn contents(&self) -> impl ContentService;
-    fn git(&self) -> impl GitService;
-    fn repositories(&self) -> impl RepositoryService;
+pub fn encode(s: &str) -> String {
+    s.replace("/", "%2F")
+}
+
+pub fn encode_path(s: &str) -> String {
+    s.replace(".", "%2E")
+}
+
+pub fn convert_list_options(opts: ListOptions) -> HashMap<String, String> {
+    let mut options: HashMap<String, String> = HashMap::new();
+
+    if opts.page != 0 {
+        options.insert(String::from("page"), opts.page.to_string());
+    }
+    if opts.size != 0 {
+        options.insert(String::from("per_page"), opts.size.to_string());
+    }
+
+    options
 }

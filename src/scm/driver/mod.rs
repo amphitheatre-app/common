@@ -15,12 +15,70 @@
 pub mod github;
 pub mod gitlab;
 
-use super::content::ContentService;
-use super::repo::RepositoryService;
+use super::errors::SCMError;
+use crate::config::RepositoryCredentialConfig;
+use crate::scm::content::ContentService;
 use crate::scm::git::GitService;
+use crate::scm::repo::RepositoryService;
+use crate::utils::http::host;
 
-pub trait Driver {
-    fn contents(&self) -> impl ContentService;
-    fn git(&self) -> impl GitService;
-    fn repositories(&self) -> impl RepositoryService;
+/// Driver is a enum that represents the SCM driver.
+pub enum Driver {
+    Github(github::driver::GithubDriver),
+    Gitlab(gitlab::driver::GitlabDriver),
+}
+
+/// Defines the methods that a SCM driver must implement.
+pub trait DriverTrait {
+    fn contents(&self) -> Box<dyn ContentService>;
+    fn git(&self) -> Box<dyn GitService>;
+    fn repositories(&self) -> Box<dyn RepositoryService>;
+}
+
+impl DriverTrait for Driver {
+    fn contents(&self) -> Box<dyn ContentService> {
+        match self {
+            Driver::Github(driver) => driver.contents(),
+            Driver::Gitlab(driver) => driver.contents(),
+        }
+    }
+
+    fn git(&self) -> Box<dyn GitService> {
+        match self {
+            Driver::Github(driver) => driver.git(),
+            Driver::Gitlab(driver) => driver.git(),
+        }
+    }
+
+    fn repositories(&self) -> Box<dyn RepositoryService> {
+        match self {
+            Driver::Github(driver) => driver.repositories(),
+            Driver::Gitlab(driver) => driver.repositories(),
+        }
+    }
+}
+
+impl TryFrom<&RepositoryCredentialConfig> for Driver {
+    type Error = SCMError;
+
+    fn try_from(config: &RepositoryCredentialConfig) -> Result<Self, Self::Error> {
+        match config.driver.as_str() {
+            "github" => Ok(github::new(&config.server, config.token.clone())),
+            "gitlab" => Ok(gitlab::new(&config.server, config.token.clone())),
+            _ => Err(SCMError::UnkownDriver(config.driver.to_string())),
+        }
+    }
+}
+
+impl TryFrom<&str> for Driver {
+    type Error = SCMError;
+
+    fn try_from(url: &str) -> Result<Self, Self::Error> {
+        let server = host(url).ok_or_else(|| SCMError::InvalidRepoAddress(url.to_string()))?;
+        match server.as_str() {
+            "github.com" => Ok(github::default()),
+            "gitlab.com" => Ok(gitlab::default()),
+            _ => Err(SCMError::UnkownDriver(url.to_string())),
+        }
+    }
 }

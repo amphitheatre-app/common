@@ -17,7 +17,7 @@ use super::git::GithubGitService;
 use super::repo::GithubRepoService;
 use crate::client::Client;
 use crate::scm::content::ContentService;
-use crate::scm::driver::Driver;
+use crate::scm::driver::DriverTrait;
 use crate::scm::git::GitService;
 use crate::scm::repo::RepositoryService;
 
@@ -25,29 +25,29 @@ pub struct GithubDriver {
     pub client: Client,
 }
 
-impl Driver for GithubDriver {
-    fn contents(&self) -> impl ContentService {
-        GithubContentService {
+impl DriverTrait for GithubDriver {
+    fn contents(&self) -> Box<dyn ContentService> {
+        Box::new(GithubContentService {
             client: self.client.clone(),
-        }
+        })
     }
 
-    fn git(&self) -> impl GitService {
-        GithubGitService {
+    fn git(&self) -> Box<dyn GitService> {
+        Box::new(GithubGitService {
             client: self.client.clone(),
-        }
+        })
     }
 
-    fn repositories(&self) -> impl RepositoryService {
-        GithubRepoService {
+    fn repositories(&self) -> Box<dyn RepositoryService> {
+        Box::new(GithubRepoService {
             client: self.client.clone(),
-        }
+        })
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::scm::driver::{github, Driver};
+    use crate::scm::driver::{github, DriverTrait};
 
     #[test]
     fn return_git_service() {

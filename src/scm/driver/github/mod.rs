@@ -12,25 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod content;
-mod driver;
-mod git;
-mod pr;
-mod repo;
+pub mod content;
+pub mod driver;
+pub mod git;
+pub mod pr;
+pub mod repo;
 mod utils;
 
 use self::driver::GithubDriver;
-pub use self::pr::GithubFile;
+use self::pr::GithubFile;
+use super::Driver;
+use crate::client::Client;
 
 /// Returnes a new GitHub API client.
-pub fn new(url: &str, token: Option<String>) -> GithubDriver {
-    GithubDriver {
-        client: crate::client::Client::new(url, token),
-    }
+pub fn new(url: &str, token: Option<String>) -> Driver {
+    Driver::Github(GithubDriver {
+        client: Client::new(url, token),
+    })
 }
 
 /// Returns a new GitHub API client using the default api.github.com address.
-pub fn default() -> GithubDriver {
+pub fn default() -> Driver {
     new("https://api.github.com", None)
 }
 

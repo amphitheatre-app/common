@@ -15,35 +15,39 @@
 use super::content::GitlabContentService;
 use super::git::GitlabGitService;
 use super::repo::GitlabRepoService;
-use crate::scm::driver::Driver;
+use crate::client::Client;
+use crate::scm::content::ContentService;
+use crate::scm::driver::DriverTrait;
+use crate::scm::git::GitService;
+use crate::scm::repo::RepositoryService;
 
 pub struct GitlabDriver {
-    pub client: crate::client::Client,
+    pub client: Client,
 }
 
-impl Driver for GitlabDriver {
-    fn contents(&self) -> impl crate::scm::content::ContentService {
-        GitlabContentService {
+impl DriverTrait for GitlabDriver {
+    fn contents(&self) -> Box<dyn ContentService> {
+        Box::new(GitlabContentService {
             client: self.client.clone(),
-        }
+        })
     }
 
-    fn git(&self) -> impl crate::scm::git::GitService {
-        GitlabGitService {
+    fn git(&self) -> Box<dyn GitService> {
+        Box::new(GitlabGitService {
             client: self.client.clone(),
-        }
+        })
     }
 
-    fn repositories(&self) -> impl crate::scm::repo::RepositoryService {
-        GitlabRepoService {
+    fn repositories(&self) -> Box<dyn RepositoryService> {
+        Box::new(GitlabRepoService {
             client: self.client.clone(),
-        }
+        })
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::scm::driver::{gitlab, Driver};
+    use crate::scm::driver::{gitlab, DriverTrait};
 
     #[test]
     fn return_git_service() {

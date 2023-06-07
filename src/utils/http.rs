@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod client;
-pub mod constants;
-pub mod content;
-pub mod driver;
-pub mod errors;
-pub mod git;
-pub mod repo;
-pub mod utils;
+use url::Url;
+
+/// Parse the host from the url.
+pub fn host(url: &str) -> Option<String> {
+    if let Ok(url) = Url::parse(url) {
+        return url.host_str().map(|host| host.to_string());
+    }
+
+    None
+}

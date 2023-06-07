@@ -13,23 +13,24 @@
 // limitations under the License.
 
 use self::driver::GitlabDriver;
+use super::Driver;
 use crate::client::Client;
 
-mod content;
-mod driver;
-mod git;
-mod repo;
+pub mod content;
+pub mod driver;
+pub mod git;
+pub mod repo;
 mod utils;
 
 /// Returns a new Gitlab API client.
-pub fn new(url: &str, token: Option<String>) -> GitlabDriver {
-    GitlabDriver {
+pub fn new(url: &str, token: Option<String>) -> Driver {
+    Driver::Gitlab(GitlabDriver {
         client: Client::new(url, token),
-    }
+    })
 }
 
 /// Returns a new Gitlab API client using the default gitlab.com address.
-pub fn default() -> GitlabDriver {
+pub fn default() -> Driver {
     new("https://gitlab.com", None)
 }
 

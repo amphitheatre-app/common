@@ -14,6 +14,8 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::utils::http::host;
+
 /// `Credential` is used to provide common methods for accessing credentials.
 pub trait Credential {
     /// Get the username of the credential
@@ -61,6 +63,16 @@ pub struct CredentialConfiguration {
 impl CredentialConfiguration {
     pub fn default_registry(&self) -> Option<&RegistryCredentialConfig> {
         self.registries.iter().find(|registry| registry.default)
+    }
+
+    /// Get the credential of the specified repository by repository server address.
+    pub fn find_repository(&self, server: &str) -> Option<&RepositoryCredentialConfig> {
+        let server = host(server);
+        self.repositories.as_ref().and_then(|repositories| {
+            repositories
+                .iter()
+                .find(|repository| server.is_some() && host(&repository.server) == server)
+        })
     }
 }
 

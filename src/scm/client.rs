@@ -13,9 +13,12 @@
 // limitations under the License.
 
 use super::content::ContentService;
-use super::driver::Driver;
+use super::driver::{Driver, DriverTrait};
+use super::errors::SCMError;
 use super::git::GitService;
 use super::repo::RepositoryService;
+use crate::config::CredentialConfiguration;
+use crate::schema::Source;
 
 /// Specifies optional pagination
 pub struct ListOptions {
@@ -34,40 +37,48 @@ impl Default for ListOptions {
     }
 }
 
-pub struct Client<T: Driver> {
-    driver: T,
+pub struct Client {
+    driver: Driver,
 }
 
-impl<T: Driver> Client<T> {
-    pub fn new(driver: T) -> Self {
+impl Client {
+    pub fn new(driver: Driver) -> Self {
         Self { driver }
     }
 
-    pub fn conetnts(&self) -> impl ContentService {
+    pub fn contents(&self) -> Box<dyn ContentService> {
         self.driver.contents()
     }
 
-    pub fn git(&self) -> impl GitService {
+    pub fn git(&self) -> Box<dyn GitService> {
         self.driver.git()
     }
 
-    pub fn repositories(&self) -> impl RepositoryService {
+    pub fn repositories(&self) -> Box<dyn RepositoryService> {
         self.driver.repositories()
+    }
+}
+
+impl Client {
+    /// Initialize the client by source host.
+    pub fn init(configs: &CredentialConfiguration, source: &Source) -> Result<Client, SCMError> {
+        if let Some(repo) = configs.find_repository(&source.repo) {
+            return Ok(Self::new(Driver::try_from(repo)?));
+        }
+
+        Ok(Client::new(Driver::try_from(source.repo.as_str())?))
     }
 }
 
 #[cfg(test)]
 mod test {
     use crate::scm::client::Client;
-    use crate::scm::content::ContentService;
     use crate::scm::driver::github;
-    use crate::scm::git::GitService;
-    use crate::scm::repo::RepositoryService;
 
     #[test]
     fn call_content_service() {
         let client = Client::new(github::default());
-        let content = client.conetnts().find("octocat/Hello-World", "README", "master");
+        let content = client.contents().find("octocat/Hello-World", "README", "master");
 
         assert!(content.is_ok());
     }

@@ -18,7 +18,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Describes how images are built.
-#[derive(Clone, Debug, Default, Deserialize, JsonSchema, Serialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq)]
 pub struct Build {
     /// Directory containing the artifact's sources.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26,11 +26,11 @@ pub struct Build {
 
     /// Environment variables, in the key=value form, passed to the build.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub environments: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, String>>,
 
     /// Arguments passed to the build.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<Vec<String>>,
+    pub args: Option<Vec<String>>,
 
     /// Builds images using kaniko.
     /// Locates the Dockerfile relative to workspace.

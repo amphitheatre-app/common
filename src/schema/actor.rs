@@ -26,8 +26,8 @@ use validator::Validate;
 
 use super::build::Build;
 use super::service::Service;
-use super::source::Source;
-use super::Manifest;
+use super::source::GitReference;
+use super::{Manifest, Partner};
 use crate::utils::kubernetes::to_env_var;
 
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, Serialize, JsonSchema, Validate, PartialEq)]
@@ -47,7 +47,7 @@ pub struct ActorSpec {
     pub description: Option<String>,
 
     /// The source of the actor.
-    pub source: Source,
+    pub source: GitReference,
 
     /// Specifies the image to launch the container. The image must follow
     /// the Open Container Specification addressable image format.
@@ -63,12 +63,12 @@ pub struct ActorSpec {
     /// true, false, yes, no, SHOULD be enclosed in quotes to ensure they are
     /// not converted to True or False by the YAML parser.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub environments: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, String>>,
 
     /// Depend on other partners from other repositories, or subdirectories on
     /// your local file system.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub partners: Option<HashMap<String, Source>>,
+    pub partners: Option<HashMap<String, Partner>>,
 
     /// Defines the behavior of a service
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -99,8 +99,8 @@ impl ActorSpec {
 
 /// Helpers for Kubernetes resources.
 impl ActorSpec {
-    pub fn environments(&self) -> Option<Vec<EnvVar>> {
-        self.environments.as_ref().map(to_env_var)
+    pub fn env(&self) -> Option<Vec<EnvVar>> {
+        self.env.as_ref().map(to_env_var)
     }
 
     pub fn container_ports(&self) -> Option<Vec<ContainerPort>> {
@@ -172,7 +172,7 @@ impl ActorSpec {
 
     pub fn build_env(&self) -> Option<Vec<EnvVar>> {
         if let Some(build) = &self.build {
-            return build.environments.as_ref().map(to_env_var);
+            return build.env.as_ref().map(to_env_var);
         }
 
         None
@@ -180,7 +180,7 @@ impl ActorSpec {
 
     pub fn build_args(&self) -> Option<Vec<String>> {
         if let Some(build) = &self.build {
-            return build.arguments.to_owned();
+            return build.args.to_owned();
         }
 
         None
@@ -188,18 +188,18 @@ impl ActorSpec {
 }
 
 impl From<&Manifest> for ActorSpec {
-    fn from(manifest: &Manifest) -> Self {
+    fn from(character: &Manifest) -> Self {
         Self {
-            name: manifest.character.name.clone(),
-            description: manifest.character.description.clone(),
-            source: Source::new(manifest.character.repository.clone()),
-            image: manifest.character.image.clone().unwrap_or_default(),
-            command: manifest.character.command.clone(),
-            environments: manifest.environments.clone(),
-            partners: manifest.partners.clone(),
-            services: manifest.services.clone(),
+            name: character.name.clone(),
+            description: character.description.clone(),
+            source: GitReference::new(character.repository.clone()),
+            image: character.image.clone().unwrap_or_default(),
+            command: character.command.clone(),
+            env: character.env.clone(),
+            partners: character.partners.clone(),
+            services: character.services.clone(),
             sync: None,
-            build: manifest.build.clone(),
+            build: character.build.clone(),
         }
     }
 }

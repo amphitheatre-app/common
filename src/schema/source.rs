@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 /// Your characters can depend on other partners from other registries,
 /// git repositories, or subdirectories on your local file system.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, JsonSchema, Eq, Hash, PartialEq)]
-pub struct Source {
+pub struct GitReference {
     /// Source code repository the partner should be cloned from.
     /// e.g. https://github.com/amphitheatre-app/amphitheatre.git.
     pub repo: String,
@@ -43,7 +43,7 @@ pub struct Source {
     pub path: Option<String>,
 }
 
-impl Source {
+impl GitReference {
     pub fn new(repo: String) -> Self {
         Self {
             repo,
@@ -85,7 +85,7 @@ impl Source {
         self.rev.to_owned()
     }
 
-    pub fn rev(&self) -> &String {
-        self.rev.as_ref().unwrap()
+    pub fn rev(&self) -> String {
+        self.rev.clone().unwrap_or("Unknown-Revision-Hash".to_string())
     }
 }

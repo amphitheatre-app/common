@@ -23,7 +23,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use super::actor::ActorSpec;
-use super::source::Source;
+use super::Preface;
 
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, JsonSchema, Serialize, Validate)]
 #[kube(
@@ -43,7 +43,7 @@ pub struct PlaybookSpec {
     pub namespace: String,
 
     /// The starting character for this playbook
-    pub preface: Source,
+    pub preface: Preface,
 
     /// Global sync mode, if enabled, pulls the latest code from source version
     /// control in real time via Webhook, etc. and then rebuilds and deploys it

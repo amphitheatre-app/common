@@ -15,7 +15,6 @@
 mod actor;
 mod build;
 mod character;
-mod manifest;
 mod playbook;
 mod service;
 mod source;
@@ -23,7 +22,6 @@ mod source;
 pub use actor::*;
 pub use build::*;
 pub use character::*;
-pub use manifest::*;
 pub use playbook::*;
 pub use service::*;
 pub use source::*;

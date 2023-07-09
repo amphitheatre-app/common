@@ -17,7 +17,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Defines the behavior of a service
-#[derive(Clone, Debug, Deserialize, Serialize, JsonSchema, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Serialize, JsonSchema, PartialEq)]
 pub struct Service {
     /// Type determines how the Service is exposed. Defaults to ClusterIP.
     /// Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
@@ -39,7 +39,7 @@ impl TryInto<Vec<ContainerPort>> for Service {
 }
 
 /// List of ports to expose from the container.
-#[derive(Clone, Debug, Deserialize, Serialize, JsonSchema, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Serialize, JsonSchema, PartialEq)]
 pub struct Port {
     /// The port that will be exposed by this service.
     pub port: i32,

@@ -18,7 +18,6 @@ use super::errors::SCMError;
 use super::git::GitService;
 use super::repo::RepositoryService;
 use crate::config::CredentialConfiguration;
-use crate::schema::Source;
 
 /// Specifies optional pagination
 pub struct ListOptions {
@@ -60,13 +59,13 @@ impl Client {
 }
 
 impl Client {
-    /// Initialize the client by source host.
-    pub fn init(configs: &CredentialConfiguration, source: &Source) -> Result<Client, SCMError> {
-        if let Some(repo) = configs.find_repository(&source.repo) {
+    /// Initialize the client by source repostory.
+    pub fn init(configs: &CredentialConfiguration, repo: &str) -> Result<Client, SCMError> {
+        if let Some(repo) = configs.find_repository(repo) {
             return Ok(Self::new(Driver::try_from(repo)?));
         }
 
-        Ok(Client::new(Driver::try_from(source.repo.as_str())?))
+        Ok(Client::new(Driver::try_from(repo)?))
     }
 }
 

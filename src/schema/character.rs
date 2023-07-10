@@ -112,13 +112,6 @@ pub struct Manifest {
     pub build: Option<Build>,
 }
 
-impl Hash for Manifest {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.name.hash(state);
-        self.repository.hash(state);
-    }
-}
-
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum EitherCharacter {

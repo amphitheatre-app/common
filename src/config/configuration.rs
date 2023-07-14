@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ContextConfiguration;
 
-#[derive(Clone, Default, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Configuration {
     /// the configuration of the context
     pub context: Option<ContextConfiguration>,
@@ -51,8 +51,25 @@ impl Configuration {
     }
 }
 
+impl Default for Configuration {
+    fn default() -> Self {
+        Self {
+            context: Some(ContextConfiguration::default()),
+        }
+    }
+}
+
 fn get_configuration_directory_str(project: &ProjectDirs) -> Result<&str, confy::ConfyError> {
     let path = project.config_dir();
     path.to_str()
         .ok_or_else(|| confy::ConfyError::BadConfigDirectory(format!("{:?} is not valid Unicode", path)))
+}
+
+mod test {
+    #[test]
+    fn test_configuration_default() {
+        use super::Configuration;
+        let config = Configuration::default();
+        assert!(config.context.is_some());
+    }
 }

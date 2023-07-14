@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 use super::CredentialConfiguration;
 
 /// The `Cluster` is used to store the server address and access token of the cluster.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Cluster {
     /// the name of the cluster
     pub title: String,
@@ -30,6 +30,17 @@ pub struct Cluster {
     pub token: Option<String>,
     /// the optional credentials used in the cluster
     pub credentials: Option<CredentialConfiguration>,
+}
+
+impl Default for Cluster {
+    fn default() -> Self {
+        Self {
+            title: String::from("default"),
+            server: String::from("http://localhost:8170"),
+            token: None,
+            credentials: None,
+        }
+    }
 }
 
 /// `ContextConfiguration` is used to store the configuration of the context.
@@ -66,5 +77,41 @@ impl ContextConfiguration {
     /// impl iter method for ContextConfiguration
     pub fn iter(&self) -> impl Iterator<Item = &Cluster> {
         self.clusters.values()
+    }
+}
+
+impl Default for ContextConfiguration {
+    fn default() -> Self {
+        Self {
+            current: Some(String::from("default")),
+            clusters: HashMap::from([(String::from("default"), Cluster::default())]),
+        }
+    }
+}
+
+mod test {
+    #[test]
+    fn test_cluster_default() {
+        use super::Cluster;
+
+        let cluster = Cluster::default();
+
+        assert_eq!(cluster.title, String::from("default"));
+        assert_eq!(cluster.server, String::from("http://localhost:8170"));
+        assert_eq!(cluster.token, None);
+    }
+
+    #[test]
+    fn test_context_configuration_default() {
+        use super::ContextConfiguration;
+
+        let context_configuration = ContextConfiguration::default();
+
+        assert_eq!(context_configuration.current, Some(String::from("default")));
+        assert_eq!(context_configuration.clusters.len(), 1);
+        assert_eq!(
+            context_configuration.clusters.get("default").unwrap().title,
+            String::from("default")
+        );
     }
 }

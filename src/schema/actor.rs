@@ -30,6 +30,8 @@ use super::source::GitReference;
 use super::{Manifest, Partner};
 use crate::utils::kubernetes::to_env_var;
 
+const DEFAULT_BP_BUILDER: &str = "gcr.io/buildpacks/builder:v1";
+
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, Serialize, JsonSchema, Validate, PartialEq)]
 #[kube(
     group = "amphitheatre.app",
@@ -157,7 +159,7 @@ impl ActorSpec {
             }
         }
 
-        String::from("amp-default-cluster-builder")
+        String::from(DEFAULT_BP_BUILDER)
     }
 
     pub fn context(&self) -> String {

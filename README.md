@@ -10,6 +10,7 @@ any stability guarantees for external usage.
 - [**filesystem**](src/filesystem/): File system related structures and helpers.
 - [**schema**](src/schema/): The core schema includes manifest, playbook, and workspace.
 - [**scm**](src/scm/): Provides a unified interface to multiple source code management systems.
+- [**sync**](src/sync/): File synchronization structures and helpers.
 - [**utils**](src/utils/): A variety of miscellaneous tools or functions.
 
 ## License

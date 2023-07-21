@@ -12,11 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod client;
-pub mod config;
-pub mod docker;
-pub mod filesystem;
-pub mod schema;
-pub mod scm;
-pub mod sync;
-pub mod utils;
+mod synchronization;
+pub use synchronization::Synchronization;
+
+mod event_kinds;
+pub use event_kinds::EventKinds;

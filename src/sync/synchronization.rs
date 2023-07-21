@@ -24,7 +24,7 @@ pub struct Synchronization {
     /// The event kind of the synchronization.
     pub kind: EventKinds,
     /// The paths that are synchronized.
-    pub paths: Vec<String>,
+    pub paths: Vec<Path>,
     /// The attributes of the event.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<HashMap<String, String>>,
@@ -32,4 +32,10 @@ pub struct Synchronization {
     /// serialized as bytes from the tarball of the files content.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payload: Option<Vec<u8>>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub enum Path {
+    File(String),
+    Directory(String),
 }

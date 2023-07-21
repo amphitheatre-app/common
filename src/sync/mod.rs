@@ -13,7 +13,7 @@
 // limitations under the License.
 
 mod synchronization;
-pub use synchronization::Synchronization;
+pub use synchronization::{Path, Synchronization};
 
 mod event_kinds;
 pub use event_kinds::EventKinds;

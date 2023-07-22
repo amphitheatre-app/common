@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use notify::event::{CreateKind, DataChange, ModifyKind, RemoveKind};
+use notify::event::{CreateKind, DataChange, MetadataKind, ModifyKind, RemoveKind};
 use notify::EventKind::{self, Create, Modify, Remove};
 use serde::{Deserialize, Serialize};
 
@@ -41,6 +41,8 @@ impl From<EventKind> for EventKinds {
         match kind {
             Create(CreateKind::File) | Create(CreateKind::Folder) => Self::Create,
             Modify(ModifyKind::Data(DataChange::Content)) => Self::Modify,
+            // Specail case for metadata change on macOS when duplicate file or folder.
+            Modify(ModifyKind::Metadata(MetadataKind::Any)) => Self::Modify,
             Modify(ModifyKind::Name(_)) => Self::Rename,
             Remove(RemoveKind::File) | Remove(RemoveKind::Folder) => Self::Remove,
             _ => Self::Other,

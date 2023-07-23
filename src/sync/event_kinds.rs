@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum EventKinds {
     /// for initial file synchronization, full override.
-    Override,
+    Overwrite,
     /// Include CreateKind::File and CreateKind::Folder
     Create,
     /// Modify envet kind just only for file content change.
@@ -54,7 +54,7 @@ impl From<EventKind> for EventKinds {
 impl From<String> for EventKinds {
     fn from(value: String) -> Self {
         match value.as_str() {
-            "Override" => Self::Override,
+            "Overwrite" => Self::Overwrite,
             "Create" => Self::Create,
             "Modify" => Self::Modify,
             "Rename" => Self::Rename,

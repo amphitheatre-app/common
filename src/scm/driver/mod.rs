@@ -16,7 +16,7 @@ pub mod github;
 pub mod gitlab;
 
 use super::errors::SCMError;
-use crate::config::RepositoryCredentialConfig;
+use crate::config::RepositoryCredential;
 use crate::scm::content::ContentService;
 use crate::scm::git::GitService;
 use crate::scm::repo::RepositoryService;
@@ -58,14 +58,14 @@ impl DriverTrait for Driver {
     }
 }
 
-impl TryFrom<&RepositoryCredentialConfig> for Driver {
+impl TryFrom<&RepositoryCredential> for Driver {
     type Error = SCMError;
 
-    fn try_from(config: &RepositoryCredentialConfig) -> Result<Self, Self::Error> {
-        match config.driver.as_str() {
-            "github" => Ok(github::new(&config.server, config.token.clone())),
-            "gitlab" => Ok(gitlab::new(&config.server, config.token.clone())),
-            _ => Err(SCMError::UnkownDriver(config.driver.to_string())),
+    fn try_from(credential: &RepositoryCredential) -> Result<Self, Self::Error> {
+        match credential.driver.as_str() {
+            "github" => Ok(github::new(&credential.server, credential.token.clone())),
+            "gitlab" => Ok(gitlab::new(&credential.server, credential.token.clone())),
+            _ => Err(SCMError::UnkownDriver(credential.driver.to_string())),
         }
     }
 }

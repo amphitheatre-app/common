@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 
-use super::CredentialConfiguration;
+use super::Credentials;
 
 /// The `Cluster` is used to store the server address and access token of the cluster.
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -29,7 +29,7 @@ pub struct Cluster {
     /// the optional access token of the cluster
     pub token: Option<String>,
     /// the optional credentials used in the cluster
-    pub credentials: Option<CredentialConfiguration>,
+    pub credentials: Option<Credentials>,
 }
 
 impl Default for Cluster {

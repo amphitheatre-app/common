@@ -17,7 +17,7 @@ use super::driver::{Driver, DriverTrait};
 use super::errors::SCMError;
 use super::git::GitService;
 use super::repo::RepositoryService;
-use crate::config::CredentialConfiguration;
+use crate::config::Credentials;
 
 /// Specifies optional pagination
 pub struct ListOptions {
@@ -60,8 +60,8 @@ impl Client {
 
 impl Client {
     /// Initialize the client by source repostory.
-    pub fn init(configs: &CredentialConfiguration, repo: &str) -> Result<Client, SCMError> {
-        if let Some(repo) = configs.find_repository(repo) {
+    pub fn init(credentials: &Credentials, repo: &str) -> Result<Client, SCMError> {
+        if let Some(repo) = credentials.find_repository(repo) {
             return Ok(Self::new(Driver::try_from(repo)?));
         }
 

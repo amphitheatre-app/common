@@ -49,24 +49,24 @@ pub trait Credential {
     }
 }
 
-/// `CredentialConfiguration` is used to store access credentials on the client side,
+/// `Credentials` is used to store access credentials on the client and cluster side,
 /// such as Docker registry and SCM credentials, and other propeaties
 /// that need to be kept in sync with the server.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CredentialConfiguration {
+pub struct Credentials {
     /// Access credentials for multiple docker registries.
-    pub registries: Vec<RegistryCredentialConfig>,
+    pub registries: Vec<RegistryCredential>,
     /// Access credentials for multiple code repositories.
-    pub repositories: Option<Vec<RepositoryCredentialConfig>>,
+    pub repositories: Option<Vec<RepositoryCredential>>,
 }
 
-impl CredentialConfiguration {
-    pub fn default_registry(&self) -> Option<&RegistryCredentialConfig> {
+impl Credentials {
+    pub fn default_registry(&self) -> Option<&RegistryCredential> {
         self.registries.iter().find(|registry| registry.default)
     }
 
     /// Get the credential of the specified repository by repository server address.
-    pub fn find_repository(&self, server: &str) -> Option<&RepositoryCredentialConfig> {
+    pub fn find_repository(&self, server: &str) -> Option<&RepositoryCredential> {
         let server = host(server);
         self.repositories.as_ref().and_then(|repositories| {
             repositories
@@ -80,7 +80,7 @@ impl CredentialConfiguration {
 /// indicating basic authentication when there is only a
 /// username and password, otherwise bearer authentication.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct RegistryCredentialConfig {
+pub struct RegistryCredential {
     /// the name of the registry
     pub name: String,
     /// whether it is the default registry
@@ -95,8 +95,8 @@ pub struct RegistryCredentialConfig {
     pub token: Option<String>,
 }
 
-/// `RegistryCredentialConfig` implements `CredentialConfigTrait`
-impl Credential for RegistryCredentialConfig {
+/// `RegistryCredential` implements `Credential`
+impl Credential for RegistryCredential {
     fn username(&self) -> Option<String> {
         self.username.to_owned()
     }
@@ -114,7 +114,7 @@ impl Credential for RegistryCredentialConfig {
 /// indicating basic authentication when there is only a
 /// username and password, otherwise bearer authentication.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct RepositoryCredentialConfig {
+pub struct RepositoryCredential {
     /// the name of the repository
     pub name: String,
     /// the driver for connecting to the repository
@@ -129,8 +129,8 @@ pub struct RepositoryCredentialConfig {
     pub token: Option<String>,
 }
 
-/// `RepositoryCredentialConfig` implements `CredentialConfigTrait`
-impl Credential for RepositoryCredentialConfig {
+/// `RepositoryCredential` implements `Credential`
+impl Credential for RepositoryCredential {
     fn username(&self) -> Option<String> {
         self.username.to_owned()
     }

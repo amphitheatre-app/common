@@ -15,7 +15,6 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::Context;
-use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 
 use super::ContextConfiguration;
@@ -29,15 +28,11 @@ pub struct Configuration {
 impl Configuration {
     /// get the default configuration path
     pub fn path() -> Result<PathBuf, confy::ConfyError> {
-        let project = ProjectDirs::from("", "", "Amphitheatre").ok_or_else(|| {
+        let home = dirs::home_dir().ok_or_else(|| {
             confy::ConfyError::BadConfigDirectory("could not determine home directory path".to_string())
         })?;
 
-        let config_dir_str = get_configuration_directory_str(&project)?;
-
-        let path = [config_dir_str, "config.toml"].iter().collect();
-
-        Ok(path)
+        Ok(home.join(".config").join("amphitheatre").join("config.toml"))
     }
 
     /// load configuration from the specified path
@@ -57,12 +52,6 @@ impl Default for Configuration {
             context: Some(ContextConfiguration::default()),
         }
     }
-}
-
-fn get_configuration_directory_str(project: &ProjectDirs) -> Result<&str, confy::ConfyError> {
-    let path = project.config_dir();
-    path.to_str()
-        .ok_or_else(|| confy::ConfyError::BadConfigDirectory(format!("{:?} is not valid Unicode", path)))
 }
 
 mod test {

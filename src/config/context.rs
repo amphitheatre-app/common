@@ -53,12 +53,16 @@ pub struct ContextConfiguration {
 }
 
 impl ContextConfiguration {
+    /// Get the context by name.
+    pub fn get(&self, name: &str) -> Option<&Cluster> {
+        self.clusters.get(name)
+    }
+
     /// Get the current context.
     pub fn current(&self) -> Option<&Cluster> {
         if let Some(name) = &self.current {
             return self.clusters.get(name).to_owned();
         }
-
         None
     }
 
@@ -67,7 +71,6 @@ impl ContextConfiguration {
         if !self.clusters.contains_key(name) {
             return Err(anyhow!("Context with name `{}` does not exist", name));
         }
-
         self.clusters.remove(name);
         println!("Deleted context with name `{}`", name);
 
@@ -77,6 +80,36 @@ impl ContextConfiguration {
     /// impl iter method for ContextConfiguration
     pub fn iter(&self) -> impl Iterator<Item = &Cluster> {
         self.clusters.values()
+    }
+
+    /// Check if the context with the given name exists.
+    pub fn exists(&self, name: &str) -> bool {
+        self.clusters.contains_key(name)
+    }
+
+    /// Set the current context by name
+    pub fn select(&mut self, name: &str) -> Result<()> {
+        if !self.clusters.contains_key(name) {
+            return Err(anyhow!("Context with name `{}` does not exist", name));
+        }
+
+        self.current = Some(name.to_owned());
+        println!("Set current context to `{}`", name);
+
+        Ok(())
+    }
+
+    /// Add a new context to the list of contexts and set it as the current context.
+    pub fn add(&mut self, name: &str, cluster: Cluster) -> Result<()> {
+        if self.clusters.contains_key(name) {
+            return Err(anyhow!("Context with name `{}` already exists", name));
+        }
+
+        self.clusters.insert(name.to_owned(), cluster);
+        self.current = Some(name.to_owned());
+        println!("Added context with name `{}`", name);
+
+        Ok(())
     }
 }
 

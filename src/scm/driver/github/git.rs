@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use super::utils::convert_list_options;
 use super::GithubFile;
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature};
 use crate::scm::utils;
@@ -150,7 +150,7 @@ impl Endpoint for GithubCommitEndpoint {
 #[cfg(test)]
 mod test {
     use super::GithubGitService;
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::client::ListOptions;
     use crate::scm::git::GitService;
 

@@ -18,7 +18,7 @@ use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
 use super::utils::{encode, encode_path};
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService};
 
 pub struct GitlabContentService {
@@ -79,7 +79,7 @@ impl Endpoint for GitlabContentEndpoint {
 #[cfg(test)]
 mod test {
     use super::GitlabContentService;
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::content::ContentService;
 
     #[test]

@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::utils::{convert_list_options, encode};
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature};
 use crate::scm::utils;
@@ -129,7 +129,7 @@ impl Endpoint for GitlabCommitEndpoint {
 
 #[cfg(test)]
 mod test {
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::client::ListOptions;
     use crate::scm::driver::gitlab::git::GitlabGitService;
     use crate::scm::git::GitService;

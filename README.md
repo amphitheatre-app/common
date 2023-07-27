@@ -4,7 +4,7 @@ This repository contains Rust libraries that are shared across Amphitheatre
 components and libraries. They are considered internal to Amphitheatre, without
 any stability guarantees for external usage.
 
-- [**client**](src/client/): Represents the Rust client for the API.
+- [**http**](src/http/): Represents the HTTP client for the API.
 - [**config**](src/config/): Common configuration structures.
 - [**docker**](src/docker/): Docker container & Registry wrappers.
 - [**filesystem**](src/filesystem/): File system related structures and helpers.

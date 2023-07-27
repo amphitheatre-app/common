@@ -14,7 +14,7 @@
 
 use self::driver::GitlabDriver;
 use super::Driver;
-use crate::client::Client;
+use crate::http::Client;
 
 pub mod content;
 pub mod driver;

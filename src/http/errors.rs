@@ -19,7 +19,7 @@ use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the Amphitheatre API
 #[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
-pub enum ClientError {
+pub enum HTTPError {
     #[error("Authentication failed")]
     Unauthorized,
 
@@ -60,8 +60,8 @@ pub enum ClientError {
     Deserialization(String),
 }
 
-impl ClientError {
-    pub fn parse_response(code: u16, response: Response) -> ClientError {
+impl HTTPError {
+    pub fn parse_response(code: u16, response: Response) -> HTTPError {
         match code {
             400 => Self::bad_request(response),
             401 => Self::Unauthorized,
@@ -77,11 +77,11 @@ impl ClientError {
         }
     }
 
-    pub fn parse_transport(transport: Transport) -> ClientError {
+    pub fn parse_transport(transport: Transport) -> HTTPError {
         Self::Transport(transport.to_string(), transport.kind().to_string())
     }
 
-    fn bad_request(response: Response) -> ClientError {
+    fn bad_request(response: Response) -> HTTPError {
         match Self::response_to_json(response) {
             Ok(json) => Self::BadRequest {
                 message: Self::message_in(&json),
@@ -91,21 +91,21 @@ impl ClientError {
         }
     }
 
-    fn gateway_timeout(response: Response) -> ClientError {
+    fn gateway_timeout(response: Response) -> HTTPError {
         match Self::response_to_json(response) {
             Ok(json) => Self::GatewayTimeout(Self::message_in(&json)),
             Err(error) => error,
         }
     }
 
-    fn not_found(response: Response) -> ClientError {
+    fn not_found(response: Response) -> HTTPError {
         match Self::response_to_json(response) {
             Ok(json) => Self::NotFound(Self::message_in(&json)),
             Err(error) => error,
         }
     }
 
-    fn precondition_required(response: Response) -> ClientError {
+    fn precondition_required(response: Response) -> HTTPError {
         match Self::response_to_json(response) {
             Ok(json) => Self::PreconditionRequired(Self::message_in(&json)),
             Err(error) => error,
@@ -119,10 +119,10 @@ impl ClientError {
         }
     }
 
-    fn response_to_json(response: Response) -> Result<Value, ClientError> {
+    fn response_to_json(response: Response) -> Result<Value, HTTPError> {
         match response.into_json::<Value>() {
             Ok(value) => Ok(value),
-            Err(error) => Err(ClientError::Deserialization(error.to_string())),
+            Err(error) => Err(HTTPError::Deserialization(error.to_string())),
         }
     }
 }

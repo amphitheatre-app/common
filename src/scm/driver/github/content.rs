@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService};
 pub struct GithubContentService {
     pub client: Client,
@@ -70,7 +70,7 @@ impl Endpoint for GithubContentEndpoint {
 
 #[cfg(test)]
 mod test {
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::content::ContentService;
     use crate::scm::driver::github::content::GithubContentService;
 

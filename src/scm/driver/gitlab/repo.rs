@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::utils::encode;
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::constants::Visibility;
 use crate::scm::repo::{Repository, RepositoryService};
 
@@ -100,7 +100,7 @@ impl Endpoint for GitlabRepoEndpoint {
 #[cfg(test)]
 mod test {
     use super::GitlabRepoService;
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::repo::RepositoryService;
 
     #[test]

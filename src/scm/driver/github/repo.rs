@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Endpoint};
+use crate::http::{Client, Endpoint};
 use crate::scm::repo::{Repository, RepositoryService};
 
 pub struct GithubRepoService {
@@ -80,7 +80,7 @@ impl Endpoint for GithubRepoEndpoint {
 #[cfg(test)]
 mod test {
     use super::GithubRepoService;
-    use crate::client::Client;
+    use crate::http::Client;
     use crate::scm::repo::RepositoryService;
 
     #[test]

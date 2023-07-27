@@ -15,7 +15,7 @@
 use super::content::GithubContentService;
 use super::git::GithubGitService;
 use super::repo::GithubRepoService;
-use crate::client::Client;
+use crate::http::Client;
 use crate::scm::content::ContentService;
 use crate::scm::driver::DriverTrait;
 use crate::scm::git::GitService;

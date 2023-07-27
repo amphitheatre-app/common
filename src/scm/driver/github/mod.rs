@@ -22,7 +22,7 @@ mod utils;
 use self::driver::GithubDriver;
 use self::pr::GithubFile;
 use super::Driver;
-use crate::client::Client;
+use crate::http::Client;
 
 /// Returnes a new GitHub API client.
 pub fn new(url: &str, token: Option<String>) -> Driver {

@@ -18,7 +18,7 @@ use serde::de::DeserializeOwned;
 use serde_json::{from_value, json, Value};
 use ureq::Request;
 
-use super::ClientError;
+use super::HTTPError;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "amp";
@@ -96,7 +96,7 @@ impl Client {
         &self,
         path: &str,
         options: Option<HashMap<String, String>>,
-    ) -> Result<Response<E::Output>, ClientError> {
+    ) -> Result<Response<E::Output>, HTTPError> {
         self.call::<E>(self.build_get_request(&path, options))
     }
 
@@ -110,7 +110,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
+    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
@@ -119,7 +119,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_post(&self, path: &str) -> Result<Response<()>, ClientError> {
+    pub fn empty_post(&self, path: &str) -> Result<Response<()>, HTTPError> {
         self.call_empty(self.build_post_request(&path))
     }
 
@@ -133,7 +133,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
+    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
@@ -142,7 +142,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_put(&self, path: &str) -> Result<Response<()>, ClientError> {
+    pub fn empty_put(&self, path: &str) -> Result<Response<()>, HTTPError> {
         self.call_empty(self.build_put_request(&path))
     }
 
@@ -156,7 +156,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
+    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
 
@@ -165,7 +165,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete(&self, path: &str) -> Result<Response<()>, ClientError> {
+    pub fn delete(&self, path: &str) -> Result<Response<()>, HTTPError> {
         self.call_empty(self.build_delete_request(&path))
     }
 
@@ -174,7 +174,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<Response<E::Output>, ClientError> {
+    pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<Response<E::Output>, HTTPError> {
         self.call::<E>(self.build_delete_request(&path))
     }
 
@@ -182,46 +182,46 @@ impl Client {
         &self,
         request: Request,
         data: Value,
-    ) -> Result<Response<E::Output>, ClientError> {
+    ) -> Result<Response<E::Output>, HTTPError> {
         self.process_response::<E>(request.send_json(data))
     }
 
-    fn call<E: Endpoint>(&self, request: Request) -> Result<Response<E::Output>, ClientError> {
+    fn call<E: Endpoint>(&self, request: Request) -> Result<Response<E::Output>, HTTPError> {
         self.process_response::<E>(request.call())
     }
 
     fn process_response<E: Endpoint>(
         &self,
         result: Result<ureq::Response, ureq::Error>,
-    ) -> Result<Response<E::Output>, ClientError> {
+    ) -> Result<Response<E::Output>, HTTPError> {
         match result {
             Ok(response) => Self::build_response::<E>(response),
-            Err(ureq::Error::Status(code, response)) => Err(ClientError::parse_response(code, response)),
-            Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
+            Err(ureq::Error::Status(code, response)) => Err(HTTPError::parse_response(code, response)),
+            Err(ureq::Error::Transport(transport)) => Err(HTTPError::parse_transport(transport)),
         }
     }
 
-    fn call_empty(&self, request: Request) -> Result<Response<()>, ClientError> {
+    fn call_empty(&self, request: Request) -> Result<Response<()>, HTTPError> {
         match request.call() {
             Ok(response) => Self::build_empty_response(response),
-            Err(ureq::Error::Status(code, response)) => Err(ClientError::parse_response(code, response)),
-            Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
+            Err(ureq::Error::Status(code, response)) => Err(HTTPError::parse_response(code, response)),
+            Err(ureq::Error::Transport(transport)) => Err(HTTPError::parse_transport(transport)),
         }
     }
 
-    fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, ClientError> {
+    fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, HTTPError> {
         let status = resp.status();
 
         let json = resp
             .into_json::<Value>()
-            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let data = from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let body = from_value(json!(json)).map_err(|e| ClientError::Deserialization(e.to_string()))?;
+            .map_err(|e| HTTPError::Deserialization(e.to_string()))?;
+        let data = from_value(json!(json)).map_err(|e| HTTPError::Deserialization(e.to_string()))?;
+        let body = from_value(json!(json)).map_err(|e| HTTPError::Deserialization(e.to_string()))?;
 
         Ok(Response { status, data, body })
     }
 
-    fn build_empty_response(res: ureq::Response) -> Result<Response<()>, ClientError> {
+    fn build_empty_response(res: ureq::Response) -> Result<Response<()>, HTTPError> {
         Ok(Response {
             status: res.status(),
             data: None,

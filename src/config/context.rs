@@ -78,8 +78,8 @@ impl ContextConfiguration {
     }
 
     /// impl iter method for ContextConfiguration
-    pub fn iter(&self) -> impl Iterator<Item = &Cluster> {
-        self.clusters.values()
+    pub fn iter(&self) -> impl Iterator<Item = (&String, &Cluster)> {
+        self.clusters.iter()
     }
 
     /// Check if the context with the given name exists.

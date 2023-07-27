@@ -31,7 +31,7 @@ const DEFAULT_USER_AGENT: &str = "amp";
 /// # Examples
 ///
 /// ```no_run
-/// use amp_common::client::Client;
+/// use amp_common::http::Client;
 ///
 /// let token = Some("AUTH_TOKEN".to_string());
 /// let client = Client::new("https://cloud.amphitheatre.app", token);
@@ -66,7 +66,7 @@ impl Client {
     /// # Examples
     ///
     /// ```no_run
-    /// use amp_common::client::Client;
+    /// use amp_common::http::Client;
     /// let token = Some("AUTH_TOKEN".to_string());
     /// let client = Client::new("https://cloud.amphitheatre.app", token);
     /// ```

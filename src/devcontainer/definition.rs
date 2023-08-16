@@ -1016,4 +1016,54 @@ pub enum IntegerOrStringOrArray {
 pub enum ShutdownAction {
     None,
     StopContainer,
+    StopCompose,
+}
+
+pub struct DockerfileContainer {
+    /// The location of the Dockerfile that defines the contents of the container.
+    /// The path is relative to the folder containing the `devcontainer.json` file.
+    pub dockerfile: String,
+    /// The location of the context folder for building the Docker image.
+    /// The path is relative to the folder containing the `devcontainer.json` file.
+    pub context: Option<String>,
+    /// Docker build-related options.
+    pub options: Option<BuildOptions>,
+}
+
+pub struct BuildOptions {
+    /// Target stage in a multi-stage build.
+    pub target: Option<String>,
+    /// Build arguments.
+    pub args: Option<HashMap<String, String>>,
+    /// The image to consider as a cache. Use an array to specify multiple images.
+    pub cache_from: Option<StringOrArray>,
+}
+
+pub enum StringOrArray {
+    String(String),
+    Array(Vec<String>),
+}
+
+pub struct ImageContainer {
+    /// The docker image that will be used to create the container.
+    pub image: String,
+}
+
+pub struct ComposeContainer {
+    /// The name of the docker-compose file(s) used to start the services.
+    pub docker_compose_file: StringOrArray,
+    /// The service you want to work on. T
+    /// his is considered the primary container for your dev environment
+    ///  which your editor will connect to.
+    pub service: String,
+    /// An array of services that should be started and stopped.
+    pub run_services: Option<Vec<String>>,
+    /// The path of the workspace folder inside the container.
+    /// This is typically the target path of a volume mount in the docker-compose.yml.
+    pub workspace_folder: String,
+    /// Action to take when the user disconnects from the primary container in their editor.
+    ///  The default is to stop all of the compose containers.
+    pub shutdown_action: Option<ShutdownAction>,
+    /// Whether to overwrite the command specified in the image. The default is false.
+    pub override_command: Option<bool>,
 }

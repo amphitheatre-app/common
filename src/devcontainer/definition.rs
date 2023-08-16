@@ -987,3 +987,33 @@ pub struct GPUConfig {
     /// pattern: ^\\d+([tgmk]b)?$
     pub memory: Option<String>,
 }
+
+pub struct NonComposeBase {
+    /// Application ports that are exposed by the container.
+    /// This can be a single port or an array of ports. Each port can be a number or a string.
+    /// A number is mapped to the same port on the host. A string is passed to Docker unchanged
+    /// and can be used to map ports differently, e.g. "8000:8010".
+    pub app_port: Option<IntegerOrStringOrArray>,
+    /// The arguments required when starting in the container.
+    pub run_args: Option<Vec<String>>,
+    /// Action to take when the user disconnects from the container in their editor.
+    /// The default is to stop the container.
+    pub shutdown_action: Option<ShutdownAction>,
+    /// Whether to overwrite the command specified in the image. The default is true.
+    pub override_command: Option<bool>,
+    /// The path of the workspace folder inside the container.
+    pub workspace_folder: Option<String>,
+    /// The --mount parameter for docker run. The default is to mount the project folder at /workspaces/$project.
+    pub workspace_mount: Option<String>,
+}
+
+pub enum IntegerOrStringOrArray {
+    Integer(u32),
+    String(String),
+    Array(Vec<IntegerOrString>),
+}
+
+pub enum ShutdownAction {
+    None,
+    StopContainer,
+}

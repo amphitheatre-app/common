@@ -85,12 +85,13 @@ pub struct DevContainerCommon {
     pub remote_user: Option<String>,
     /// When creating or working with a dev container, you may need different
     /// commands to be run at different points in the container’s lifecycle.
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub lifecycle_scripts: Option<LifecycleScripts>,
     /// User environment probe to run. The default is "loginInteractiveShell"
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_env_probe: Option<UserEnvProbe>,
     /// Host hardware requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub host_requirements: Option<HostRequirements>,
     /// Tool-specific configuration. Each tool should use a JSON object subproperty
     ///  with a unique name to group its customizations.

@@ -14,8 +14,11 @@
 
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
+
 /// When creating or working with a dev container, you may need different
 /// commands to be run at different points in the container’s lifecycle.
+#[derive(Debug, Serialize, Deserialize)]
 pub struct LifecycleScripts {
     /// A command to run locally (i.e Your host machine, cloud VM) before anything else.
     /// This command is run before "onCreateCommand"". If this is a single string, it will be run in a shell.
@@ -54,6 +57,7 @@ pub struct LifecycleScripts {
     pub wait_for: Option<WaitFor>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum LifecycleScript {
     String(String),
     Array(Vec<String>),
@@ -61,6 +65,7 @@ pub enum LifecycleScript {
 }
 
 #[allow(clippy::enum_variant_names)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum WaitFor {
     InitializeCommand,
     OnCreateCommand,

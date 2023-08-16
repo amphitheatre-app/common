@@ -14,13 +14,17 @@
 
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
+
 use super::types::StringOrArray;
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ImageContainer {
     /// The docker image that will be used to create the container.
     pub image: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DockerfileContainer {
     /// The location of the Dockerfile that defines the contents of the container.
     /// The path is relative to the folder containing the `devcontainer.json` file.
@@ -29,9 +33,11 @@ pub struct DockerfileContainer {
     /// The path is relative to the folder containing the `devcontainer.json` file.
     pub context: Option<String>,
     /// Docker build-related options.
+    #[serde(flatten)]
     pub options: Option<BuildOptions>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BuildOptions {
     /// Target stage in a multi-stage build.
     pub target: Option<String>,

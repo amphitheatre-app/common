@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 /// Host hardware requirements.
+#[derive(Debug, Serialize, Deserialize)]
 pub struct HostRequirements {
     /// Number of required CPUs. minimum: 1
     pub cpus: Option<u32>,
@@ -28,6 +31,7 @@ pub struct HostRequirements {
     pub gpu: Option<GPUVar>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum GPUVar {
     /// Indicates whether a GPU is required.
     Boolean(bool),
@@ -37,6 +41,7 @@ pub enum GPUVar {
     Config(GPUConfig),
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GPUConfig {
     /// Number of required cores. minimum: 1
     pub cores: Option<u32>,

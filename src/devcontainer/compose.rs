@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 use super::types::{IntegerOrStringOrArray, StringOrArray};
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NonComposeBase {
     /// Application ports that are exposed by the container.
     /// This can be a single port or an array of ports. Each port can be a number or a string.
@@ -33,6 +36,7 @@ pub struct NonComposeBase {
     pub workspace_mount: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ComposeContainer {
     /// The name of the docker-compose file(s) used to start the services.
     pub docker_compose_file: StringOrArray,
@@ -52,6 +56,7 @@ pub struct ComposeContainer {
     pub override_command: Option<bool>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum ShutdownAction {
     None,
     StopContainer,

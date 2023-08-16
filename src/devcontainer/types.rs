@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
 pub enum IntegerOrString {
     Integer(i32),
     String(String),
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum StringOrArray {
     String(String),
     Array(Vec<String>),
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum IntegerOrStringOrArray {
     Integer(u32),
     String(String),

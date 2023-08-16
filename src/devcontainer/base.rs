@@ -12,21 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 use super::{
     common::DevContainerCommon,
     compose::{ComposeContainer, NonComposeBase},
     container::{DockerfileContainer, ImageContainer},
 };
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DevContainer {
-    // General properties, common to all.
+    // ## General properties, common to all.
+    #[serde(flatten)]
     pub common: DevContainerCommon,
 
-    // Image or Dockerfile specific properties.
+    // ## Image or Dockerfile specific properties.
+    //
+    #[serde(flatten)]
     pub non_compose_base: Option<NonComposeBase>,
+
+    #[serde(flatten)]
     pub image_container: Option<ImageContainer>,
+
+    #[serde(flatten)]
     pub dockerfile_container: Option<DockerfileContainer>,
 
-    // Docker Composer specific properties.
+    // ## Docker Composer specific properties.
+    //
+    #[serde(flatten)]
     pub compose: Option<ComposeContainer>,
 }

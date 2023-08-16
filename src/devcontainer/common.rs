@@ -17,6 +17,7 @@
 
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use super::{
@@ -24,6 +25,7 @@ use super::{
     requirements::HostRequirements, types::IntegerOrString,
 };
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DevContainerCommon {
     /// The name for the dev container which can be displayed to the user.
     pub name: Option<String>,
@@ -66,6 +68,7 @@ pub struct DevContainerCommon {
     pub remote_user: Option<String>,
     /// When creating or working with a dev container, you may need different
     /// commands to be run at different points in the container’s lifecycle.
+    #[serde(flatten)]
     pub lifecycle_scripts: Option<LifecycleScripts>,
     /// User environment probe to run. The default is "loginInteractiveShell"
     pub user_env_probe: Option<UserEnvProbe>,
@@ -75,6 +78,7 @@ pub struct DevContainerCommon {
     pub additional_properties: Option<HashMap<String, Value>>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum UserEnvProbe {
     None,
     LoginShell,

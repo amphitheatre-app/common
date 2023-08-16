@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 /// A mount can be a bind mount or a volume mount.
+#[derive(Debug, Serialize, Deserialize)]
 pub enum StringOrMount {
     String(String),
     Mount(Mount),
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Mount {
     /// Mount type.
     pub kind: MountKind,
@@ -28,6 +32,7 @@ pub struct Mount {
 }
 
 /// Mount type.
+#[derive(Debug, Serialize, Deserialize)]
 pub enum MountKind {
     Bind,
     Volume,

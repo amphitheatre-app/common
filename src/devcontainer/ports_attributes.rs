@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 /// The PortAttributes properties allow you to map default port options
 /// for one or more manually or automatically forwarded ports.
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PortAttributes {
     /// Defines the action that occurs when the port is discovered for automatic forwarding
     pub on_auto_forward: Option<OnAutoForward>,
@@ -42,6 +45,7 @@ impl Default for PortAttributes {
 }
 
 /// Defines the action that occurs when the port is discovered for automatic forwarding
+#[derive(Debug, Serialize, Deserialize)]
 pub enum OnAutoForward {
     /// Shows a notification when a port is automatically forwarded.
     // TODO: default
@@ -62,6 +66,7 @@ pub enum OnAutoForward {
 }
 
 /// The Protocol to use when forwarding a port.
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Protocol {
     Http,
     Https,

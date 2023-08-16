@@ -4,10 +4,11 @@ This repository contains Rust libraries that are shared across Amphitheatre
 components and libraries. They are considered internal to Amphitheatre, without
 any stability guarantees for external usage.
 
-- [**http**](src/http/): Represents the HTTP client for the API.
 - [**config**](src/config/): Common configuration structures.
+- [**devcontainer**](src/devcontainer): DevContainers related definitions and helpers
 - [**docker**](src/docker/): Docker container & Registry wrappers.
 - [**filesystem**](src/filesystem/): File system related structures and helpers.
+- [**http**](src/http/): Represents the HTTP client for the API.
 - [**schema**](src/schema/): The core schema includes manifest, playbook, and workspace.
 - [**scm**](src/scm/): Provides a unified interface to multiple source code management systems.
 - [**sync**](src/sync/): File synchronization structures and helpers.

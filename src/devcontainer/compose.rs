@@ -23,17 +23,23 @@ pub struct NonComposeBase {
     /// This can be a single port or an array of ports. Each port can be a number or a string.
     /// A number is mapped to the same port on the host. A string is passed to Docker unchanged
     /// and can be used to map ports differently, e.g. "8000:8010".
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_port: Option<IntegerOrStringOrArray>,
     /// The arguments required when starting in the container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_args: Option<Vec<String>>,
     /// Action to take when the user disconnects from the container in their editor.
     /// The default is to stop the container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub shutdown_action: Option<ShutdownAction>,
     /// Whether to overwrite the command specified in the image. The default is true.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub override_command: Option<bool>,
     /// The path of the workspace folder inside the container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub workspace_folder: Option<String>,
     /// The --mount parameter for docker run. The default is to mount the project folder at /workspaces/$project.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub workspace_mount: Option<String>,
 }
 
@@ -47,14 +53,17 @@ pub struct ComposeContainer {
     ///  which your editor will connect to.
     pub service: String,
     /// An array of services that should be started and stopped.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub run_services: Option<Vec<String>>,
     /// The path of the workspace folder inside the container.
     /// This is typically the target path of a volume mount in the docker-compose.yml.
     pub workspace_folder: String,
     /// Action to take when the user disconnects from the primary container in their editor.
     ///  The default is to stop all of the compose containers.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub shutdown_action: Option<ShutdownAction>,
     /// Whether to overwrite the command specified in the image. The default is false.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub override_command: Option<bool>,
 }
 

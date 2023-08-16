@@ -28,17 +28,17 @@ pub struct DevContainer {
 
     // ## Image or Dockerfile specific properties.
     //
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub non_compose_base: Option<NonComposeBase>,
 
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub image_container: Option<ImageContainer>,
 
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub dockerfile_container: Option<DockerfileContainer>,
 
     // ## Docker Composer specific properties.
     //
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub compose: Option<ComposeContainer>,
 }

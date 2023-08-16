@@ -29,53 +29,74 @@ use super::{
 #[serde(rename_all = "camelCase")]
 pub struct DevContainerCommon {
     /// The name for the dev container which can be displayed to the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Features to add to the dev container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<HashMap<String, String>>,
     /// ray consisting of the Feature id (without the semantic version) of Features
     /// in the order the user wants them to be installed.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub override_feature_install_order: Option<Vec<String>>,
     /// Ports that are forwarded from the container to the local machine.
     /// Can be an integer port number, or a string of the format \"host:port_number\"."
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub forward_ports: Option<Vec<IntegerOrString>>,
     /// Object that maps a port number, "host:port" value, range, or regular expression to a set of default options.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ports_attributes: Option<HashMap<String, PortAttributes>>,
     /// Default options for ports, port ranges, and hosts that aren’t configured using `PortsAttributes`.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub other_ports_attributes: Option<PortAttributes>,
     /// Controls whether on Linux the container's user should be updated with the local user's UID and GID.
     /// On by default when opening from a local folder.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub update_remote_user_uid: Option<bool>,
     /// Container environment variables.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub container_env: Option<HashMap<String, String>>,
     /// The user the container will be started with. The default is the user on the Docker image.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub container_user: Option<String>,
     /// ount points to set up when creating the container.
     ///  See Docker's documentation for the --mount option for the supported syntax.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mounts: Option<Vec<StringOrMount>>,
     /// Passes the --init flag when creating the dev container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub init: Option<bool>,
     /// Passes the --privileged flag when creating the dev container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// Passes docker capabilities to include when creating the dev container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cap_add: Option<Vec<String>>,
     /// Passes docker security options to include when creating the dev container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub security_opt: Option<Vec<String>>,
     /// Remote environment variables to set for processes spawned in the container
     /// including lifecycle scripts and any remote editor/IDE server process.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_env: Option<HashMap<String, String>>,
     /// The username to use for spawning processes in the container
     /// including lifecycle scripts and any remote editor/IDE server process.
     /// The default is the same user as the container.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub remote_user: Option<String>,
     /// When creating or working with a dev container, you may need different
     /// commands to be run at different points in the container’s lifecycle.
     #[serde(flatten)]
     pub lifecycle_scripts: Option<LifecycleScripts>,
     /// User environment probe to run. The default is "loginInteractiveShell"
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_env_probe: Option<UserEnvProbe>,
     /// Host hardware requirements.
     pub host_requirements: Option<HostRequirements>,
+    /// Tool-specific configuration. Each tool should use a JSON object subproperty
+    ///  with a unique name to group its customizations.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customizations: Option<HashMap<String, Value>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_properties: Option<HashMap<String, Value>>,
 }
 

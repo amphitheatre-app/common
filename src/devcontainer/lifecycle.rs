@@ -25,36 +25,43 @@ pub struct LifecycleScripts {
     /// This command is run before "onCreateCommand"". If this is a single string, it will be run in a shell.
     /// If this is an array of strings, it will be run as a single command without shell.
     /// If this is an object, each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub initialize_command: Option<LifecycleScript>,
     /// A command to run when creating the container.
     /// This command is run after "initializeCommand" and before "updateContentCommand".
     /// If this is a single string, it will be run in a shell. If this is an array of strings,
     /// it will be run as a single command without shell. If this is an object,
     /// each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub on_create_command: Option<LifecycleScript>,
     /// A command to run when creating the container and rerun when the workspace content
     /// was updated while creating the container. This command is run after "onCreateCommand"
     /// and before "postCreateCommand". If this is a single string, it will be run in a shell.
     /// If this is an array of strings, it will be run as a single command without shell.
     /// If this is an object, each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub update_content_command: Option<LifecycleScript>,
     /// A command to run after creating the container. This command is run after "updateContentCommand"
     /// and before "postStartCommand". If this is a single string, it will be run in a shell.
     /// If this is an array of strings, it will be run as a single command without shell.
     /// If this is an object, each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub post_create_command: Option<LifecycleScript>,
     /// A command to run after starting the container. This command is run after "postCreateCommand"
     /// and before "postAttachCommand". If this is a single string, it will be run in a shell.
     /// If this is an array of strings, it will be run as a single command without shell.
-    /// If this is an object, each provided command will be run in parallel.",
+    /// If this is an object, each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub post_start_command: Option<LifecycleScript>,
     /// A command to run when attaching to the container. This command is run after "postStartCommand".
     /// If this is a single string, it will be run in a shell. If this is an array of strings,
     /// it will be run as a single command without shell. If this is an object,
     /// each provided command will be run in parallel.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub post_attach_command: Option<LifecycleScript>,
     /// The user command to wait for before continuing execution in the background
-    /// while the UI is starting up. The default is "updateContentCommand"
+    /// while the UI is starting up. The default is "updateContentCommand".
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub wait_for: Option<WaitFor>,
 }
 

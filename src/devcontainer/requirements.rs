@@ -19,16 +19,20 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct HostRequirements {
     /// Number of required CPUs. minimum: 1
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cpus: Option<u32>,
     /// Amount of required RAM in bytes. Supports units tb, gb, mb and kb.
     /// pattern: ^\\d+([tgmk]b)?$
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
     /// Amount of required disk space in bytes. Supports units tb, gb, mb and kb.
     /// pattern: ^\\d+([tgmk]b)?$
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
     /// Indicates whether a GPU is required.
     /// The string "optional" indicates that a GPU is optional.
     /// An object value can be used to configure more detailed requirements.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gpu: Option<GPUVar>,
 }
 
@@ -46,8 +50,10 @@ pub enum GPUVar {
 #[serde(rename_all = "camelCase")]
 pub struct GPUConfig {
     /// Number of required cores. minimum: 1
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cores: Option<u32>,
     /// Amount of required RAM in bytes. Supports units tb, gb, mb and kb.
     /// pattern: ^\\d+([tgmk]b)?$
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
 }

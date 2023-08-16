@@ -33,9 +33,10 @@ pub struct DockerfileContainer {
     pub dockerfile: String,
     /// The location of the context folder for building the Docker image.
     /// The path is relative to the folder containing the `devcontainer.json` file.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub context: Option<String>,
     /// Docker build-related options.
-    #[serde(flatten)]
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
     pub options: Option<BuildOptions>,
 }
 
@@ -43,9 +44,12 @@ pub struct DockerfileContainer {
 #[serde(rename_all = "camelCase")]
 pub struct BuildOptions {
     /// Target stage in a multi-stage build.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
     /// Build arguments.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub args: Option<HashMap<String, String>>,
     /// The image to consider as a cache. Use an array to specify multiple images.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_from: Option<StringOrArray>,
 }

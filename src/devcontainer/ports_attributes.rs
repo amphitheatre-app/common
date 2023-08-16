@@ -19,17 +19,22 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PortAttributes {
-    /// Defines the action that occurs when the port is discovered for automatic forwarding
+    /// Defines the action that occurs when the port is discovered for automatic forwarding.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub on_auto_forward: Option<OnAutoForward>,
     /// Automatically prompt for elevation (if needed) when this port is forwarded.
     /// Elevate is required if the local port is a privileged port.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub elevate_if_needed: Option<bool>,
     /// Label that will be shown in the UI for this port.
     // TODO: default: Application
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     /// When true, a modal dialog will show if the chosen local port isn't used for forwarding.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub require_local_port: Option<bool>,
     /// The protocol to use when forwarding this port.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol: Option<Protocol>,
 }
 

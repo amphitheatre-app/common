@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Schemas
-// devContainer.base.schema.json
-mod base;
-pub use base::*;
+use super::{
+    common::DevContainerCommon,
+    compose::{ComposeContainer, NonComposeBase},
+    container::{DockerfileContainer, ImageContainer},
+};
 
-// devContainer.codespaces.schema.json"
-// devContainer.vscode.schema.json
+pub struct DevContainer {
+    // General properties, common to all.
+    pub common: DevContainerCommon,
 
-// Shared modules.
-mod common;
-mod compose;
-mod container;
-mod lifecycle;
-mod mount;
-mod ports_attributes;
-mod requirements;
-mod types;
+    // Image or Dockerfile specific properties.
+    pub non_compose_base: Option<NonComposeBase>,
+    pub image_container: Option<ImageContainer>,
+    pub dockerfile_container: Option<DockerfileContainer>,
+
+    // Docker Composer specific properties.
+    pub compose: Option<ComposeContainer>,
+}

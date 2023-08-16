@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Schemas
-// devContainer.base.schema.json
-mod base;
-pub use base::*;
+/// A mount can be a bind mount or a volume mount.
+pub enum StringOrMount {
+    String(String),
+    Mount(Mount),
+}
 
-// devContainer.codespaces.schema.json"
-// devContainer.vscode.schema.json
+pub struct Mount {
+    /// Mount type.
+    pub kind: MountKind,
+    /// Mount source.
+    pub source: String,
+    /// Mount target.
+    pub target: String,
+}
 
-// Shared modules.
-mod common;
-mod compose;
-mod container;
-mod lifecycle;
-mod mount;
-mod ports_attributes;
-mod requirements;
-mod types;
+/// Mount type.
+pub enum MountKind {
+    Bind,
+    Volume,
+}

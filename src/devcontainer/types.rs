@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Schemas
-// devContainer.base.schema.json
-mod base;
-pub use base::*;
+pub enum IntegerOrString {
+    Integer(i32),
+    String(String),
+}
 
-// devContainer.codespaces.schema.json"
-// devContainer.vscode.schema.json
+pub enum StringOrArray {
+    String(String),
+    Array(Vec<String>),
+}
 
-// Shared modules.
-mod common;
-mod compose;
-mod container;
-mod lifecycle;
-mod mount;
-mod ports_attributes;
-mod requirements;
-mod types;
+pub enum IntegerOrStringOrArray {
+    Integer(u32),
+    String(String),
+    Array(Vec<IntegerOrString>),
+}

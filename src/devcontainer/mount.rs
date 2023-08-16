@@ -22,6 +22,7 @@ pub enum StringOrMount {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Mount {
     /// Mount type.
     pub kind: MountKind,

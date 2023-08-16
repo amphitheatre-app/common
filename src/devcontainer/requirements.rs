@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 
 /// Host hardware requirements.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct HostRequirements {
     /// Number of required CPUs. minimum: 1
     pub cpus: Option<u32>,
@@ -42,6 +43,7 @@ pub enum GPUVar {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GPUConfig {
     /// Number of required cores. minimum: 1
     pub cores: Option<u32>,

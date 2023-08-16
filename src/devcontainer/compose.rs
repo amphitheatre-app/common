@@ -17,6 +17,7 @@ use serde::{Deserialize, Serialize};
 use super::types::{IntegerOrStringOrArray, StringOrArray};
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NonComposeBase {
     /// Application ports that are exposed by the container.
     /// This can be a single port or an array of ports. Each port can be a number or a string.
@@ -37,6 +38,7 @@ pub struct NonComposeBase {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ComposeContainer {
     /// The name of the docker-compose file(s) used to start the services.
     pub docker_compose_file: StringOrArray,

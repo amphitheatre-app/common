@@ -26,6 +26,7 @@ use super::{
 };
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DevContainerCommon {
     /// The name for the dev container which can be displayed to the user.
     pub name: Option<String>,

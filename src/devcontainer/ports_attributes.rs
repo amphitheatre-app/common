@@ -17,6 +17,7 @@ use serde::{Deserialize, Serialize};
 /// The PortAttributes properties allow you to map default port options
 /// for one or more manually or automatically forwarded ports.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PortAttributes {
     /// Defines the action that occurs when the port is discovered for automatic forwarding
     pub on_auto_forward: Option<OnAutoForward>,

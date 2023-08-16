@@ -19,12 +19,14 @@ use serde::{Deserialize, Serialize};
 use super::types::StringOrArray;
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ImageContainer {
     /// The docker image that will be used to create the container.
     pub image: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DockerfileContainer {
     /// The location of the Dockerfile that defines the contents of the container.
     /// The path is relative to the folder containing the `devcontainer.json` file.
@@ -38,6 +40,7 @@ pub struct DockerfileContainer {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BuildOptions {
     /// Target stage in a multi-stage build.
     pub target: Option<String>,

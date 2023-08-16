@@ -19,6 +19,7 @@ use serde::{Deserialize, Serialize};
 /// When creating or working with a dev container, you may need different
 /// commands to be run at different points in the container’s lifecycle.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct LifecycleScripts {
     /// A command to run locally (i.e Your host machine, cloud VM) before anything else.
     /// This command is run before "onCreateCommand"". If this is a single string, it will be run in a shell.

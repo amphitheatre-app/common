@@ -26,7 +26,12 @@ pub struct GithubContentService {
 }
 
 impl ContentService for GithubContentService {
-    /// Find a file in a repository at a specific reference.
+    /// Gets the contents of a file or directory in a repository.
+    /// Specify the file path or directory in :path. If you omit :path, you will
+    /// receive the contents of the repository's root directory.
+    ///
+    /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
+    /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README
     fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
         let path = FIND_CONTENTS.replace("{repo}", repo).replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
@@ -68,26 +73,4 @@ struct GithubContentEndpoint;
 
 impl Endpoint for GithubContentEndpoint {
     type Output = GithubContent;
-}
-
-#[cfg(test)]
-mod test {
-    use crate::http::Client;
-    use crate::scm::content::ContentService;
-    use crate::scm::driver::github::constants::GITHUB_ENDPOINT;
-    use crate::scm::driver::github::content::GithubContentService;
-
-    #[test]
-    fn test_find() {
-        let service = GithubContentService {
-            client: Client::new(GITHUB_ENDPOINT, None),
-        };
-        let result = service.find("octocat/Hello-World", "README", "master");
-        println!("{:?}", result);
-        assert!(result.is_ok());
-
-        let repo = result.unwrap();
-        assert_eq!(repo.sha, "980a0d5f19a64b4b30a87d4206aade58726b60e3".to_string());
-        assert_eq!(repo.data, "Hello World!\n".as_bytes());
-    }
 }

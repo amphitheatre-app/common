@@ -22,25 +22,33 @@ pub mod git;
 pub mod repo;
 mod utils;
 
-/// Returns a new Gitlab API client.
-pub fn new(url: &str, token: Option<String>) -> Driver {
-    Driver::Gitlab(GitlabDriver {
-        client: Client::new(url, token),
-    })
+/// Returns a new Gitlab driver using the default gitlab.com address.
+pub fn default() -> Driver {
+    from(Client::new("https://gitlab.com", None))
 }
 
-/// Returns a new Gitlab API client using the default gitlab.com address.
-pub fn default() -> Driver {
-    new("https://gitlab.com", None)
+/// Returns a new Gitlab driver.
+pub fn new(url: &str, token: Option<String>) -> Driver {
+    from(Client::new(url, token))
+}
+
+/// Returns a new Gitlab driver using the given client.
+pub fn from(client: Client) -> Driver {
+    Driver::Gitlab(GitlabDriver { client })
 }
 
 #[cfg(test)]
 mod test {
-    use crate::scm::driver::gitlab;
+    use crate::{http::Client, scm::driver::gitlab};
 
     #[test]
     fn create_gitlab_driver() {
         let _driver = gitlab::default();
+    }
+
+    #[test]
+    fn create_gitlab_driver_from_client() {
+        let _driver = gitlab::from(Client::new("https://gitlab.com", None));
     }
 
     #[test]

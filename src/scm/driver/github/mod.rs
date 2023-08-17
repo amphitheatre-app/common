@@ -24,25 +24,35 @@ use self::pr::GithubFile;
 use super::Driver;
 use crate::http::Client;
 
-/// Returnes a new GitHub API client.
-pub fn new(url: &str, token: Option<String>) -> Driver {
-    Driver::Github(GithubDriver {
-        client: Client::new(url, token),
-    })
+/// Returns a new GitHub driver using the default api.github.com address.
+#[inline]
+pub fn default() -> Driver {
+    from(Client::new("https://api.github.com", None))
 }
 
-/// Returns a new GitHub API client using the default api.github.com address.
-pub fn default() -> Driver {
-    new("https://api.github.com", None)
+/// Returnes a new GitHub driver.
+#[inline]
+pub fn new(url: &str, token: Option<String>) -> Driver {
+    from(Client::new(url, token))
+}
+
+/// Returns a new GitHub driver using the given client.
+pub fn from(client: Client) -> Driver {
+    Driver::Github(GithubDriver { client })
 }
 
 #[cfg(test)]
 mod test {
-    use crate::scm::driver::github;
+    use crate::{http::Client, scm::driver::github};
 
     #[test]
     fn create_github_driver() {
         let _driver = github::default();
+    }
+
+    #[test]
+    fn create_github_driver_from_client() {
+        let _driver = github::from(Client::new("https://api.github.com", None));
     }
 
     #[test]

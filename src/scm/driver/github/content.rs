@@ -17,16 +17,18 @@ use std::collections::HashMap;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
+use super::constants::GITHUB_PATH_CONTENTS as FIND_CONTENTS;
 use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService};
+
 pub struct GithubContentService {
     pub client: Client,
 }
 
 impl ContentService for GithubContentService {
-    /// Returns a repository by name.
-    fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content> {
-        let path = format!("/repos/{}/contents/{}", repo, path);
+    /// Find a file in a repository at a specific reference.
+    fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+        let path = FIND_CONTENTS.replace("{repo}", repo).replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self.client.get::<GithubContentEndpoint>(&path, Some(options))?;
 
@@ -72,12 +74,13 @@ impl Endpoint for GithubContentEndpoint {
 mod test {
     use crate::http::Client;
     use crate::scm::content::ContentService;
+    use crate::scm::driver::github::constants::GITHUB_ENDPOINT;
     use crate::scm::driver::github::content::GithubContentService;
 
     #[test]
     fn test_find() {
         let service = GithubContentService {
-            client: Client::new("https://api.github.com", None),
+            client: Client::new(GITHUB_ENDPOINT, None),
         };
         let result = service.find("octocat/Hello-World", "README", "master");
         println!("{:?}", result);

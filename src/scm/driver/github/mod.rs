@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub mod constants;
 pub mod content;
 pub mod driver;
 pub mod git;
@@ -19,6 +20,7 @@ pub mod pr;
 pub mod repo;
 mod utils;
 
+use self::constants::GITHUB_ENDPOINT;
 use self::driver::GithubDriver;
 use self::pr::GithubFile;
 use super::Driver;
@@ -27,7 +29,7 @@ use crate::http::Client;
 /// Returns a new GitHub driver using the default api.github.com address.
 #[inline]
 pub fn default() -> Driver {
-    from(Client::new("https://api.github.com", None))
+    from(Client::new(GITHUB_ENDPOINT, None))
 }
 
 /// Returnes a new GitHub driver.
@@ -43,6 +45,7 @@ pub fn from(client: Client) -> Driver {
 
 #[cfg(test)]
 mod test {
+    use super::constants::GITHUB_ENDPOINT;
     use crate::{http::Client, scm::driver::github};
 
     #[test]
@@ -52,7 +55,7 @@ mod test {
 
     #[test]
     fn create_github_driver_from_client() {
-        let _driver = github::from(Client::new("https://api.github.com", None));
+        let _driver = github::from(Client::new(GITHUB_ENDPOINT, None));
     }
 
     #[test]

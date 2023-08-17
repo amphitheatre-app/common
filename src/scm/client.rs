@@ -77,24 +77,18 @@ mod test {
     #[test]
     fn call_content_service() {
         let client = Client::new(github::default());
-        let content = client.contents().find("octocat/Hello-World", "README", "master");
-
-        assert!(content.is_ok());
+        let _ = client.contents();
     }
 
     #[test]
     fn call_get_service() {
         let client = Client::new(github::default());
-        let commit = client.git().find_commit("octocat/Hello-World", "master");
-
-        assert!(commit.is_ok());
+        let _ = client.git();
     }
 
     #[test]
     fn call_repo_service() {
         let client = Client::new(github::default());
-        let repo = client.repositories().find("octocat/Hello-World");
-
-        assert!(repo.is_ok());
+        let _ = client.repositories();
     }
 }

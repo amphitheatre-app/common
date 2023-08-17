@@ -1,16 +1,29 @@
-HTTP/1.1 200 OK
-Server: nginx
-Date: Fri, 18 Dec 2015 15:19:37 GMT
-Content-Type: application/json; charset=utf-8
-Connection: keep-alive
-x-ratelimit-limit: 4000
-x-ratelimit-remaining: 3991
-x-ratelimit-after: 1453239045
-ETag: W/"5ea6326bc1a8e83e5c156c564f2559f0"
-Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 15a7f3a5-7ee5-4e36-ac5a-8c21c2e1fffd
-X-Runtime: 0.141588
-Strict-Transport-Security: max-age=31536000
+HTTP/2 200 
+server: GitHub.com
+date: Thu, 17 Aug 2023 15:52:02 GMT
+content-type: application/json; charset=utf-8
+cache-control: public, max-age=60, s-maxage=60
+vary: Accept, Accept-Encoding, Accept, X-Requested-With
+etag: W/"980a0d5f19a64b4b30a87d4206aade58726b60e3"
+last-modified: Tue, 06 Mar 2012 23:06:50 GMT
+x-github-media-type: github.v3; format=json
+x-github-api-version-selected: 2022-11-28
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 54
+x-ratelimit-reset: 1692289733
+x-ratelimit-resource: core
+x-ratelimit-used: 6
+accept-ranges: bytes
+content-length: 855
+x-github-request-id: 4FD8:4CE4:1CEA5CE:1E3EE88:64DE4222
 
 {
   "name": "README",

@@ -17,14 +17,19 @@ use serde::{Deserialize, Serialize};
 use crate::http::{Client, Endpoint};
 use crate::scm::repo::{Repository, RepositoryService};
 
+use super::constants::GITHUB_PATH_REPOS;
+
 pub struct GithubRepoService {
     pub client: Client,
 }
 
 impl RepositoryService for GithubRepoService {
     /// Returns a repository by name.
+    ///
+    /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
+    /// Example: https://api.github.com/repos/octocat/Hello-World
     fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
-        let path = format!("/repos/{}", repo);
+        let path = GITHUB_PATH_REPOS.replace("{repo}", repo);
         let res = self.client.get::<GithubRepoEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
@@ -75,25 +80,4 @@ struct GithubRepoEndpoint;
 
 impl Endpoint for GithubRepoEndpoint {
     type Output = GithubRepository;
-}
-
-#[cfg(test)]
-mod test {
-    use super::GithubRepoService;
-    use crate::http::Client;
-    use crate::scm::repo::RepositoryService;
-
-    #[test]
-    fn test_find() {
-        let service = GithubRepoService {
-            client: Client::new("https://api.github.com", None),
-        };
-        let result = service.find("octocat/Hello-World");
-
-        println!("{:?}", result);
-        assert!(result.is_ok());
-
-        let repo = result.unwrap().unwrap();
-        assert_eq!(repo.branch, "master".to_string());
-    }
 }

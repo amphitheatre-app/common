@@ -14,6 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use super::constants::{GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS};
 use super::utils::convert_list_options;
 use super::GithubFile;
 use crate::http::{Client, Endpoint};
@@ -26,8 +27,12 @@ pub struct GithubGitService {
 }
 
 impl GitService for GithubGitService {
+    /// Returns a list of branches for the specified repository.
+    ///
+    /// Docs: https://docs.github.com/en/rest/branches/branches?apiVersion=2022-11-28#list-branches
+    /// Example: https://api.github.com/repos/octocat/Hello-World/branches
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("/repos/{}/branches", repo);
+        let path = GITHUB_PATH_BRANCHES.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
         let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
 
@@ -38,8 +43,12 @@ impl GitService for GithubGitService {
         Ok(vec![])
     }
 
+    /// Returns a list of tags for the specified repository.
+    ///
+    /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-tags
+    /// Example: https://api.github.com/repos/octocat/Hello-World/tags
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("/repos/{}/tags", repo);
+        let path = GITHUB_PATH_TAGS.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
         let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
 
@@ -50,8 +59,14 @@ impl GitService for GithubGitService {
         Ok(vec![])
     }
 
+    /// Returns the contents of a single commit reference.
+    ///
+    /// Docs: https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#get-a-commit
+    /// Example: https://api.github.com/repos/octocat/Hello-World/commits/master
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
-        let path = format!("/repos/{}/commits/{}", repo, reference);
+        let path = GITHUB_PATH_COMMITS
+            .replace("{repo}", repo)
+            .replace("{reference}", reference);
         let res = self.client.get::<GithubCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
@@ -145,48 +160,4 @@ struct GithubCommitEndpoint;
 
 impl Endpoint for GithubCommitEndpoint {
     type Output = GithubCommit;
-}
-
-#[cfg(test)]
-mod test {
-    use super::GithubGitService;
-    use crate::http::Client;
-    use crate::scm::client::ListOptions;
-    use crate::scm::git::GitService;
-
-    #[test]
-    fn test_list_branches() {
-        let service = GithubGitService {
-            client: Client::new("https://api.github.com", None),
-        };
-        let result = service.list_branches("octocat/Hello-World", ListOptions::default());
-        assert!(result.is_ok());
-        assert!(result
-            .unwrap()
-            .iter()
-            .find(|v| v.name.eq(&"master".to_string()))
-            .is_some());
-    }
-
-    #[test]
-    fn test_list_tags() {
-        let service = GithubGitService {
-            client: Client::new("https://api.github.com", None),
-        };
-        let result = service.list_tags("octocat/Hello-World", ListOptions::default());
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), vec![]);
-    }
-
-    #[test]
-    fn test_find_commit() {
-        let service = GithubGitService {
-            client: Client::new("https://api.github.com", None),
-        };
-        let result = service.find_commit("octocat/Hello-World", "master");
-        assert!(result.is_ok());
-
-        let commit = result.unwrap().unwrap();
-        assert_eq!(commit.sha, "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d".to_string());
-    }
 }

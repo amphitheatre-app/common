@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
-use super::constants::GITHUB_PATH_CONTENTS as FIND_CONTENTS;
+use super::constants::GITHUB_PATH_CONTENTS;
 use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService};
 
@@ -33,7 +33,9 @@ impl ContentService for GithubContentService {
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README
     fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
-        let path = FIND_CONTENTS.replace("{repo}", repo).replace("{file}", file);
+        let path = GITHUB_PATH_CONTENTS
+            .replace("{repo}", repo)
+            .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self.client.get::<GithubContentEndpoint>(&path, Some(options))?;
 

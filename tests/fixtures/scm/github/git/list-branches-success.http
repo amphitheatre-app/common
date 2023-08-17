@@ -1,0 +1,52 @@
+HTTP/2 200 
+server: GitHub.com
+date: Thu, 17 Aug 2023 15:42:33 GMT
+content-type: application/json; charset=utf-8
+cache-control: public, max-age=60, s-maxage=60
+vary: Accept, Accept-Encoding, Accept, X-Requested-With
+etag: W/"fe70b6636e82da2ee4e4d56d6886cd65afa626e5b36797e34b579c08117dec19"
+x-github-media-type: github.v3; format=json
+x-github-api-version-selected: 2022-11-28
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 57
+x-ratelimit-reset: 1692289732
+x-ratelimit-resource: core
+x-ratelimit-used: 3
+accept-ranges: bytes
+content-length: 751
+x-github-request-id: 4FD4:4C91:1F6330:2105EA:64DE3FE8
+
+[
+  {
+    "name": "master",
+    "commit": {
+      "sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"
+    },
+    "protected": false
+  },
+  {
+    "name": "octocat-patch-1",
+    "commit": {
+      "sha": "b1b3f9723831141a31a1a7252a213e216ea76e56",
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/b1b3f9723831141a31a1a7252a213e216ea76e56"
+    },
+    "protected": false
+  },
+  {
+    "name": "test",
+    "commit": {
+      "sha": "b3cbd5bbd7e81436d2eee04537ea2b4c0cad4cdf",
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/b3cbd5bbd7e81436d2eee04537ea2b4c0cad4cdf"
+    },
+    "protected": false
+  }
+]

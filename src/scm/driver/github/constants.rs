@@ -16,3 +16,7 @@ pub const GITHUB_ENDPOINT: &str = "https://api.github.com";
 
 // REST API paths
 pub const GITHUB_PATH_CONTENTS: &str = "/repos/{repo}/contents/{file}";
+pub const GITHUB_PATH_BRANCHES: &str = "/repos/{repo}/branches";
+pub const GITHUB_PATH_TAGS: &str = "/repos/{repo}/tags";
+pub const GITHUB_PATH_COMMITS: &str = "/repos/{repo}/commits/{reference}";
+pub const GITHUB_PATH_REPOS: &str = "/repos/{repo}";

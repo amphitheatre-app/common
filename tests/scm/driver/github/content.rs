@@ -14,7 +14,7 @@
 
 use crate::common::mock;
 use amp_common::scm::content::ContentService;
-use amp_common::scm::driver::github::constants::GITHUB_PATH_CONTENTS as FIND_CONTENTS;
+use amp_common::scm::driver::github::constants::GITHUB_PATH_CONTENTS;
 use amp_common::scm::driver::github::content::GithubContentService;
 
 #[test]
@@ -22,10 +22,12 @@ fn test_find() {
     let repo = "octocat/Hello-World";
     let file = "README";
 
-    let path = FIND_CONTENTS.replace("{repo}", repo).replace("{file}", file);
+    let path = GITHUB_PATH_CONTENTS
+        .replace("{repo}", repo)
+        .replace("{file}", file);
     let setup = mock("GET", &path, "scm/github/contents/get-readme-success");
-    let service = GithubContentService { client: setup.0 };
 
+    let service = GithubContentService { client: setup.0 };
     let result = service.find(repo, file, "master");
 
     assert!(result.is_ok());

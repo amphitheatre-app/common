@@ -1,0 +1,31 @@
+HTTP/2 200 
+date: Fri, 18 Aug 2023 04:53:40 GMT
+content-type: application/json
+content-length: 871
+cache-control: max-age=0, private, must-revalidate
+content-security-policy: default-src 'none'
+etag: W/"b3b9f01bcb0c49dd26fc496a92acb427"
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-gitlab-meta: {"correlation_id":"e61f1fcb6c91f0d428bf05e67e83130a","version":"1"}
+x-request-id: e61f1fcb6c91f0d428bf05e67e83130a
+x-runtime: 0.088407
+strict-transport-security: max-age=31536000
+referrer-policy: strict-origin-when-cross-origin
+ratelimit-observed: 1
+ratelimit-remaining: 1999
+ratelimit-reset: 1692334480
+ratelimit-resettime: Fri, 18 Aug 2023 04:54:40 GMT
+ratelimit-limit: 2000
+gitlab-lb: fe-11-lb-gprd
+gitlab-sv: localhost
+cf-cache-status: MISS
+accept-ranges: bytes
+report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=UyEei9vv9Cmwqt1jsgIIqYeIt2io%2F7jouqqwJaNhnGLdJB1A8hUOTUBlwkABJnzkDBwWXXjVWBcvc8pemapfaN1kR39lDkGORXe25rt8BcDWk6SosnLPneWRJts%3D"}],"group":"cf-nel","max_age":604800}
+nel: {"success_fraction":0.01,"report_to":"cf-nel","max_age":604800}
+set-cookie: _cfuvid=L4GwuQu0qIsIcgW7zE5F5MdIAOUEOC3HMYBsQRARA68-1692334420410-0-604800000; path=/; domain=.gitlab.com; HttpOnly; Secure; SameSite=None
+server: cloudflare
+cf-ray: 7f878ded5fce07ab-HKG
+
+{"id":"ddd0f15ae83993f5cb66a927a28673882e99100b","short_id":"ddd0f15a","created_at":"2019-06-25T23:59:19.000+00:00","parent_ids":["1e292f8fedd741b75372e19097c76d327140c312","2d1db523e11e777e49377cfb22d368deec3f0793"],"title":"Merge branch 'po-fix-test-env-path' into 'master'","message":"Merge branch 'po-fix-test-env-path' into 'master'\n\nCorrect test_env.rb path for adding branch\n\nSee merge request gitlab-org/gitlab-test!38","author_name":"Stan Hu","author_email":"stanhu@gmail.com","authored_date":"2019-06-25T23:59:19.000+00:00","committer_name":"Stan Hu","committer_email":"stanhu@gmail.com","committed_date":"2019-06-25T23:59:19.000+00:00","trailers":{},"web_url":"https://gitlab.com/gitlab-org/gitlab-test/-/commit/ddd0f15ae83993f5cb66a927a28673882e99100b","stats":{"additions":1,"deletions":1,"total":2},"status":null,"project_id":72724,"last_pipeline":null}

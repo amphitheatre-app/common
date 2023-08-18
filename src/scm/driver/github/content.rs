@@ -27,8 +27,6 @@ pub struct GithubContentService {
 
 impl ContentService for GithubContentService {
     /// Gets the contents of a file or directory in a repository.
-    /// Specify the file path or directory in :path. If you omit :path, you will
-    /// receive the contents of the repository's root directory.
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README

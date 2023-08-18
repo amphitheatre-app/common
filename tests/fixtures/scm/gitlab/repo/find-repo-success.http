@@ -1,0 +1,31 @@
+HTTP/2 200 
+date: Fri, 18 Aug 2023 04:57:24 GMT
+content-type: application/json
+content-length: 908
+cache-control: max-age=0, private, must-revalidate
+content-security-policy: default-src 'none'
+etag: W/"8ecdb646aec4694454977fce91bfd0ad"
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-gitlab-meta: {"correlation_id":"46be1c83f06ccb81978cce7d7cea587b","version":"1"}
+x-request-id: 46be1c83f06ccb81978cce7d7cea587b
+x-runtime: 0.064432
+strict-transport-security: max-age=31536000
+referrer-policy: strict-origin-when-cross-origin
+ratelimit-observed: 1
+ratelimit-remaining: 1999
+ratelimit-reset: 1692334704
+ratelimit-resettime: Fri, 18 Aug 2023 04:58:24 GMT
+ratelimit-limit: 2000
+gitlab-lb: fe-18-lb-gprd
+gitlab-sv: localhost
+cf-cache-status: MISS
+accept-ranges: bytes
+report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=Ugdty3tBjeh7d9P7NWlmnuePE7p7udAmPd3Uh3I5Lo%2FJiU%2BMUpqwZ4h7MLDQedV5DG45eKRHxn39FqyL63ckL59nZM%2BJajvj0xSaniCeqfGLVVgYNZF9HfJMhws%3D"}],"group":"cf-nel","max_age":604800}
+nel: {"success_fraction":0.01,"report_to":"cf-nel","max_age":604800}
+set-cookie: _cfuvid=8n3ygyq7rEYJRG.7NApuzkLGd2tDCapMaYy6KDDq.IQ-1692334644133-0-604800000; path=/; domain=.gitlab.com; HttpOnly; Secure; SameSite=None
+server: cloudflare
+cf-ray: 7f879363bea6509c-HKG
+
+{"id":72724,"description":"Repository used by GitLab CE/EE  and Gitaly tests","name":"gitlab-test","name_with_namespace":"GitLab.org / gitlab-test","path":"gitlab-test","path_with_namespace":"gitlab-org/gitlab-test","created_at":"2014-07-31T20:00:19.516Z","default_branch":"master","tag_list":[],"topics":[],"ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-test.git","http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-test.git","web_url":"https://gitlab.com/gitlab-org/gitlab-test","readme_url":"https://gitlab.com/gitlab-org/gitlab-test/-/blob/master/README.md","forks_count":59,"avatar_url":null,"star_count":3,"last_activity_at":"2023-03-01T23:53:29.481Z","namespace":{"id":9970,"name":"GitLab.org","path":"gitlab-org","kind":"group","full_path":"gitlab-org","parent_id":null,"avatar_url":"/uploads/-/system/group/avatar/9970/project_avatar.png","web_url":"https://gitlab.com/groups/gitlab-org"}}

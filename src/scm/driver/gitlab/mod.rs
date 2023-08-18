@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use self::constants::GITLAB_ENDPOINT;
 use self::driver::GitlabDriver;
 use super::Driver;
 use crate::http::Client;
 
+pub mod constants;
 pub mod content;
 pub mod driver;
 pub mod git;
 pub mod repo;
-mod utils;
+pub mod utils;
 
 /// Returns a new Gitlab driver using the default gitlab.com address.
 pub fn default() -> Driver {
-    from(Client::new("https://gitlab.com", None))
+    from(Client::new(GITLAB_ENDPOINT, None))
 }
 
 /// Returns a new Gitlab driver.
@@ -41,6 +43,8 @@ pub fn from(client: Client) -> Driver {
 mod test {
     use crate::{http::Client, scm::driver::gitlab};
 
+    use super::constants::GITLAB_ENDPOINT;
+
     #[test]
     fn create_gitlab_driver() {
         let _driver = gitlab::default();
@@ -48,7 +52,7 @@ mod test {
 
     #[test]
     fn create_gitlab_driver_from_client() {
-        let _driver = gitlab::from(Client::new("https://gitlab.com", None));
+        let _driver = gitlab::from(Client::new(GITLAB_ENDPOINT, None));
     }
 
     #[test]

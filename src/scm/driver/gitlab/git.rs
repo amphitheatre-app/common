@@ -14,6 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use super::constants::{GITLAB_PATH_BRANCHES, GITLAB_PATH_COMMITS, GITLAB_PATH_TAGS};
 use super::utils::{convert_list_options, encode};
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
@@ -25,8 +26,12 @@ pub struct GitlabGitService {
 }
 
 impl GitService for GitlabGitService {
+    /// List repository branches.
+    ///
+    /// Docs: https://docs.gitlab.com/ee/api/branches.html#list-repository-branches
+    /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/branches
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("/api/v4/projects/{}/repository/branches", encode(repo));
+        let path = GITLAB_PATH_BRANCHES.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
         let res = self.client.get::<GitlabBranchsEndpoint>(&path, options)?;
 
@@ -37,8 +42,12 @@ impl GitService for GitlabGitService {
         Ok(vec![])
     }
 
+    /// List project repository tags.
+    ///
+    /// Docs: https://docs.gitlab.com/ee/api/tags.html#list-project-repository-tags
+    /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/tags
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
-        let path = format!("/api/v4/projects/{}/repository/tags", encode(repo));
+        let path = GITLAB_PATH_TAGS.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
         let res = self.client.get::<GitlabBranchsEndpoint>(&path, options)?;
 
@@ -49,12 +58,14 @@ impl GitService for GitlabGitService {
         Ok(vec![])
     }
 
+    /// Get a single commit.
+    ///
+    /// Docs: https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit
+    /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/commits/master
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
-        let path = format!(
-            "/api/v4/projects/{}/repository/commits/{}",
-            encode(repo),
-            reference
-        );
+        let path = GITLAB_PATH_COMMITS
+            .replace("{repo}", &encode(repo))
+            .replace("{reference}", reference);
         let res = self.client.get::<GitlabCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
@@ -125,48 +136,4 @@ struct GitlabCommitEndpoint;
 
 impl Endpoint for GitlabCommitEndpoint {
     type Output = GitlabCommit;
-}
-
-#[cfg(test)]
-mod test {
-    use crate::http::Client;
-    use crate::scm::client::ListOptions;
-    use crate::scm::driver::gitlab::git::GitlabGitService;
-    use crate::scm::git::GitService;
-
-    #[test]
-    fn test_list_branches() {
-        let service = GitlabGitService {
-            client: Client::new("https://gitlab.com", None),
-        };
-        let result = service.list_branches("gitlab-org/gitlab-test", ListOptions::default());
-        println!("{:?}", result);
-        assert!(result.is_ok());
-        assert!(result
-            .unwrap()
-            .iter()
-            .find(|v| v.name.eq(&"'test'".to_string()))
-            .is_some());
-    }
-
-    #[test]
-    fn test_list_tags() {
-        let service = GitlabGitService {
-            client: Client::new("https://gitlab.com", None),
-        };
-        let result = service.list_branches("gitlab-org/gitlab-test", ListOptions::default());
-        assert!(result.is_ok());
-    }
-
-    #[test]
-    fn test_find_commit() {
-        let service = GitlabGitService {
-            client: Client::new("https://gitlab.com", None),
-        };
-        let result = service.find_commit("gitlab-org/gitlab-test", "master");
-        assert!(result.is_ok());
-
-        let commit = result.unwrap().unwrap();
-        assert_eq!(commit.sha, "ddd0f15ae83993f5cb66a927a28673882e99100b".to_string());
-    }
 }

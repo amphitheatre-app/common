@@ -17,6 +17,7 @@ use serde::{Deserialize, Serialize};
 use super::utils::encode;
 use crate::http::{Client, Endpoint};
 use crate::scm::constants::Visibility;
+use crate::scm::driver::gitlab::constants::GITLAB_PATH_REPOS;
 use crate::scm::repo::{Repository, RepositoryService};
 
 pub struct GitlabRepoService {
@@ -24,13 +25,13 @@ pub struct GitlabRepoService {
 }
 
 impl RepositoryService for GitlabRepoService {
-    /// Returns a repository by name.
+    /// Get single project.
+    ///
+    /// Docs: https://docs.gitlab.com/ee/api/projects.html#get-single-project
+    /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test
     fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
-        let path = format!("/api/v4/projects/{}", encode(repo));
+        let path = GITLAB_PATH_REPOS.replace("{repo}", &encode(repo));
         let res = self.client.get::<GitlabRepoEndpoint>(&path, None)?;
-
-        println!("{:?}", res);
-
         Ok(res.data.map(|v| v.into()))
     }
 }
@@ -95,26 +96,4 @@ struct GitlabRepoEndpoint;
 
 impl Endpoint for GitlabRepoEndpoint {
     type Output = GitlabRepository;
-}
-
-#[cfg(test)]
-mod test {
-    use super::GitlabRepoService;
-    use crate::http::Client;
-    use crate::scm::repo::RepositoryService;
-
-    #[test]
-    fn test_find() {
-        let service = GitlabRepoService {
-            client: Client::new("https://gitlab.com", None),
-        };
-
-        let result = service.find("gitlab-org/gitlab-test");
-
-        println!("{:?}", result);
-        assert!(result.is_ok());
-
-        let repo = result.unwrap().unwrap();
-        assert_eq!(repo.branch, "master".to_string());
-    }
 }

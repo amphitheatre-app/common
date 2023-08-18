@@ -17,6 +17,7 @@ use std::collections::HashMap;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
+use super::constants::GITLAB_PATH_CONTENTS;
 use super::utils::{encode, encode_path};
 use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService};
@@ -26,12 +27,14 @@ pub struct GitlabContentService {
 }
 
 impl ContentService for GitlabContentService {
-    fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content> {
-        let path = format!(
-            "/api/v4/projects/{}/repository/files/{}",
-            encode(repo),
-            encode_path(path)
-        );
+    /// Get file from repository.
+    ///
+    /// Docs: https://docs.gitlab.com/ee/api/repository_files.html#get-file-from-repository
+    /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/files/VERSION?ref=master
+    fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+        let path = GITLAB_PATH_CONTENTS
+            .replace("{repo}", &encode(repo))
+            .replace("{file}", &encode_path(file));
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self.client.get::<GitlabContentEndpoint>(&path, Some(options))?;
 
@@ -74,26 +77,4 @@ struct GitlabContentEndpoint;
 
 impl Endpoint for GitlabContentEndpoint {
     type Output = GitlabContent;
-}
-
-#[cfg(test)]
-mod test {
-    use super::GitlabContentService;
-    use crate::http::Client;
-    use crate::scm::content::ContentService;
-
-    #[test]
-    fn test_find() {
-        let service = GitlabContentService {
-            client: Client::new("https://gitlab.com", None),
-        };
-
-        let result = service.find("gitlab-org/gitlab-test", "VERSION", "master");
-        println!("{:?}", result);
-        assert!(result.is_ok());
-
-        let repo = result.unwrap();
-        assert_eq!(repo.sha, "913c66a37b4a45b9769037c55c2d238bd0942d2e".to_string());
-        assert_eq!(repo.data, "6.7.0.pre\n".as_bytes());
-    }
 }

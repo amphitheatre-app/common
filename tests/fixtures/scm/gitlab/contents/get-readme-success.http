@@ -1,0 +1,41 @@
+HTTP/2 200 
+date: Fri, 18 Aug 2023 04:34:00 GMT
+content-type: application/json
+content-length: 396
+cache-control: max-age=0, private, must-revalidate
+content-security-policy: default-src 'none'
+etag: W/"03b379beb38b0b7212b99d47f4d1e767"
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-gitlab-blob-id: 998707b421c89bd9a3063333f9f728ef3e43d101
+x-gitlab-commit-id: ddd0f15ae83993f5cb66a927a28673882e99100b
+x-gitlab-content-sha256: 2f6dc79336c0d560984e748c5c38172f4b83a369b3af687f7ada4799bc1e6323
+x-gitlab-encoding: base64
+x-gitlab-execute-filemode: false
+x-gitlab-file-name: VERSION
+x-gitlab-file-path: VERSION
+x-gitlab-last-commit-id: 913c66a37b4a45b9769037c55c2d238bd0942d2e
+x-gitlab-meta: {"correlation_id":"8f02618a3dd29b578781c76451b6964d","version":"1"}
+x-gitlab-ref: master
+x-gitlab-size: 10
+x-request-id: 8f02618a3dd29b578781c76451b6964d
+x-runtime: 0.091256
+strict-transport-security: max-age=31536000
+referrer-policy: strict-origin-when-cross-origin
+ratelimit-observed: 1
+ratelimit-remaining: 1999
+ratelimit-reset: 1692333300
+ratelimit-resettime: Fri, 18 Aug 2023 04:35:00 GMT
+ratelimit-limit: 2000
+gitlab-lb: fe-13-lb-gprd
+gitlab-sv: localhost
+cf-cache-status: MISS
+accept-ranges: bytes
+report-to: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=jljWOnk%2FgAKSQ%2FmWzXPyX1Dnvr4sui2FqohyVrv9Z6D8HccprekjDUpBtUzU%2FEdAM2b%2B8%2B7NoyVdjxJlJ%2FBJ39e91B%2F1mzQj1ingkEg5L1NbRWCpme5nCrt7D44%3D"}],"group":"cf-nel","max_age":604800}
+nel: {"success_fraction":0.01,"report_to":"cf-nel","max_age":604800}
+set-cookie: _cfuvid=HqBFX8MYGxdVh0q5s6R.brhpJUuvpqlvdR.rwPQYLW8-1692333240277-0-604800000; path=/; domain=.gitlab.com; HttpOnly; Secure; SameSite=None
+server: cloudflare
+cf-ray: 7f87711d7eff1fc1-HKG
+
+{"file_name":"VERSION","file_path":"VERSION","size":10,"encoding":"base64","content_sha256":"2f6dc79336c0d560984e748c5c38172f4b83a369b3af687f7ada4799bc1e6323","ref":"master","blob_id":"998707b421c89bd9a3063333f9f728ef3e43d101","commit_id":"ddd0f15ae83993f5cb66a927a28673882e99100b","last_commit_id":"913c66a37b4a45b9769037c55c2d238bd0942d2e","execute_filemode":false,"content":"Ni43LjAucHJlCg=="}

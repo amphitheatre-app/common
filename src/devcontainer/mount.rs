@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 
 /// A mount can be a bind mount or a volume mount.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum StringOrMount {
     String(String),
     Mount(Mount),
@@ -25,6 +26,7 @@ pub enum StringOrMount {
 #[serde(rename_all = "camelCase")]
 pub struct Mount {
     /// Mount type.
+    #[serde(rename = "type")]
     pub kind: MountKind,
     /// Mount source.
     pub source: String,

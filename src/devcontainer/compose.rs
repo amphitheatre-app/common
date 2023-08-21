@@ -68,6 +68,7 @@ pub struct ComposeContainer {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum ShutdownAction {
     None,
     StopContainer,

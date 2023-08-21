@@ -65,7 +65,8 @@ pub struct LifecycleScripts {
     pub wait_for: Option<WaitFor>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[serde(untagged)]
 pub enum LifecycleScript {
     String(String),
     Array(Vec<String>),
@@ -74,6 +75,7 @@ pub enum LifecycleScript {
 
 #[allow(clippy::enum_variant_names)]
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum WaitFor {
     InitializeCommand,
     OnCreateCommand,

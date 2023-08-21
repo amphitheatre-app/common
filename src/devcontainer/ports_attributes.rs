@@ -51,7 +51,8 @@ impl Default for PortAttributes {
 }
 
 /// Defines the action that occurs when the port is discovered for automatic forwarding
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub enum OnAutoForward {
     /// Shows a notification when a port is automatically forwarded.
     // TODO: default
@@ -73,6 +74,7 @@ pub enum OnAutoForward {
 
 /// The Protocol to use when forwarding a port.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum Protocol {
     Http,
     Https,

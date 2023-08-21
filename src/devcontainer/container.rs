@@ -53,3 +53,53 @@ pub struct BuildOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cache_from: Option<StringOrArray>,
 }
+
+#[cfg(test)]
+mod test {
+    use crate::devcontainer::types::StringOrArray;
+
+    #[test]
+    fn test_deserialize_image_container() {
+        let json = r#"
+        {
+            "image": "rust:1.55.0"
+        }
+        "#;
+
+        let container: super::ImageContainer = serde_json::from_str(json).unwrap();
+        assert_eq!(container.image, "rust:1.55.0");
+    }
+
+    #[test]
+    fn test_deserialize_dockerfile_container() {
+        let json = r#"
+        {
+            "dockerfile": "Dockerfile",
+            "context": ".",
+            "target": "dev",
+            "args": {
+                "RUST_VERSION": "1.55.0"
+            },
+            "cacheFrom": [
+                "rust:1.55.0"
+            ]
+        }
+        "#;
+
+        let container: super::DockerfileContainer = serde_json::from_str(json).unwrap();
+        assert_eq!(container.dockerfile, "Dockerfile");
+        assert_eq!(container.context.unwrap(), ".");
+
+        assert_eq!(container.options.is_some(), true);
+        let options = container.options.as_ref().unwrap();
+        assert_eq!(options.target.as_ref().unwrap(), "dev");
+        assert_eq!(
+            options.args.as_ref().unwrap().get("RUST_VERSION").unwrap(),
+            "1.55.0"
+        );
+        assert_eq!(
+            options.cache_from.as_ref().unwrap(),
+            &StringOrArray::Array(vec!["rust:1.55.0".into()])
+        );
+    }
+}

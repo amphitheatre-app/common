@@ -46,6 +46,10 @@ pub struct Manifest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// URL of the character documentation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documentation: Option<String>,
+
     /// Path to the character's README file.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub readme: Option<String>,

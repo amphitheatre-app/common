@@ -21,6 +21,7 @@ use crate::schema::{self, GitReference, LocalPartner, RegistredPartner};
 /// Your character can depend on other characters from Registry or other registries,
 /// git repositories, or subdirectories of project.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
+#[serde(rename_all = "lowercase")]
 pub enum Partner {
     Registry(RegistredPartner),
     Repository(GitReference),

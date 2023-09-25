@@ -20,7 +20,7 @@ use super::GitReference;
 /// Your character can depend on other characters from Registry or other registries,
 /// git repositories, or subdirectories of local filesystem.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
-#[serde(untagged)]
+#[serde(untagged, rename_all = "lowercase")]
 pub enum Partner {
     Registry(RegistredPartner),
     Repository(GitReference),

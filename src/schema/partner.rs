@@ -33,7 +33,7 @@ pub struct RegistredPartner {
     /// The registry to pull the character from. Defaults to Catalog.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
-    /// The name of the character to pull.
+    /// The version of the character to pull.
     pub version: String,
 }
 

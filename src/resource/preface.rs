@@ -22,9 +22,16 @@ use super::CharacterSpec;
 /// the lead character in a story.
 #[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
 pub struct Preface {
+    /// The name of the character.
     pub name: String,
+    /// The preface from registry.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub registry: Option<RegistredPartner>,
+    /// The preface from git repository.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub repository: Option<GitReference>,
+    /// The preface from manifest.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub manifest: Option<CharacterSpec>,
 }
 

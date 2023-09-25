@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::str::FromStr;
-
 use oci_distribution::client::ClientConfig;
 use oci_distribution::secrets::RegistryAuth;
 use oci_distribution::{Client, Reference};
-use tracing::{debug, error, warn};
+use tracing::{debug, warn};
 
 use super::DockerCredential;
 
 /// Check if the docker image exists on remote registry.
 pub async fn exists(image: &str, credential: Option<DockerCredential>) -> anyhow::Result<bool> {
     let mut client = Client::new(ClientConfig::default());
-    let reference = Reference::from_str(image)?;
+    let reference: Reference = image.parse()?;
 
     let auth = match credential {
         Some(DockerCredential::UsernamePassword(username, password)) => {
@@ -44,7 +42,7 @@ pub async fn exists(image: &str, credential: Option<DockerCredential>) -> anyhow
             Ok(true)
         }
         Err(err) => {
-            error!("OciDistributionError: {}", err.to_string());
+            warn!("OciDistributionError: {}", err.to_string());
             Ok(false)
         }
     }

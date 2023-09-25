@@ -57,6 +57,12 @@ pub enum BuildMethod {
     Buildpacks(BuildpacksConfig),
 }
 
+impl Default for BuildMethod {
+    fn default() -> Self {
+        Self::Buildpacks(BuildpacksConfig::default())
+    }
+}
+
 /// The configuration for building an image using a Dockerfile.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
 pub struct DockerfileConfig {

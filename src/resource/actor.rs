@@ -57,11 +57,6 @@ impl ActorSpec {
         format!("{}-{}", self.name, self.source.as_ref().unwrap().rev())
     }
 
-    #[inline]
-    pub fn image(&self) -> String {
-        format!("{}:{}", self.image, self.source.as_ref().unwrap().rev())
-    }
-
     pub fn has_services(&self) -> bool {
         if let Some(deploy) = &self.character.deploy {
             deploy.service_ports().is_some()

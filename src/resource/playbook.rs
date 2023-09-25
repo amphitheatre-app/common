@@ -14,6 +14,7 @@
 
 use std::fmt::Display;
 
+use super::{CharacterSpec, Preface};
 use convert_case::{Case, Casing};
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::{Condition, Time};
 use k8s_openapi::chrono::Utc;
@@ -21,9 +22,6 @@ use kube::CustomResource;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
-
-use super::actor::ActorSpec;
-use super::Preface;
 
 #[derive(Clone, CustomResource, Debug, Default, Deserialize, JsonSchema, Serialize, Validate)]
 #[kube(
@@ -35,24 +33,19 @@ use super::Preface;
 pub struct PlaybookSpec {
     /// The title of the playbook
     pub title: String,
-
     /// The description of the playbook
-    pub description: String,
-
+    pub description: Option<String>,
     /// Namespace for its managed resources and Actor deployment instances
     pub namespace: String,
-
     /// The starting character for this playbook
     pub preface: Preface,
-
+    /// All the characters involved in this playbook
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub characters: Option<Vec<CharacterSpec>>,
     /// Global sync mode, if enabled, pulls the latest code from source version
     /// control in real time via Webhook, etc. and then rebuilds and deploys it
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
-
-    /// All the actors involved in this playbook
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub actors: Option<Vec<ActorSpec>>,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, JsonSchema, PartialEq)]

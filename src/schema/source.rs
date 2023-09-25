@@ -22,21 +22,17 @@ pub struct GitReference {
     /// Source code repository the partner should be cloned from.
     /// e.g. https://github.com/amphitheatre-app/amphitheatre.git.
     pub repo: String,
-
     /// Git branch the partner should be cloned from. eg. master or main
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
-
     /// Git tag the partner should be cloned from. eg. v1.0
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
-
     /// A commit hash like rev = "4c59b707", or a named reference exposed by
     /// the remote repository such as rev = "refs/pull/493/head". What references
     /// are available varies by where the repo is hosted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rev: Option<String>,
-
     /// Relative path from the repo root to the configuration file.
     /// eg. getting-started/.amp.toml. default is `.amp.toml`.
     #[serde(skip_serializing_if = "Option::is_none")]

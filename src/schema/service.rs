@@ -17,13 +17,12 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Defines the behavior of a service
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Serialize, JsonSchema, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Eq, Serialize, JsonSchema, PartialEq)]
 pub struct Service {
     /// Type determines how the Service is exposed. Defaults to ClusterIP.
     /// Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-
     /// The list of ports that are exposed by this service.
     pub ports: Vec<Port>,
 }
@@ -39,15 +38,13 @@ impl TryInto<Vec<ContainerPort>> for Service {
 }
 
 /// List of ports to expose from the container.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Serialize, JsonSchema, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Eq, Serialize, JsonSchema, PartialEq)]
 pub struct Port {
     /// The port that will be exposed by this service.
     pub port: i32,
-
     /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-
     /// Exposes HTTP and HTTPS routes from outside the cluster to services within the cluster.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expose: Option<bool>,

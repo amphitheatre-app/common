@@ -1,0 +1,64 @@
+// Copyright 2023 The Amphitheatre Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use std::collections::HashMap;
+
+use kube::CustomResource;
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
+use validator::Validate;
+
+use crate::schema::{self, Build, Deploy, Metadata};
+
+use super::Partner;
+
+#[derive(
+    Clone, CustomResource, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, Validate,
+)]
+#[kube(group = "amphitheatre.app", version = "v1", kind = "Character")]
+pub struct CharacterSpec {
+    /// Contains all the information about a character.
+    pub meta: Metadata,
+    /// Describes how images are built.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub build: Option<Build>,
+    /// Describes how images are deploy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deploy: Option<Deploy>,
+    /// Depend on other partners from other repositories,
+    /// or subdirectories on your local file system.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub partners: Option<HashMap<String, Partner>>,
+}
+
+impl From<schema::Character> for CharacterSpec {
+    fn from(value: schema::Character) -> CharacterSpec {
+        // Convert resource::Partner to schema::Partner
+        let partners = if let Some(partners) = value.partners {
+            partners
+                .into_iter()
+                .map(|(name, partner)| (name, Partner::from(partner)))
+                .collect()
+        } else {
+            HashMap::new()
+        };
+
+        CharacterSpec {
+            meta: value.meta,
+            build: value.build,
+            deploy: value.deploy,
+            partners: Some(partners),
+        }
+    }
+}

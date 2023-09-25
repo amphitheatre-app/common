@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      https://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod config;
-pub mod devcontainer;
-pub mod docker;
-pub mod filesystem;
-pub mod http;
-pub mod resource;
-pub mod schema;
-pub mod scm;
-pub mod sync;
-pub mod utils;
+mod actor;
+mod character;
+mod partner;
+mod playbook;
+mod preface;
+
+pub use actor::*;
+pub use character::*;
+pub use partner::*;
+pub use playbook::*;
+pub use preface::*;

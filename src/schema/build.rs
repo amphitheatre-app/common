@@ -23,9 +23,12 @@ use crate::utils::kubernetes::to_env_var;
 /// Describes how images are built.
 #[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq)]
 pub struct Build {
-    /// Which method to use to build the image.
+    /// The configuration for building an image using a Dockerfile.
     #[serde(flatten, skip_serializing_if = "Option::is_none")]
-    pub method: Option<BuildMethod>,
+    pub dockerfile: Option<DockerfileConfig>,
+    /// The configuration for building an image using Cloud Native Buildpacks.
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    pub buildpacks: Option<BuildpacksConfig>,
     /// Directory containing the artifact's sources.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context: Option<String>,
@@ -43,24 +46,24 @@ pub struct Build {
     pub include: Option<Vec<String>>,
 }
 
-/// Helpers for Kubernetes resources.
 impl Build {
     pub fn env(&self) -> Option<Vec<EnvVar>> {
         return self.env.as_ref().map(to_env_var);
     }
+
+    pub fn method(&self) -> BuildMethod {
+        if self.dockerfile.is_some() {
+            return BuildMethod::Dockerfile;
+        }
+
+        return BuildMethod::Buildpacks;
+    }
 }
 
 /// Which method to use to build the image.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
 pub enum BuildMethod {
-    Dockerfile(DockerfileConfig),
-    Buildpacks(BuildpacksConfig),
-}
-
-impl Default for BuildMethod {
-    fn default() -> Self {
-        Self::Buildpacks(BuildpacksConfig::default())
-    }
+    Dockerfile,
+    Buildpacks,
 }
 
 /// The configuration for building an image using a Dockerfile.
@@ -70,13 +73,20 @@ pub struct DockerfileConfig {
     pub dockerfile: String,
 }
 
+impl Default for DockerfileConfig {
+    fn default() -> Self {
+        Self {
+            dockerfile: "Dockerfile".to_string(),
+        }
+    }
+}
+
 /// The configuration for building an image using Cloud Native Buildpacks.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
 pub struct BuildpacksConfig {
-    /// Builds images using Cloud Native Buildpacks
-    /// Builder image (default "cnbs/sample-builder:jammy")
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub builder: Option<String>,
+    /// Builds images using Cloud Native Buildpacks,
+    /// default builder is `gcr.io/buildpacks/builder:v1`
+    pub builder: String,
     /// Buildpacks to use.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub buildpacks: Option<Vec<String>>,
@@ -87,20 +97,8 @@ const DEFAULT_BP_BUILDER: &str = "gcr.io/buildpacks/builder:v1";
 impl Default for BuildpacksConfig {
     fn default() -> Self {
         Self {
-            builder: Some(String::from(DEFAULT_BP_BUILDER)),
+            builder: String::from(DEFAULT_BP_BUILDER),
             buildpacks: None,
         }
-    }
-}
-
-impl Build {
-    pub fn builder(&self) -> String {
-        let builder = match &self.method {
-            Some(BuildMethod::Dockerfile(_)) => None,
-            Some(BuildMethod::Buildpacks(config)) => config.builder.clone(),
-            None => None,
-        };
-
-        builder.unwrap_or_else(|| String::from(DEFAULT_BP_BUILDER))
     }
 }

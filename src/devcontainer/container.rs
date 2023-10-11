@@ -90,7 +90,7 @@ mod test {
         assert_eq!(container.dockerfile, "Dockerfile");
         assert_eq!(container.context.unwrap(), ".");
 
-        assert_eq!(container.options.is_some(), true);
+        assert!(container.options.is_some());
         let options = container.options.as_ref().unwrap();
         assert_eq!(options.target.as_ref().unwrap(), "dev");
         assert_eq!(

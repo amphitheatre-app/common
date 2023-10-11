@@ -81,12 +81,12 @@ mod test {
 
         let container: super::DevContainer = devcontainer::from_str(data).unwrap();
 
-        assert_eq!(container.build.is_some(), true);
+        assert!(container.build.is_some());
         assert_eq!(
             container.build.as_ref().unwrap().dockerfile,
             "./Dockerfile".to_string()
         );
-        assert_eq!(container.common.features.is_some(), true);
+        assert!(container.common.features.is_some());
         assert_eq!(container.common.remote_user, Some("vscode".into()));
     }
 }

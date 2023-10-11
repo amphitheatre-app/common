@@ -48,6 +48,8 @@ pub struct ActorSpec {
     /// control in real time via Webhook, etc. and then rebuilds and deploys it
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
+    /// Whether this actor is live or not
+    pub live: bool,
 }
 
 /// Helpers for building jobs.
@@ -75,6 +77,7 @@ impl From<&CharacterSpec> for ActorSpec {
             source: Some(GitReference::new(character.meta.repository.clone())),
             image: deploy.image.unwrap_or_default(),
             sync: None,
+            live: character.live,
         }
     }
 }

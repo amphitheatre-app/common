@@ -56,7 +56,7 @@ impl Build {
             return BuildMethod::Dockerfile;
         }
 
-        return BuildMethod::Buildpacks;
+        BuildMethod::Buildpacks
     }
 }
 

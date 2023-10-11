@@ -171,7 +171,7 @@ mod test {
         let common: super::DevContainerCommon = serde_json::from_str(data).unwrap();
 
         assert_eq!(common.name, Some("devcontainer".into()));
-        assert_eq!(common.features.is_some(), true);
+        assert!(common.features.is_some());
         let features = common.features.unwrap();
         assert_eq!(
             features.get("vscode"),
@@ -189,18 +189,18 @@ mod test {
             common.other_ports_attributes.unwrap().on_auto_forward.unwrap(),
             OnAutoForward::Notify
         );
-        assert_eq!(common.update_remote_user_uid.unwrap(), true);
+        assert!(common.update_remote_user_uid.unwrap());
         assert_eq!(common.container_env.unwrap().len(), 1);
         assert_eq!(common.container_user.unwrap(), "vscode");
         assert_eq!(common.mounts.unwrap().len(), 1);
-        assert_eq!(common.init.unwrap(), true);
-        assert_eq!(common.privileged.unwrap(), true);
+        assert!(common.init.unwrap());
+        assert!(common.privileged.unwrap());
         assert_eq!(common.cap_add.unwrap().len(), 1);
         assert_eq!(common.security_opt.unwrap().len(), 1);
         assert_eq!(common.remote_env.unwrap().len(), 1);
         assert_eq!(common.remote_user.unwrap(), "vscode");
 
-        assert_eq!(common.lifecycle_scripts.is_some(), true);
+        assert!(common.lifecycle_scripts.is_some());
         let scripts = common.lifecycle_scripts.as_ref().unwrap();
 
         assert_eq!(

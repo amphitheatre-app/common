@@ -31,11 +31,7 @@ fn test_list_branches() {
     let service = GithubGitService { client: setup.0 };
     let result = service.list_branches(REPO, ListOptions::default());
     assert!(result.is_ok());
-    assert!(result
-        .unwrap()
-        .iter()
-        .find(|v| v.name.eq(&REFERENCE.to_string()))
-        .is_some());
+    assert!(result.unwrap().iter().any(|v| v.name.eq(&REFERENCE.to_string())));
 }
 
 #[test]

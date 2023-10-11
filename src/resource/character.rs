@@ -40,6 +40,8 @@ pub struct CharacterSpec {
     /// or subdirectories on your local file system.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub partners: Option<HashMap<String, Partner>>,
+    /// Whether this character is live or not
+    pub live: bool,
 }
 
 impl From<schema::Character> for CharacterSpec {
@@ -59,6 +61,7 @@ impl From<schema::Character> for CharacterSpec {
             build: value.build,
             deploy: value.deploy,
             partners: Some(partners),
+            live: false,
         }
     }
 }

@@ -23,7 +23,7 @@ pub enum EventKinds {
     Overwrite,
     /// Include CreateKind::File and CreateKind::Folder
     Create,
-    /// Modify envet kind just only for file content change.
+    /// Modify event kind just only for file content change.
     Modify,
     /// Modify the file or folder name.
     Rename,
@@ -41,7 +41,7 @@ impl From<EventKind> for EventKinds {
         match kind {
             Create(CreateKind::File) | Create(CreateKind::Folder) => Self::Create,
             Modify(ModifyKind::Data(DataChange::Content)) => Self::Modify,
-            // Specail case for metadata change on macOS when duplicate file or folder.
+            // Special case for metadata change on macOS when duplicate file or folder.
             Modify(ModifyKind::Metadata(MetadataKind::Any)) => Self::Modify,
             Modify(ModifyKind::Name(_)) => Self::Rename,
             Remove(RemoveKind::File) | Remove(RemoveKind::Folder) => Self::Remove,

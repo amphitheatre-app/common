@@ -15,7 +15,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::{self, GitReference, LocalPartner, RegistredPartner};
+use crate::schema::{self, GitReference, LocalPartner, RegisteredPartner};
 
 /// Specify Support for OpenAPI, it does not untagged.
 /// Your character can depend on other characters from Registry or other registries,
@@ -23,7 +23,7 @@ use crate::schema::{self, GitReference, LocalPartner, RegistredPartner};
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum Partner {
-    Registry(RegistredPartner),
+    Registry(RegisteredPartner),
     Repository(GitReference),
     Local(LocalPartner),
 }

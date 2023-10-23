@@ -32,7 +32,7 @@ pub fn default() -> Driver {
     from(Client::new(GITHUB_ENDPOINT, None))
 }
 
-/// Returnes a new GitHub driver.
+/// Returns a new GitHub driver.
 #[inline]
 pub fn new(url: &str, token: Option<String>) -> Driver {
     from(Client::new(url, token))

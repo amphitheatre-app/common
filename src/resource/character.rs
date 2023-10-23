@@ -42,6 +42,8 @@ pub struct CharacterSpec {
     pub partners: Option<HashMap<String, Partner>>,
     /// Whether this character is live or not
     pub live: bool,
+    /// Exit after one sync with live mode
+    pub once: bool,
 }
 
 impl From<schema::Character> for CharacterSpec {
@@ -62,6 +64,7 @@ impl From<schema::Character> for CharacterSpec {
             deploy: value.deploy,
             partners: Some(partners),
             live: false,
+            once: false,
         }
     }
 }

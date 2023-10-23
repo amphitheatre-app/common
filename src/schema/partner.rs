@@ -22,14 +22,14 @@ use super::GitReference;
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
 #[serde(untagged, rename_all = "lowercase")]
 pub enum Partner {
-    Registry(RegistredPartner),
+    Registry(RegisteredPartner),
     Repository(GitReference),
     Local(LocalPartner),
 }
 
 /// A partner that pulls a character from a registry.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
-pub struct RegistredPartner {
+pub struct RegisteredPartner {
     /// The registry to pull the character from. Defaults to Catalog.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,

@@ -15,7 +15,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::{GitReference, RegistredPartner};
+use crate::schema::{GitReference, RegisteredPartner};
 
 use super::CharacterSpec;
 
@@ -26,7 +26,7 @@ pub struct Preface {
     pub name: String,
     /// The preface from registry.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registry: Option<RegistredPartner>,
+    pub registry: Option<RegisteredPartner>,
     /// The preface from git repository.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub repository: Option<GitReference>,
@@ -39,7 +39,7 @@ impl Preface {
     pub fn registry(name: &str, registry: &str, version: &str) -> Self {
         Self {
             name: name.to_string(),
-            registry: Some(RegistredPartner {
+            registry: Some(RegisteredPartner {
                 registry: Some(registry.to_string()),
                 version: version.to_string(),
             }),

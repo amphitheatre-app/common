@@ -59,7 +59,7 @@ impl Client {
 }
 
 impl Client {
-    /// Initialize the client by source repostory.
+    /// Initialize the client by source repository.
     pub fn init(credentials: &Credentials, repo: &str) -> Result<Client, SCMError> {
         if let Some(repo) = credentials.find_repository(repo) {
             return Ok(Self::new(Driver::try_from(repo)?));

@@ -65,7 +65,7 @@ impl TryFrom<&RepositoryCredential> for Driver {
         match credential.driver.as_str() {
             "github" => Ok(github::new(&credential.server, credential.token.clone())),
             "gitlab" => Ok(gitlab::new(&credential.server, credential.token.clone())),
-            _ => Err(SCMError::UnkownDriver(credential.driver.to_string())),
+            _ => Err(SCMError::UnknownDriver(credential.driver.to_string())),
         }
     }
 }
@@ -78,7 +78,7 @@ impl TryFrom<&str> for Driver {
         match server.as_str() {
             "github.com" => Ok(github::default()),
             "gitlab.com" => Ok(gitlab::default()),
-            _ => Err(SCMError::UnkownDriver(url.to_string())),
+            _ => Err(SCMError::UnknownDriver(url.to_string())),
         }
     }
 }

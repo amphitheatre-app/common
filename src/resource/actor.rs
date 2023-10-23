@@ -50,6 +50,8 @@ pub struct ActorSpec {
     pub sync: Option<bool>,
     /// Whether this actor is live or not
     pub live: bool,
+    /// Exit after one sync with live mode
+    pub once: bool,
 }
 
 /// Helpers for building jobs.
@@ -78,6 +80,7 @@ impl From<&CharacterSpec> for ActorSpec {
             image: deploy.image.unwrap_or_default(),
             sync: None,
             live: character.live,
+            once: character.once,
         }
     }
 }

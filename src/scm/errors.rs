@@ -10,8 +10,8 @@ pub enum SCMError {
     #[error("InvalidRepoAddress: {0}")]
     InvalidRepoAddress(String),
 
-    #[error("UnkownDriver: {0}")]
-    UnkownDriver(String),
+    #[error("UnknownDriver: {0}")]
+    UnknownDriver(String),
 
     #[error("InvalidHostname")]
     InvalidHostname,

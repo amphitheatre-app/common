@@ -50,7 +50,7 @@ pub trait Credential {
 }
 
 /// `Credentials` is used to store access credentials on the client and cluster side,
-/// such as Docker registry and SCM credentials, and other propeaties
+/// such as Docker registry and SCM credentials, and other properties
 /// that need to be kept in sync with the server.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Credentials {

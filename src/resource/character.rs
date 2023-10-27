@@ -46,22 +46,24 @@ pub struct CharacterSpec {
     pub once: bool,
 }
 
-impl From<schema::Character> for CharacterSpec {
-    fn from(value: schema::Character) -> CharacterSpec {
+impl From<&schema::Character> for CharacterSpec {
+    fn from(value: &schema::Character) -> CharacterSpec {
         // Convert resource::Partner to schema::Partner
-        let partners = if let Some(partners) = value.partners {
-            partners
-                .into_iter()
-                .map(|(name, partner)| (name, Partner::from(partner)))
-                .collect()
-        } else {
-            HashMap::new()
-        };
+        let partners = value
+            .partners
+            .clone()
+            .map(|partners| {
+                partners
+                    .into_iter()
+                    .map(|(name, partner)| (name, Partner::from(partner)))
+                    .collect()
+            })
+            .unwrap_or(HashMap::new());
 
         CharacterSpec {
-            meta: value.meta,
-            build: value.build,
-            deploy: value.deploy,
+            meta: value.meta.clone(),
+            build: value.build.clone(),
+            deploy: value.deploy.clone(),
             partners: Some(partners),
             live: false,
             once: false,

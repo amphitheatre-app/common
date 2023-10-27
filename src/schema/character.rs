@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, fs::read_to_string, path::Path};
 
+use anyhow::anyhow;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -46,6 +47,12 @@ impl Character {
             },
             ..Default::default()
         }
+    }
+
+    /// Load the character from the specified file.
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, anyhow::Error> {
+        let content = read_to_string(path).map_err(|e| anyhow!(e.to_string()))?;
+        toml::from_str(&content).map_err(|e| anyhow!(e.to_string()))
     }
 }
 

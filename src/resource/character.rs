@@ -58,7 +58,7 @@ impl From<&schema::Character> for CharacterSpec {
                     .map(|(name, partner)| (name, Partner::from(partner)))
                     .collect()
             })
-            .unwrap_or(HashMap::new());
+            .unwrap_or_default();
 
         CharacterSpec {
             meta: value.meta.clone(),

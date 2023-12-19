@@ -44,6 +44,9 @@ pub struct Build {
     /// Files to include when building.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include: Option<Vec<String>>,
+    /// The platforms to build the image for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
 }
 
 impl Build {

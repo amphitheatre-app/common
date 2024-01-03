@@ -58,11 +58,12 @@ impl ContextConfiguration {
         self.clusters.get(name)
     }
 
-    /// Get the current context.
-    pub fn current(&self) -> Option<&Cluster> {
+    /// Get the current context with name.
+    pub fn current(&self) -> Option<(String, Cluster)> {
         if let Some(name) = &self.current {
-            return self.clusters.get(name).to_owned();
+            return Some((name.clone(), self.clusters.get(name).cloned().unwrap_or_default()));
         }
+
         None
     }
 
@@ -80,6 +81,11 @@ impl ContextConfiguration {
     /// impl iter method for ContextConfiguration
     pub fn iter(&self) -> impl Iterator<Item = (&String, &Cluster)> {
         self.clusters.iter()
+    }
+
+    /// Get the list of clusters.
+    pub fn clusters(&self) -> &HashMap<String, Cluster> {
+        &self.clusters
     }
 
     /// Check if the context with the given name exists.

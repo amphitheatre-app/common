@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::Deserialize;
 use super::client::ListOptions;
 
 /// Represents a git reference.
@@ -43,6 +44,24 @@ pub struct Signature {
     pub avatar: Option<String>,
 }
 
+#[derive(Debug, Default, PartialEq, Deserialize)]
+pub struct TreeResponse {
+    sha: String,
+    url: String,
+    tree: Vec<TreeEntry>,
+    truncated: bool,
+}
+
+#[derive(Debug, Default, PartialEq, Deserialize)]
+pub struct TreeEntry {
+    path: String,
+    mode: String,
+    entry_type: String,
+    size: Option<u64>,
+    // Some entries have a "size" field, but it might be absent
+    sha: String,
+    url: String,
+}
 /// Provides access to git resources.
 pub trait GitService {
     /// Returns a list of git branches.
@@ -53,4 +72,7 @@ pub trait GitService {
 
     /// Finds a git commit by reference
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;
+
+    /// Returns a single tree using the SHA1 value or ref name for that tree.
+    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: &str) -> anyhow::Result<Option<TreeResponse>>;
 }

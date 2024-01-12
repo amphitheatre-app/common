@@ -56,6 +56,7 @@ pub struct TreeResponse {
 pub struct TreeEntry {
     path: String,
     mode: String,
+    #[serde(rename = "type")]
     entry_type: String,
     size: Option<u64>,
     // Some entries have a "size" field, but it might be absent

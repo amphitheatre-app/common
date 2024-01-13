@@ -45,7 +45,7 @@ pub struct Signature {
 }
 
 #[derive(Debug, Default, PartialEq, Deserialize)]
-pub struct TreeResponse {
+pub struct Tree {
     sha: String,
     url: String,
     tree: Vec<TreeEntry>,
@@ -75,5 +75,5 @@ pub trait GitService {
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;
 
     /// Returns a single tree using the SHA1 value or ref name for that tree.
-    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: &str) -> anyhow::Result<Option<TreeResponse>>;
+    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>>;
 }

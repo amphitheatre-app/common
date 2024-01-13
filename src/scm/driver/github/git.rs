@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 use super::constants::{GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS, GITHUB_PATH_GIT_TREES};
@@ -19,7 +20,7 @@ use super::utils::convert_list_options;
 use super::GithubFile;
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
-use crate::scm::git::{Commit, GitService, Reference, Signature, TreeResponse};
+use crate::scm::git::{Commit, GitService, Reference, Signature, Tree};
 use crate::scm::utils;
 
 pub struct GithubGitService {
@@ -74,15 +75,16 @@ impl GitService for GithubGitService {
 
     /// Returns a single tree using the SHA1 value or ref name for that tree.
     ///
-    /// Docs: https://docs.github.com/zh/rest/git/trees?apiVersion=2022-11-28#get-a-tree
+    /// Docs: https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree
     /// Example: https://api.github.com/repos/octocat/Hello-World/git/trees/master
-    fn git_trees(&self, repo: &str, tree_sha: &str, _recursive: &str) -> anyhow::Result<Option<TreeResponse>> {
+    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
         let path = GITHUB_PATH_GIT_TREES
             .replace("{repo}", repo)
             .replace("{tree_sha}", tree_sha);
-        println!("{}", path);
-        let res = self.client.get::<TreeResponseEndpoint>(&path, None)?;
-        println!("res:{:?}", res);
+        let mut options: HashMap<String, String> = HashMap::new();
+        let recursive = recursive.unwrap_or(true);
+        options.insert(String::from("recursive"), recursive.to_string());
+        let res = self.client.get::<TreeResponseEndpoint>(&path, Some(options))?;
         Ok(res.data.map(|v| v.into()))
     }
 
@@ -180,5 +182,5 @@ impl Endpoint for GithubCommitEndpoint {
 struct TreeResponseEndpoint;
 
 impl Endpoint for TreeResponseEndpoint {
-    type Output = TreeResponse;
+    type Output = Tree;
 }

@@ -15,7 +15,7 @@
 use crate::common::mock;
 use amp_common::scm::client::ListOptions;
 use amp_common::scm::driver::github::constants::{
-    GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS, GITHUB_PATH_GIT_TREES,
+    GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_GIT_TREES, GITHUB_PATH_TAGS,
 };
 use amp_common::scm::driver::github::git::GithubGitService;
 use amp_common::scm::git::GitService;
@@ -70,5 +70,4 @@ fn test_git_trees() {
     let service = GithubGitService { client: setup.0 };
     let result = service.git_trees(REPO, REFERENCE, Some(true));
     assert!(result.is_ok());
-
 }

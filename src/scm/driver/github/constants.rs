@@ -20,3 +20,4 @@ pub const GITHUB_PATH_BRANCHES: &str = "/repos/{repo}/branches";
 pub const GITHUB_PATH_TAGS: &str = "/repos/{repo}/tags";
 pub const GITHUB_PATH_COMMITS: &str = "/repos/{repo}/commits/{reference}";
 pub const GITHUB_PATH_REPOS: &str = "/repos/{repo}";
+pub const GITHUB_PATH_GIT_TREES: &str = "/repos/{repo}/git/trees/{tree_sha}";

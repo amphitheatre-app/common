@@ -18,7 +18,7 @@ use super::constants::{GITLAB_PATH_BRANCHES, GITLAB_PATH_COMMITS, GITLAB_PATH_TA
 use super::utils::{convert_list_options, encode};
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
-use crate::scm::git::{Commit, GitService, Reference, Signature};
+use crate::scm::git::{Commit, GitService, Reference, Signature, Tree};
 use crate::scm::utils;
 
 pub struct GitlabGitService {
@@ -69,6 +69,10 @@ impl GitService for GitlabGitService {
         let res = self.client.get::<GitlabCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
+    }
+
+    fn git_trees(&self, _repo: &str, _tree_sha: &str, _recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
+        todo!()
     }
 }
 

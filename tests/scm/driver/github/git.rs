@@ -15,7 +15,7 @@
 use crate::common::mock;
 use amp_common::scm::client::ListOptions;
 use amp_common::scm::driver::github::constants::{
-    GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS,
+    GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS, GITHUB_PATH_GIT_TREES,
 };
 use amp_common::scm::driver::github::git::GithubGitService;
 use amp_common::scm::git::GitService;
@@ -58,4 +58,17 @@ fn test_find_commit() {
 
     let commit = result.unwrap().unwrap();
     assert_eq!(commit.sha, "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d".to_string());
+}
+
+#[test]
+fn test_git_trees() {
+    let path = GITHUB_PATH_GIT_TREES
+        .replace("{repo}", REPO)
+        .replace("{tree_sha}", REFERENCE);
+
+    let setup = mock("GET", &path, "scm/github/git/git-trees-success");
+    let service = GithubGitService { client: setup.0 };
+    let result = service.git_trees(REPO, REFERENCE, Some(true));
+    assert!(result.is_ok());
+
 }

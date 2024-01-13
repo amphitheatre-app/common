@@ -85,7 +85,7 @@ impl GitService for GithubGitService {
         let recursive = recursive.unwrap_or(true);
         options.insert(String::from("recursive"), recursive.to_string());
         let res = self.client.get::<TreeResponseEndpoint>(&path, Some(options))?;
-        Ok(res.data.map(|v| v.into()))
+        Ok(res.data)
     }
 }
 

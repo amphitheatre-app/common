@@ -1,29 +1,29 @@
-HTTP/1.1 200 OK
-Server: GitHub.com
-Date: Sat, 13 Jan 2024 08:20:49 GMT
-Content-Type: application/json; charset=utf-8
-Cache-Control: public, max-age=60, s-maxage=60
-Vary: Accept, Accept-Encoding, Accept, X-Requested-With
-ETag: W/"122c1cb1624fc0caae5bb8a69852b535c721ce8ecddd2db05374e5d2c699cf61"
-Last-Modified: Sat, 13 Jan 2024 04:05:18 GMT
-X-GitHub-Media-Type: github.v3; format=json
+HTTP/2 200 
+server: GitHub.com
+date: Sat, 13 Jan 2024 08:55:40 GMT
+content-type: application/json; charset=utf-8
+cache-control: public, max-age=60, s-maxage=60
+vary: Accept, Accept-Encoding, Accept, X-Requested-With
+etag: W/"122c1cb1624fc0caae5bb8a69852b535c721ce8ecddd2db05374e5d2c699cf61"
+last-modified: Sat, 13 Jan 2024 04:05:18 GMT
+x-github-media-type: github.v3; format=json
 x-github-api-version-selected: 2022-11-28
-Access-Control-Expose-Headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
-Access-Control-Allow-Origin: *
-Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
-X-Frame-Options: deny
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 0
-Referrer-Policy: origin-when-cross-origin, strict-origin-when-cross-origin
-Content-Security-Policy: default-src 'none'
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 51
-X-RateLimit-Reset: 1705134977
-X-RateLimit-Resource: core
-X-RateLimit-Used: 9
-Accept-Ranges: bytes
-Content-Length: 479
-X-GitHub-Request-Id: 47CE:382F98:220AD1D:2439E86:65A247E0
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 59
+x-ratelimit-reset: 1705139740
+x-ratelimit-resource: core
+x-ratelimit-used: 1
+accept-ranges: bytes
+content-length: 479
+x-github-request-id: 0421:2A022E:22A1E0A:24D47F4:65A2500C
 
 {
   "sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",

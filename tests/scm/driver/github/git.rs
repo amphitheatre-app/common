@@ -66,7 +66,7 @@ fn test_git_trees() {
         .replace("{repo}", REPO)
         .replace("{tree_sha}", REFERENCE);
 
-    let setup = mock("GET", &path, "scm/github/git/git-trees-success");
+    let setup = mock("GET", &path, "scm/github/git/trees-success");
     let service = GithubGitService { client: setup.0 };
     let result = service.git_trees(REPO, REFERENCE, Some(true));
     assert!(result.is_ok());

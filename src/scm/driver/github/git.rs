@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
-use super::constants::{GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_TAGS, GITHUB_PATH_GIT_TREES};
+use super::constants::{GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_GIT_TREES, GITHUB_PATH_TAGS};
 use super::utils::convert_list_options;
 use super::GithubFile;
 use crate::http::{Client, Endpoint};
@@ -85,9 +85,8 @@ impl GitService for GithubGitService {
         let recursive = recursive.unwrap_or(true);
         options.insert(String::from("recursive"), recursive.to_string());
         let res = self.client.get::<TreeResponseEndpoint>(&path, Some(options))?;
-        Ok(res.data.map(|v| v.into()))
+        Ok(res.data)
     }
-
 }
 
 #[derive(Debug, Deserialize, Serialize)]

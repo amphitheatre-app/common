@@ -71,7 +71,12 @@ impl GitService for GitlabGitService {
         Ok(res.data.map(|v| v.into()))
     }
 
-    fn git_trees(&self, _repo: &str, _tree_sha: &str, _recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
+    fn git_trees(
+        &self,
+        _repo: &str,
+        _tree_sha: &str,
+        _recursive: Option<bool>,
+    ) -> anyhow::Result<Option<Tree>> {
         todo!()
     }
 }

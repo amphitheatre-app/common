@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use super::client::ListOptions;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Represents a git reference.
 #[derive(Debug, PartialEq)]
@@ -44,7 +44,7 @@ pub struct Signature {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Default, PartialEq, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Tree {
     sha: String,
     url: String,
@@ -52,7 +52,7 @@ pub struct Tree {
     truncated: bool,
 }
 
-#[derive(Debug, Default, PartialEq, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct TreeEntry {
     path: String,
     mode: String,

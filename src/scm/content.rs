@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 /// represents a git repository.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Content {
     pub path: String,
     pub data: Vec<u8>,

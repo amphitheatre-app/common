@@ -28,16 +28,16 @@
 
 use std::collections::HashMap;
 
+use crate::utils::kubernetes::to_env_var;
 use k8s_openapi::api::core::v1::{ContainerPort, EnvVar, ServicePort};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-
-use crate::utils::kubernetes::to_env_var;
+use utoipa::ToSchema;
 
 use super::Service;
 
 /// Describes how images are deploy.
-#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, ToSchema)]
 pub struct Deploy {
     /// Specify the external image to be launched when it’s a reference kind of manifest.
     /// Or by default, leave it empty and Amphitheatre will automatically create it

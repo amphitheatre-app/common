@@ -25,7 +25,11 @@ use validator::Validate;
 use super::CharacterSpec;
 use crate::schema::GitReference;
 
-#[derive(Clone, CustomResource, Debug, Default, Deserialize, Serialize, JsonSchema, Validate, PartialEq)]
+use utoipa::ToSchema;
+
+#[derive(
+    Clone, CustomResource, Debug, Default, Deserialize, Serialize, JsonSchema, Validate, PartialEq, ToSchema,
+)]
 #[kube(
     group = "amphitheatre.app",
     version = "v1",

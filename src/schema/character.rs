@@ -14,12 +14,12 @@
 
 use std::{collections::HashMap, fs::read_to_string, path::Path};
 
+use super::{Build, Deploy, Partner};
 use anyhow::anyhow;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
-
-use super::{Build, Deploy, Partner};
 
 #[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, Validate)]
 pub struct Character {
@@ -57,7 +57,7 @@ impl Character {
 }
 
 /// Contains all the information about a character.
-#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, Validate)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, Validate, ToSchema)]
 pub struct Metadata {
     /// The name of the character.
     pub name: String,

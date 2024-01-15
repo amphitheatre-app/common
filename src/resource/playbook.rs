@@ -21,9 +21,10 @@ use k8s_openapi::chrono::Utc;
 use kube::CustomResource;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Clone, CustomResource, Debug, Default, Deserialize, JsonSchema, Serialize, Validate)]
+#[derive(Clone, CustomResource, Debug, Default, Deserialize, JsonSchema, Serialize, Validate, ToSchema)]
 #[kube(
     group = "amphitheatre.app",
     version = "v1",
@@ -46,6 +47,12 @@ pub struct PlaybookSpec {
     /// control in real time via Webhook, etc. and then rebuilds and deploys it
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sync: Option<bool>,
+}
+
+impl PlaybookSpec {
+    pub fn id(&self) -> String {
+        self.namespace.to_owned()
+    }
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, JsonSchema, PartialEq)]

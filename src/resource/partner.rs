@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::schema::{self, GitReference, LocalPartner, RegisteredPartner};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-
-use crate::schema::{self, GitReference, LocalPartner, RegisteredPartner};
+use utoipa::ToSchema;
 
 /// Specify Support for OpenAPI, it does not untagged.
 /// Your character can depend on other characters from Registry or other registries,
 /// git repositories, or subdirectories of project.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema, ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum Partner {
     Registry(RegisteredPartner),

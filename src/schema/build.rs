@@ -14,14 +14,14 @@
 
 use std::collections::HashMap;
 
+use crate::utils::kubernetes::to_env_var;
 use k8s_openapi::api::core::v1::EnvVar;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-
-use crate::utils::kubernetes::to_env_var;
+use utoipa::ToSchema;
 
 /// Describes how images are built.
-#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, ToSchema)]
 pub struct Build {
     /// The configuration for building an image using a Dockerfile.
     #[serde(flatten, skip_serializing_if = "Option::is_none")]
@@ -70,7 +70,7 @@ pub enum BuildMethod {
 }
 
 /// The configuration for building an image using a Dockerfile.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct DockerfileConfig {
     /// Locates the Dockerfile relative to workspace.
     pub dockerfile: String,
@@ -85,7 +85,7 @@ impl Default for DockerfileConfig {
 }
 
 /// The configuration for building an image using Cloud Native Buildpacks.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct BuildpacksConfig {
     /// Builds images using Cloud Native Buildpacks,
     /// default builder is `gcr.io/buildpacks/builder:v1`

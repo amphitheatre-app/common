@@ -19,12 +19,22 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::schema::{self, Build, Deploy, Metadata};
-
 use super::Partner;
+use crate::schema::{self, Build, Deploy, Metadata};
+use utoipa::ToSchema;
 
 #[derive(
-    Clone, CustomResource, Debug, Default, Deserialize, Eq, JsonSchema, Serialize, PartialEq, Validate,
+    Clone,
+    CustomResource,
+    Debug,
+    Default,
+    Deserialize,
+    Eq,
+    JsonSchema,
+    Serialize,
+    PartialEq,
+    Validate,
+    ToSchema,
 )]
 #[kube(group = "amphitheatre.app", version = "v1", kind = "Character")]
 pub struct CharacterSpec {

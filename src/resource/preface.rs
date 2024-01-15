@@ -15,12 +15,12 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::{GitReference, RegisteredPartner};
-
 use super::CharacterSpec;
+use crate::schema::{GitReference, RegisteredPartner};
+use utoipa::ToSchema;
 
 /// the lead character in a story.
-#[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct Preface {
     /// The name of the character.
     pub name: String,

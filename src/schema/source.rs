@@ -14,10 +14,11 @@
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 /// Your characters can depend on other partners from other registries,
 /// git repositories, or subdirectories on your local file system.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, JsonSchema, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, JsonSchema, Eq, Hash, PartialEq, ToSchema)]
 pub struct GitReference {
     /// Source code repository the partner should be cloned from.
     /// e.g. https://github.com/amphitheatre-app/amphitheatre.git.

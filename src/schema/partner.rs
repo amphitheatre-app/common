@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::GitReference;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-
-use super::GitReference;
+use utoipa::ToSchema;
 
 /// Your character can depend on other characters from Registry or other registries,
 /// git repositories, or subdirectories of local filesystem.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, JsonSchema, ToSchema)]
 #[serde(untagged, rename_all = "lowercase")]
 pub enum Partner {
     Registry(RegisteredPartner),
@@ -28,7 +28,7 @@ pub enum Partner {
 }
 
 /// A partner that pulls a character from a registry.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct RegisteredPartner {
     /// The registry to pull the character from. Defaults to Catalog.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,7 +38,7 @@ pub struct RegisteredPartner {
 }
 
 /// A partner that pulls a character from a local path.
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct LocalPartner {
     /// The path to the character.
     pub path: String,

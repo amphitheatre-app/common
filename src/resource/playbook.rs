@@ -32,12 +32,12 @@ use validator::Validate;
     status = "PlaybookStatus"
 )]
 pub struct PlaybookSpec {
+    /// The Id of the playbook
+    pub id: String,
     /// The title of the playbook
     pub title: String,
     /// The description of the playbook
     pub description: Option<String>,
-    /// Namespace for its managed resources and Actor deployment instances
-    pub namespace: String,
     /// The starting character for this playbook
     pub preface: Preface,
     /// All the characters involved in this playbook
@@ -50,8 +50,10 @@ pub struct PlaybookSpec {
 }
 
 impl PlaybookSpec {
-    pub fn id(&self) -> String {
-        self.namespace.to_owned()
+    /// Namespace for its managed resources and Actor deployment instances
+    #[inline]
+    pub fn namespace(&self) -> String {
+        format!("amp-{}", self.id)
     }
 }
 

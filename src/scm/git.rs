@@ -14,6 +14,7 @@
 
 use super::client::ListOptions;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 /// Represents a git reference.
 #[derive(Debug, PartialEq)]
@@ -44,24 +45,24 @@ pub struct Signature {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct Tree {
-    sha: String,
-    url: String,
-    tree: Vec<TreeEntry>,
-    truncated: bool,
+    pub sha: String,
+    pub url: String,
+    pub tree: Vec<TreeEntry>,
+    pub truncated: bool,
 }
 
-#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct TreeEntry {
-    path: String,
-    mode: String,
+    pub path: String,
+    pub mode: String,
     #[serde(rename = "type")]
-    entry_type: String,
-    size: Option<u64>,
+    pub entry_type: String,
+    pub size: Option<u64>,
     // Some entries have a "size" field, but it might be absent
-    sha: String,
-    url: String,
+    pub sha: String,
+    pub url: String,
 }
 /// Provides access to git resources.
 pub trait GitService {

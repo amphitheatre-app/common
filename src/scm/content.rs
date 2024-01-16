@@ -13,9 +13,10 @@
 // limitations under the License.
 
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 /// represents a git repository.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Content {
     pub path: String,
     pub data: Vec<u8>,

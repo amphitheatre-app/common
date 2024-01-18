@@ -51,6 +51,7 @@ pub struct GitlabRepository {
     pub http_url: String,
     pub namespace: GitlabNamespace,
     pub created_at: String,
+    pub description: String,
     // pub updated_at: String,
 }
 
@@ -75,6 +76,7 @@ impl From<GitlabRepository> for Repository {
             link: val.web_url,
             created: val.created_at,
             updated: "".to_string(),
+            description: val.description,
         };
 
         if !val.namespace.full_path.is_empty() {

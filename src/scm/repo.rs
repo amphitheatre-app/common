@@ -28,6 +28,7 @@ pub struct Repository {
     pub link: String,
     pub created: String,
     pub updated: String,
+    pub description: String,
 }
 
 /// Provides access to repository resources.

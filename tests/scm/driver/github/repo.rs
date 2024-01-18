@@ -21,6 +21,7 @@ use crate::common::mock;
 
 const REPO: &str = "octocat/Hello-World";
 const REFERENCE: &str = "master";
+const DESCRIPTION: &str = "My first repository on GitHub!";
 
 #[test]
 fn test_find() {
@@ -35,4 +36,5 @@ fn test_find() {
 
     let repo = result.unwrap().unwrap();
     assert_eq!(repo.branch, REFERENCE.to_string());
+    assert_eq!(repo.description, DESCRIPTION.to_string());
 }

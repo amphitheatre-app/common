@@ -49,6 +49,7 @@ pub struct GithubRepository {
     pub default_branch: String,
     pub created_at: String,
     pub updated_at: String,
+    pub description: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -72,6 +73,7 @@ impl From<GithubRepository> for Repository {
             link: val.html_url,
             created: val.created_at,
             updated: val.updated_at,
+            description: val.description,
         }
     }
 }

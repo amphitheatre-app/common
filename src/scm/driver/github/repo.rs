@@ -49,7 +49,7 @@ pub struct GithubRepository {
     pub default_branch: String,
     pub created_at: String,
     pub updated_at: String,
-    pub description: String,
+    pub description: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

@@ -51,7 +51,7 @@ pub struct GitlabRepository {
     pub http_url: String,
     pub namespace: GitlabNamespace,
     pub created_at: String,
-    pub description: String,
+    pub description: Option<String>,
     // pub updated_at: String,
 }
 

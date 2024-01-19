@@ -76,5 +76,5 @@ pub trait GitService {
     fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;
 
     /// Returns a single tree using the SHA1 value or ref name for that tree.
-    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>>;
+    fn get_tree(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>>;
 }

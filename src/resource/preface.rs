@@ -55,6 +55,14 @@ impl Preface {
         }
     }
 
+    pub fn reference(repository: &str, reference: Option<String>) -> Self {
+        Self {
+            name: repository.to_string(),
+            repository: Some(GitReference::branch(repository.to_string(), reference)),
+            ..Preface::default()
+        }
+    }
+
     pub fn manifest(manifest: &CharacterSpec) -> Self {
         Self {
             name: manifest.meta.name.clone(),

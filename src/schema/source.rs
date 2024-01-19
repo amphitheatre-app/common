@@ -48,6 +48,14 @@ impl GitReference {
         }
     }
 
+    pub fn branch(repo: String, branch: Option<String>) -> Self {
+        Self {
+            repo,
+            branch,
+            ..Default::default()
+        }
+    }
+
     /// The Uniform Resource Identifier of this Source.
     #[inline]
     pub fn uri(&self) -> String {

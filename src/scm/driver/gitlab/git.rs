@@ -71,7 +71,7 @@ impl GitService for GitlabGitService {
         Ok(res.data.map(|v| v.into()))
     }
 
-    fn git_trees(
+    fn get_tree(
         &self,
         _repo: &str,
         _tree_sha: &str,

@@ -77,14 +77,14 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree
     /// Example: https://api.github.com/repos/octocat/Hello-World/git/trees/master
-    fn git_trees(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
+    fn get_tree(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
         let path = GITHUB_PATH_GIT_TREES
             .replace("{repo}", repo)
             .replace("{tree_sha}", tree_sha);
-        let mut options: HashMap<String, String> = HashMap::new();
-        let recursive = recursive.unwrap_or(true);
-        options.insert(String::from("recursive"), recursive.to_string());
-        let res = self.client.get::<TreeResponseEndpoint>(&path, Some(options))?;
+        let options = recursive
+            .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
+            .unwrap_or_default();
+        let res = self.client.get::<TreeResponseEndpoint>(&path, options)?;
         Ok(res.data)
     }
 }

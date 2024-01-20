@@ -20,7 +20,7 @@ use super::utils::convert_list_options;
 use super::GithubFile;
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
-use crate::scm::git::{Commit, GitService, Reference, Signature, Tree};
+use crate::scm::git::{Commit, GitService, Reference, Signature, Tree, TreeEntry};
 use crate::scm::utils;
 
 pub struct GithubGitService {
@@ -35,7 +35,7 @@ impl GitService for GithubGitService {
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITHUB_PATH_BRANCHES.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchesEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -51,7 +51,7 @@ impl GitService for GithubGitService {
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITHUB_PATH_TAGS.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchesEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -84,8 +84,9 @@ impl GitService for GithubGitService {
         let options = recursive
             .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
             .unwrap_or_default();
-        let res = self.client.get::<TreeResponseEndpoint>(&path, options)?;
-        Ok(res.data)
+        let res = self.client.get::<GithubTreeEndpoint>(&path, options)?;
+
+        Ok(res.data.map(|v| v.into()))
     }
 }
 
@@ -166,9 +167,9 @@ pub struct GithubAuthor {
     pub login: String,
 }
 
-struct GithubBranchsEndpoint;
+struct GithubBranchesEndpoint;
 
-impl Endpoint for GithubBranchsEndpoint {
+impl Endpoint for GithubBranchesEndpoint {
     type Output = Vec<GithubBranch>;
 }
 
@@ -178,8 +179,47 @@ impl Endpoint for GithubCommitEndpoint {
     type Output = GithubCommit;
 }
 
-struct TreeResponseEndpoint;
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GithubTree {
+    pub sha: String,
+    pub tree: Vec<GithubTreeEntry>,
+    pub truncated: bool,
+}
 
-impl Endpoint for TreeResponseEndpoint {
-    type Output = Tree;
+impl From<GithubTree> for Tree {
+    fn from(val: GithubTree) -> Self {
+        Self {
+            sha: val.sha,
+            tree: val.tree.iter().map(|v| v.into()).collect(),
+            truncated: val.truncated,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GithubTreeEntry {
+    pub mode: String,
+    pub path: String,
+    pub sha: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub size: Option<u64>,
+}
+
+impl From<&GithubTreeEntry> for TreeEntry {
+    fn from(val: &GithubTreeEntry) -> Self {
+        Self {
+            mode: val.mode.clone(),
+            path: val.path.clone(),
+            sha: val.sha.clone(),
+            kind: val.kind.clone(),
+            size: val.size,
+        }
+    }
+}
+
+struct GithubTreeEndpoint;
+
+impl Endpoint for GithubTreeEndpoint {
+    type Output = GithubTree;
 }

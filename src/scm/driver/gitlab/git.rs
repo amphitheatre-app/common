@@ -33,7 +33,7 @@ impl GitService for GitlabGitService {
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITLAB_PATH_BRANCHES.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -49,7 +49,7 @@ impl GitService for GitlabGitService {
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITLAB_PATH_TAGS.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchsEndpoint>(&path, options)?;
+        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -71,6 +71,7 @@ impl GitService for GitlabGitService {
         Ok(res.data.map(|v| v.into()))
     }
 
+    /// @TODO: Get a tree of a project.
     fn get_tree(
         &self,
         _repo: &str,
@@ -97,9 +98,9 @@ impl From<&GitlabBranch> for Reference {
     }
 }
 
-struct GitlabBranchsEndpoint;
+struct GitlabBranchesEndpoint;
 
-impl Endpoint for GitlabBranchsEndpoint {
+impl Endpoint for GitlabBranchesEndpoint {
     type Output = Vec<GitlabBranch>;
 }
 

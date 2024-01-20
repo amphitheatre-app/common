@@ -48,21 +48,18 @@ pub struct Signature {
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct Tree {
     pub sha: String,
-    pub url: String,
     pub tree: Vec<TreeEntry>,
     pub truncated: bool,
 }
 
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct TreeEntry {
-    pub path: String,
     pub mode: String,
-    #[serde(rename = "type")]
-    pub entry_type: String,
-    pub size: Option<u64>,
-    // Some entries have a "size" field, but it might be absent
+    pub path: String,
     pub sha: String,
-    pub url: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub size: Option<u64>,
 }
 /// Provides access to git resources.
 pub trait GitService {

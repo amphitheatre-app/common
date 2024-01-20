@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-/// represents a git repository.
+/// represents a file content in a repository.
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Content {
     pub path: String,
@@ -24,8 +24,22 @@ pub struct Content {
     pub blob_id: String,
 }
 
+/// represents a file in a repository.
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct File {
+    pub name: String,
+    pub path: String,
+    pub sha: String,
+    pub blob_id: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+}
+
 /// Provides access to repository content.
 pub trait ContentService {
     /// Returns the repository file content by path.
     fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content>;
+
+    /// Returns the file list in a repository folder.
+    fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>>;
 }

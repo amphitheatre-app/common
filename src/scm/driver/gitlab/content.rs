@@ -44,6 +44,16 @@ impl ContentService for GitlabContentService {
             Err(anyhow::anyhow!("Not found: {}", path))
         }
     }
+
+    /// @TODO: Get file list from repository.
+    fn list(
+        &self,
+        _repo: &str,
+        _path: &str,
+        _reference: &str,
+    ) -> anyhow::Result<Vec<crate::scm::content::File>> {
+        todo!()
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]

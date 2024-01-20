@@ -19,14 +19,14 @@ use serde::{Deserialize, Serialize};
 
 use super::constants::GITHUB_PATH_CONTENTS;
 use crate::http::{Client, Endpoint};
-use crate::scm::content::{Content, ContentService};
+use crate::scm::content::{Content, ContentService, File};
 
 pub struct GithubContentService {
     pub client: Client,
 }
 
 impl ContentService for GithubContentService {
-    /// Gets the contents of a file or directory in a repository.
+    /// Gets the contents of a file in a repository.
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README
@@ -42,6 +42,24 @@ impl ContentService for GithubContentService {
         } else {
             Err(anyhow::anyhow!("Not found: {}", path))
         }
+    }
+
+    /// Gets the file list of a directory in a repository.
+    ///
+    /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
+    /// Example: https://api.github.com/repos/octocat/Hello-World/contents/
+    fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
+        let path = GITHUB_PATH_CONTENTS
+            .replace("{repo}", repo)
+            .replace("{file}", path);
+        let options = HashMap::from([("ref".to_string(), reference.to_string())]);
+        let res = self.client.get::<GithubFileEndpoint>(&path, Some(options))?;
+
+        if let Some(list) = res.data {
+            return Ok(list.iter().map(|v| v.into()).collect());
+        }
+
+        Ok(vec![])
     }
 }
 
@@ -73,4 +91,33 @@ struct GithubContentEndpoint;
 
 impl Endpoint for GithubContentEndpoint {
     type Output = GithubContent;
+}
+
+/// represents a file in a repository.
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GithubFile {
+    pub name: String,
+    pub path: String,
+    pub sha: String,
+    pub blob_id: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+}
+
+impl From<&GithubFile> for File {
+    fn from(val: &GithubFile) -> Self {
+        Self {
+            name: val.name.clone(),
+            path: val.path.clone(),
+            sha: val.sha.clone(),
+            blob_id: val.sha.clone(),
+            kind: val.kind.clone(),
+        }
+    }
+}
+
+struct GithubFileEndpoint;
+
+impl Endpoint for GithubFileEndpoint {
+    type Output = Vec<GithubFile>;
 }

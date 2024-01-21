@@ -99,7 +99,6 @@ pub struct GithubFile {
     pub name: String,
     pub path: String,
     pub sha: String,
-    pub blob_id: String,
     #[serde(rename = "type")]
     pub kind: String,
 }

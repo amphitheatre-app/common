@@ -18,7 +18,7 @@ confy = "0.6.0"
 convert_case = "0.6.0"
 dirs = "5.0.1"
 json_comments = "0.2.1"
-kube = { version = "0.87.1", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
+kube = { version = "0.88.0", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
 k8s-openapi = { version = "0.20.0", default-features = false, features = ["schemars", "v1_28"] }
 notify = "6.0.1"
 oci-distribution = { version = "0.10.0", default-features = false, features = ["rustls-tls", "test-registry"] }

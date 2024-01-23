@@ -1,39 +1,37 @@
 [package]
 name = "amp-common"
 description = "Rust libraries shared across Amphitheatre components and libraries"
-version = "0.7.7"
+version = "0.7.8"
 edition = "2021"
 license = "Apache-2.0"
 homepage = "https://amphitheatre.app"
 repository = "https://github.com/amphitheatre-app/common"
 readme = "README.md"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0.66"
-data-encoding = "2.3.3"
 chrono = "0.4.23"
 confy = "0.6.0"
 convert_case = "0.6.0"
+data-encoding = "2.3.3"
 dirs = "5.0.1"
 json_comments = "0.2.1"
-kube = { version = "0.87.1", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
-k8s-openapi = { version = "0.20.0", default-features = false, features = ["schemars", "v1_28"] }
+k8s-openapi = { version = "0.21.0", default-features = false, features = ["schemars", "v1_28"] }
+kube = { version = "0.88.0", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
 notify = "6.0.1"
 oci-distribution = { version = "0.10.0", default-features = false, features = ["rustls-tls", "test-registry"] }
+schemars = "0.8.12"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.89"
-schemars = "0.8.12"
 thiserror = "1.0.43"
-tracing = "0.1.37"
 toml = "0.8.0"
+tracing = "0.1.37"
 ureq = { version = "2.5.0", features = ["json"] }
-utoipa = { version = "4.1.0", features = ["axum_extras", "uuid", "chrono"] }
 url = "2.3.1"
+utoipa = { version = "4.1.0", features = ["axum_extras", "uuid", "chrono"] }
 validator = { version = "0.16.0", features = ["derive"] }
 
 [dev-dependencies]
-mockito = "1.1.0"
 assert_matches = "1.5"
-k8s-openapi = { version = "0.20.0", default-features = false, features = ["schemars", "v1_28"] }
+mockito = "1.1.0"

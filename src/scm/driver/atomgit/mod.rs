@@ -24,7 +24,7 @@ use self::constants::ATOMGIT_ENDPOINT;
 use self::pr::AtomgitFile;
 use super::Driver;
 use crate::http::Client;
-use crate::scm::driver::atomgit::driver::{AtomgitDriver};
+use crate::scm::driver::atomgit::driver::AtomgitDriver;
 
 /// Returns a new atomgit driver using the default api.atomgit.com address.
 #[inline]

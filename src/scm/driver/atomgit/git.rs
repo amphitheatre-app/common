@@ -15,9 +15,11 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use super::constants::{ATOMGIT_PATH_BRANCHES, ATOMGIT_PATH_COMMITS, ATOMGIT_PATH_GIT_TREES, ATOMGIT_PATH_TAGS};
+use super::constants::{
+    ATOMGIT_PATH_BRANCHES, ATOMGIT_PATH_COMMITS, ATOMGIT_PATH_GIT_TREES, ATOMGIT_PATH_TAGS,
+};
 use super::utils::convert_list_options;
-use super::{AtomgitFile};
+use super::AtomgitFile;
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature, Tree, TreeEntry};

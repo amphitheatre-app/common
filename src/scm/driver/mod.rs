@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub mod atomgit;
 pub mod github;
 pub mod gitlab;
-pub mod atomgit;
 
 use super::errors::SCMError;
 use crate::config::RepositoryCredential;

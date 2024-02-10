@@ -52,15 +52,6 @@ pub struct Tree {
     pub truncated: bool,
 }
 
-#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
-pub struct TreeEntry {
-    pub mode: String,
-    pub path: String,
-    pub sha: String,
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub size: Option<u64>,
-}
 /// Provides access to git resources.
 pub trait GitService {
     /// Returns a list of git branches.
@@ -74,4 +65,13 @@ pub trait GitService {
 
     /// Returns a single tree using the SHA1 value or ref name for that tree.
     fn get_tree(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>>;
+}
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
+pub struct TreeEntry {
+    pub mode: String,
+    pub path: String,
+    pub sha: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub size: Option<u64>,
 }

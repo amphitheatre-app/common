@@ -14,6 +14,7 @@
 
 pub mod github;
 pub mod gitlab;
+pub mod atomgit;
 
 use super::errors::SCMError;
 use crate::config::RepositoryCredential;
@@ -26,6 +27,7 @@ use crate::utils::http::host;
 pub enum Driver {
     Github(github::driver::GithubDriver),
     Gitlab(gitlab::driver::GitlabDriver),
+    Atomgit(atomgit::driver::AtomgitDriver),
 }
 
 /// Defines the methods that a SCM driver must implement.
@@ -40,6 +42,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.contents(),
             Driver::Gitlab(driver) => driver.contents(),
+            Driver::Atomgit(driver) => driver.contents(),
         }
     }
 
@@ -47,6 +50,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.git(),
             Driver::Gitlab(driver) => driver.git(),
+            Driver::Atomgit(driver) => driver.git(),
         }
     }
 
@@ -54,6 +58,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.repositories(),
             Driver::Gitlab(driver) => driver.repositories(),
+            Driver::Atomgit(driver) => driver.repositories(),
         }
     }
 }
@@ -65,6 +70,7 @@ impl TryFrom<&RepositoryCredential> for Driver {
         match credential.driver.as_str() {
             "github" => Ok(github::new(&credential.server, credential.token.clone())),
             "gitlab" => Ok(gitlab::new(&credential.server, credential.token.clone())),
+            "atomgit" => Ok(atomgit::new(&credential.server, credential.token.clone())),
             _ => Err(SCMError::UnknownDriver(credential.driver.to_string())),
         }
     }
@@ -78,6 +84,7 @@ impl TryFrom<&str> for Driver {
         match server.as_str() {
             "github.com" => Ok(github::default()),
             "gitlab.com" => Ok(gitlab::default()),
+            "atomgit.com" => Ok(atomgit::default()),
             _ => Err(SCMError::UnknownDriver(url.to_string())),
         }
     }

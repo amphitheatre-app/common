@@ -87,7 +87,12 @@ impl GitService for AtomGitService {
             .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
             .unwrap_or_default();
         let res = self.client.get::<AtomgitTreeEndpoint>(&path, options)?;
-        Ok(res.data.map(|v| v.into()))
+        let option = res.data.unwrap();
+        let tree = Tree {
+            tree: option,
+            ..Tree::default()
+        };
+        Ok(Option::from(tree))
     }
 }
 
@@ -222,5 +227,5 @@ impl From<&AtomgitTreeEntry> for TreeEntry {
 struct AtomgitTreeEndpoint;
 
 impl Endpoint for AtomgitTreeEndpoint {
-    type Output = AtomgitTree;
+    type Output = Vec<TreeEntry>;
 }

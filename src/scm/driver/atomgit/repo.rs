@@ -19,11 +19,11 @@ use crate::scm::repo::{Repository, RepositoryService};
 
 use super::constants::ATOMGIT_PATH_REPOS;
 
-pub struct GithubRepoService {
+pub struct AtomgitRepoService {
     pub client: Client,
 }
 
-impl RepositoryService for GithubRepoService {
+impl RepositoryService for AtomgitRepoService {
     /// Returns a repository by name.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repository/
@@ -40,7 +40,7 @@ impl RepositoryService for GithubRepoService {
 pub struct AtomgitRepository {
     pub id: u64,
     pub name: String,
-    pub owner: GithubOwner,
+    pub owner: AtomgitOwner,
     pub html_url: String,
     pub archived: bool,
     pub visibility: String,
@@ -53,7 +53,7 @@ pub struct AtomgitRepository {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GithubOwner {
+pub struct AtomgitOwner {
     pub id: u64,
     pub login: String,
     pub avatar_url: String,

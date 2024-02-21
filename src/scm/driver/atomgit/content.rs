@@ -29,7 +29,7 @@ impl ContentService for AtomgitContentService {
     /// Gets the contents of a file in a repository.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
-    /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/
+    /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/jia-hao-li
     fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
         let path = ATOMGIT_PATH_CONTENTS
             .replace("{repo}", repo)

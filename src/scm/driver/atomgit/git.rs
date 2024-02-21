@@ -78,7 +78,7 @@ impl GitService for AtomGitService {
     /// Returns a single tree using the SHA1 value or ref name for that tree.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-trees
-    /// Example: https://api.github.com/repos/octocat/Hello-World/trees/master
+    /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/trees/master
     fn get_tree(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
         let path = ATOMGIT_PATH_GIT_TREES
             .replace("{repo}", repo)
@@ -116,13 +116,13 @@ impl From<&AtomgitBranch> for Reference {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AtomgitSimpleCommit {
     pub sha: String,
-    pub url: String,
+    pub url: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AtomgitCommit {
     pub sha: String,
-    pub html_url: String,
+    pub html_url: Option<String>,
     pub commit: AtomgitCommitObject,
     pub author: AtomgitAuthor,
     pub committer: AtomgitAuthor,
@@ -133,7 +133,7 @@ impl From<AtomgitCommit> for Commit {
     fn from(val: AtomgitCommit) -> Self {
         Self {
             sha: val.sha,
-            message: val.commit.message,
+            message: val.commit.message.unwrap(),
             author: Signature {
                 name: val.commit.author.name,
                 email: val.commit.author.email,
@@ -148,7 +148,7 @@ impl From<AtomgitCommit> for Commit {
                 login: Some(val.committer.login),
                 avatar: Some(val.committer.avatar_url),
             },
-            link: val.html_url,
+            link: val.html_url.unwrap(),
         }
     }
 }
@@ -157,7 +157,7 @@ impl From<AtomgitCommit> for Commit {
 pub struct AtomgitCommitObject {
     pub author: AtomgitCommitObjectAuthor,
     pub committer: AtomgitCommitObjectAuthor,
-    pub message: String,
+    pub message: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

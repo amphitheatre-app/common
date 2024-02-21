@@ -14,7 +14,7 @@
 
 use super::content::AtomgitContentService;
 use super::git::AtomGitService;
-use super::repo::GithubRepoService;
+use super::repo::{AtomgitRepoService};
 use crate::http::Client;
 use crate::scm::content::ContentService;
 use crate::scm::driver::DriverTrait;
@@ -39,7 +39,7 @@ impl DriverTrait for AtomgitDriver {
     }
 
     fn repositories(&self) -> Box<dyn RepositoryService> {
-        Box::new(GithubRepoService {
+        Box::new(AtomgitRepoService {
             client: self.client.clone(),
         })
     }

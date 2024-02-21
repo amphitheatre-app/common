@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use amp_common::scm::{
-    repo::RepositoryService,
-};
 use amp_common::scm::driver::atomgit::constants::ATOMGIT_PATH_REPOS;
 use amp_common::scm::driver::atomgit::repo::AtomgitRepoService;
+use amp_common::scm::repo::RepositoryService;
 
 use crate::common::mock;
 

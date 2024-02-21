@@ -14,7 +14,9 @@
 
 use crate::common::mock;
 use amp_common::scm::client::ListOptions;
-use amp_common::scm::driver::atomgit::constants::{ATOMGIT_PATH_BRANCHES, ATOMGIT_PATH_COMMITS, ATOMGIT_PATH_GIT_TREES, ATOMGIT_PATH_TAGS};
+use amp_common::scm::driver::atomgit::constants::{
+    ATOMGIT_PATH_BRANCHES, ATOMGIT_PATH_COMMITS, ATOMGIT_PATH_GIT_TREES, ATOMGIT_PATH_TAGS,
+};
 use amp_common::scm::driver::atomgit::git::AtomGitService;
 use amp_common::scm::git::GitService;
 

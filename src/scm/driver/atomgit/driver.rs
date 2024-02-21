@@ -14,7 +14,7 @@
 
 use super::content::AtomgitContentService;
 use super::git::AtomGitService;
-use super::repo::{AtomgitRepoService};
+use super::repo::AtomgitRepoService;
 use crate::http::Client;
 use crate::scm::content::ContentService;
 use crate::scm::driver::DriverTrait;

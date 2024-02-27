@@ -124,8 +124,8 @@ pub struct AtomgitCommit {
     pub sha: String,
     pub html_url: Option<String>,
     pub commit: AtomgitCommitObject,
-    pub author: AtomgitAuthor,
-    pub committer: AtomgitAuthor,
+    pub author: Option<AtomgitAuthor>,
+    pub committer: Option<AtomgitAuthor>,
     pub files: Vec<AtomgitFile>,
 }
 
@@ -133,22 +133,22 @@ impl From<AtomgitCommit> for Commit {
     fn from(val: AtomgitCommit) -> Self {
         Self {
             sha: val.sha,
-            message: val.commit.message.unwrap(),
+            message: val.commit.message.unwrap_or_default(),
             author: Signature {
                 name: val.commit.author.name,
                 email: val.commit.author.email,
                 date: val.commit.author.date,
-                login: Some(val.author.login),
-                avatar: Some(val.author.avatar_url),
+                login: Some(val.author.unwrap_or_default().login),
+                avatar: Some(val.author.unwrap_or_default().avatar_url),
             },
             committer: Signature {
                 name: val.commit.committer.name,
                 email: val.commit.committer.email,
                 date: val.commit.committer.date,
-                login: Some(val.committer.login),
-                avatar: Some(val.committer.avatar_url),
+                login: Some(val.committer.unwrap_or_default().login),
+                avatar: Some(val.committer.unwrap_or_default().avatar_url),
             },
-            link: val.html_url.unwrap(),
+            link: val.html_url.unwrap_or_default(),
         }
     }
 }
@@ -167,7 +167,7 @@ pub struct AtomgitCommitObjectAuthor {
     pub date: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct AtomgitAuthor {
     pub avatar_url: String,
     pub login: String,

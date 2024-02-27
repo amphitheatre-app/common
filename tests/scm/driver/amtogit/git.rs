@@ -55,7 +55,7 @@ fn test_find_commit() {
 
     let service = AtomGitService { client: setup.0 };
     let result = service.find_commit(REPO, REFERENCE);
-
+    println!("{:?}", result);
     assert!(result.is_ok());
 
     let commit = result.unwrap().unwrap();

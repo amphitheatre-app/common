@@ -35,7 +35,7 @@ impl ContentService for AtomGitContentService {
             .replace("{repo}", repo)
             .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<GithubContentEndpoint>(&path, Some(options))?;
+        let res = self.client.get::<AtomGitContentEndpoint>(&path, Some(options))?;
 
         if let Some(content) = res.data {
             Ok(content.try_into()?)
@@ -53,7 +53,7 @@ impl ContentService for AtomGitContentService {
             .replace("{repo}", repo)
             .replace("{file}", path);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<GithubFileEndpoint>(&path, Some(options))?;
+        let res = self.client.get::<AtomGitFileEndpoint>(&path, Some(options))?;
 
         if let Some(list) = res.data {
             return Ok(list.iter().map(|v| v.into()).collect());
@@ -80,16 +80,16 @@ impl TryFrom<AtomGitContent> for Content {
         Ok(Self {
             path: val.path,
             data: BASE64.decode(val.content.as_bytes())?,
-            // the sha returned for github rest api is the blob sha, not the commit sha
+            // the sha returned for atomgit rest api is the blob sha, not the commit sha
             sha: val.sha.clone(),
             blob_id: val.sha,
         })
     }
 }
 
-struct GithubContentEndpoint;
+struct AtomGitContentEndpoint;
 
-impl Endpoint for GithubContentEndpoint {
+impl Endpoint for AtomGitContentEndpoint {
     type Output = AtomGitContent;
 }
 
@@ -115,8 +115,8 @@ impl From<&AtomGitFile> for File {
     }
 }
 
-struct GithubFileEndpoint;
+struct AtomGitFileEndpoint;
 
-impl Endpoint for GithubFileEndpoint {
+impl Endpoint for AtomGitFileEndpoint {
     type Output = Vec<AtomGitFile>;
 }

@@ -30,7 +30,7 @@ impl RepositoryService for AtomGitRepoService {
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation
     fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
         let path = ATOMGIT_PATH_REPOS.replace("{repo}", repo);
-        let res = self.client.get::<GithubRepoEndpoint>(&path, None)?;
+        let res = self.client.get::<AtomGitRepoEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -78,8 +78,8 @@ impl From<AtomGitRepository> for Repository {
     }
 }
 
-struct GithubRepoEndpoint;
+struct AtomGitRepoEndpoint;
 
-impl Endpoint for GithubRepoEndpoint {
+impl Endpoint for AtomGitRepoEndpoint {
     type Output = AtomGitRepository;
 }

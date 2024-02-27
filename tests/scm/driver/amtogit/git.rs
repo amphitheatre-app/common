@@ -59,7 +59,7 @@ fn test_find_commit() {
     assert!(result.is_ok());
 
     let commit = result.unwrap().unwrap();
-    assert_eq!(commit.sha, "93008700c52072756021c831f77b4ea8d0b427d5".to_string());
+    assert_eq!(commit.sha, "b851ec9b0129e1f744aa4a56b6c4bca0a5fce4b2".to_string());
 }
 
 #[test]

@@ -21,10 +21,10 @@ pub mod repo;
 mod utils;
 
 use self::constants::ATOMGIT_ENDPOINT;
-use self::pr::AtomgitFile;
+use self::pr::AtomGitFile;
 use super::Driver;
 use crate::http::Client;
-use crate::scm::driver::atomgit::driver::AtomgitDriver;
+use crate::scm::driver::atomgit::driver::AtomGitDriver;
 
 /// Returns a new atomgit driver using the default api.atomgit.com address.
 #[inline]
@@ -40,7 +40,7 @@ pub fn new(url: &str, token: Option<String>) -> Driver {
 
 /// Returns a new atomgit driver using the given client.
 pub fn from(client: Client) -> Driver {
-    Driver::Atomgit(AtomgitDriver { client })
+    Driver::AtomGit(AtomGitDriver { client })
 }
 
 #[cfg(test)]

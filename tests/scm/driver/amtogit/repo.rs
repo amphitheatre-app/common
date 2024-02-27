@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use amp_common::scm::driver::atomgit::constants::ATOMGIT_PATH_REPOS;
-use amp_common::scm::driver::atomgit::repo::AtomgitRepoService;
+use amp_common::scm::driver::atomgit::repo::AtomGitRepoService;
 use amp_common::scm::repo::RepositoryService;
 
 use crate::common::mock;
@@ -27,7 +27,7 @@ fn test_find() {
     let path = ATOMGIT_PATH_REPOS.replace("{repo}", REPO);
     let setup = mock("GET", &path, "scm/amtogit/repo/find-repo-success");
 
-    let service = AtomgitRepoService { client: setup.0 };
+    let service = AtomGitRepoService { client: setup.0 };
     let result = service.find(REPO);
 
     println!("{:?}", result);

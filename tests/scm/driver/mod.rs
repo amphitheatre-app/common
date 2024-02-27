@@ -13,5 +13,6 @@
 // limitations under the License.
 
 mod amtogit;
+mod atomgit;
 mod github;
 mod gitlab;

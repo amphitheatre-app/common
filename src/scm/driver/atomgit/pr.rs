@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitFile {
+pub struct AtomGitFile {
     pub sha: String,
     pub filename: String,
     pub status: String,

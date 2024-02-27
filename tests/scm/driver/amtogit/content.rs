@@ -15,7 +15,7 @@
 use crate::common::mock;
 use amp_common::scm::content::ContentService;
 use amp_common::scm::driver::atomgit::constants::ATOMGIT_PATH_CONTENTS;
-use amp_common::scm::driver::atomgit::content::AtomgitContentService;
+use amp_common::scm::driver::atomgit::content::AtomGitContentService;
 
 #[test]
 fn test_find() {
@@ -27,7 +27,7 @@ fn test_find() {
         .replace("{file}", file);
     let setup = mock("GET", &path, "scm/amtogit/contents/get-readme-success");
 
-    let service = AtomgitContentService { client: setup.0 };
+    let service = AtomGitContentService { client: setup.0 };
     let result = service.find(repo, file, "master");
 
     assert!(result.is_ok());

@@ -27,7 +27,7 @@ use crate::utils::http::host;
 pub enum Driver {
     Github(github::driver::GithubDriver),
     Gitlab(gitlab::driver::GitlabDriver),
-    Atomgit(atomgit::driver::AtomgitDriver),
+    AtomGit(atomgit::driver::AtomGitDriver),
 }
 
 /// Defines the methods that a SCM driver must implement.
@@ -42,7 +42,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.contents(),
             Driver::Gitlab(driver) => driver.contents(),
-            Driver::Atomgit(driver) => driver.contents(),
+            Driver::AtomGit(driver) => driver.contents(),
         }
     }
 
@@ -50,7 +50,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.git(),
             Driver::Gitlab(driver) => driver.git(),
-            Driver::Atomgit(driver) => driver.git(),
+            Driver::AtomGit(driver) => driver.git(),
         }
     }
 
@@ -58,7 +58,7 @@ impl DriverTrait for Driver {
         match self {
             Driver::Github(driver) => driver.repositories(),
             Driver::Gitlab(driver) => driver.repositories(),
-            Driver::Atomgit(driver) => driver.repositories(),
+            Driver::AtomGit(driver) => driver.repositories(),
         }
     }
 }

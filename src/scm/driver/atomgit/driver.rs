@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::content::AtomgitContentService;
+use super::content::AtomGitContentService;
 use super::git::AtomGitService;
-use super::repo::AtomgitRepoService;
+use super::repo::AtomGitRepoService;
 use crate::http::Client;
 use crate::scm::content::ContentService;
 use crate::scm::driver::DriverTrait;
 use crate::scm::git::GitService;
 use crate::scm::repo::RepositoryService;
 
-pub struct AtomgitDriver {
+pub struct AtomGitDriver {
     pub client: Client,
 }
 
-impl DriverTrait for AtomgitDriver {
+impl DriverTrait for AtomGitDriver {
     fn contents(&self) -> Box<dyn ContentService> {
-        Box::new(AtomgitContentService {
+        Box::new(AtomGitContentService {
             client: self.client.clone(),
         })
     }
@@ -39,7 +39,7 @@ impl DriverTrait for AtomgitDriver {
     }
 
     fn repositories(&self) -> Box<dyn RepositoryService> {
-        Box::new(AtomgitRepoService {
+        Box::new(AtomGitRepoService {
             client: self.client.clone(),
         })
     }

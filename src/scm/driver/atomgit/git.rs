@@ -19,7 +19,7 @@ use super::constants::{
     ATOMGIT_PATH_BRANCHES, ATOMGIT_PATH_COMMITS, ATOMGIT_PATH_GIT_TREES, ATOMGIT_PATH_TAGS,
 };
 use super::utils::convert_list_options;
-use super::AtomgitFile;
+use super::AtomGitFile;
 use crate::http::{Client, Endpoint};
 use crate::scm::client::ListOptions;
 use crate::scm::git::{Commit, GitService, Reference, Signature, Tree, TreeEntry};
@@ -37,7 +37,7 @@ impl GitService for AtomGitService {
     fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = ATOMGIT_PATH_BRANCHES.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<AtomgitBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<AtomGitBranchesEndpoint>(&path, options)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -53,7 +53,7 @@ impl GitService for AtomGitService {
     fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = ATOMGIT_PATH_TAGS.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<AtomgitBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<AtomGitBranchesEndpoint>(&path, options)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -70,7 +70,7 @@ impl GitService for AtomGitService {
         let path = ATOMGIT_PATH_COMMITS
             .replace("{repo}", repo)
             .replace("{reference}", reference);
-        let res = self.client.get::<AtomgitCommitEndpoint>(&path, None)?;
+        let res = self.client.get::<AtomGitCommitEndpoint>(&path, None)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -86,7 +86,7 @@ impl GitService for AtomGitService {
         let options = recursive
             .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
             .unwrap_or_default();
-        let res = self.client.get::<AtomgitTreeEndpoint>(&path, options)?;
+        let res = self.client.get::<AtomGitTreeEndpoint>(&path, options)?;
         let option = res.data.unwrap();
         let tree = Tree {
             tree: option,
@@ -97,14 +97,14 @@ impl GitService for AtomGitService {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitBranch {
+pub struct AtomGitBranch {
     pub name: String,
-    pub commit: AtomgitSimpleCommit,
+    pub commit: AtomGitSimpleCommit,
     pub protected: bool,
 }
 
-impl From<&AtomgitBranch> for Reference {
-    fn from(val: &AtomgitBranch) -> Self {
+impl From<&AtomGitBranch> for Reference {
+    fn from(val: &AtomGitBranch) -> Self {
         Self {
             name: utils::trim_ref(&val.name),
             path: utils::expand_ref(&val.name, "refs/heads/"),
@@ -114,23 +114,23 @@ impl From<&AtomgitBranch> for Reference {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitSimpleCommit {
+pub struct AtomGitSimpleCommit {
     pub sha: String,
     pub url: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitCommit {
+pub struct AtomGitCommit {
     pub sha: String,
     pub html_url: Option<String>,
-    pub commit: AtomgitCommitObject,
-    pub author: Option<AtomgitAuthor>,
-    pub committer: Option<AtomgitAuthor>,
-    pub files: Vec<AtomgitFile>,
+    pub commit: AtomGitCommitObject,
+    pub author: Option<AtomGitAuthor>,
+    pub committer: Option<AtomGitAuthor>,
+    pub files: Vec<AtomGitFile>,
 }
 
-impl From<AtomgitCommit> for Commit {
-    fn from(val: AtomgitCommit) -> Self {
+impl From<AtomGitCommit> for Commit {
+    fn from(val: AtomGitCommit) -> Self {
         Self {
             sha: val.sha,
             message: val.commit.message.unwrap_or_default(),
@@ -138,15 +138,15 @@ impl From<AtomgitCommit> for Commit {
                 name: val.commit.author.name,
                 email: val.commit.author.email,
                 date: val.commit.author.date,
-                login: Some(val.author.unwrap_or_default().login),
-                avatar: Some(val.author.unwrap_or_default().avatar_url),
+                login: Some(val.author.clone().unwrap_or_default().login),
+                avatar: Some(val.author.clone().unwrap_or_default().avatar_url),
             },
             committer: Signature {
                 name: val.commit.committer.name,
                 email: val.commit.committer.email,
                 date: val.commit.committer.date,
-                login: Some(val.committer.unwrap_or_default().login),
-                avatar: Some(val.committer.unwrap_or_default().avatar_url),
+                login: Some(val.committer.clone().unwrap_or_default().login),
+                avatar: Some(val.committer.clone().unwrap_or_default().avatar_url),
             },
             link: val.html_url.unwrap_or_default(),
         }
@@ -154,46 +154,46 @@ impl From<AtomgitCommit> for Commit {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitCommitObject {
-    pub author: AtomgitCommitObjectAuthor,
-    pub committer: AtomgitCommitObjectAuthor,
+pub struct AtomGitCommitObject {
+    pub author: AtomGitCommitObjectAuthor,
+    pub committer: AtomGitCommitObjectAuthor,
     pub message: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitCommitObjectAuthor {
+pub struct AtomGitCommitObjectAuthor {
     pub name: String,
     pub email: String,
     pub date: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Default)]
-pub struct AtomgitAuthor {
+#[derive(Debug, Deserialize, Serialize, Default, Clone)]
+pub struct AtomGitAuthor {
     pub avatar_url: String,
     pub login: String,
 }
 
-struct AtomgitBranchesEndpoint;
+struct AtomGitBranchesEndpoint;
 
-impl Endpoint for AtomgitBranchesEndpoint {
-    type Output = Vec<AtomgitBranch>;
+impl Endpoint for AtomGitBranchesEndpoint {
+    type Output = Vec<AtomGitBranch>;
 }
 
-struct AtomgitCommitEndpoint;
+struct AtomGitCommitEndpoint;
 
-impl Endpoint for AtomgitCommitEndpoint {
-    type Output = AtomgitCommit;
+impl Endpoint for AtomGitCommitEndpoint {
+    type Output = AtomGitCommit;
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitTree {
+pub struct AtomGitTree {
     pub sha: String,
-    pub tree: Vec<AtomgitTreeEntry>,
+    pub tree: Vec<AtomGitTreeEntry>,
     pub truncated: bool,
 }
 
-impl From<AtomgitTree> for Tree {
-    fn from(val: AtomgitTree) -> Self {
+impl From<AtomGitTree> for Tree {
+    fn from(val: AtomGitTree) -> Self {
         Self {
             sha: val.sha,
             tree: val.tree.iter().map(|v| v.into()).collect(),
@@ -203,7 +203,7 @@ impl From<AtomgitTree> for Tree {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitTreeEntry {
+pub struct AtomGitTreeEntry {
     pub mode: String,
     pub path: String,
     pub sha: String,
@@ -212,8 +212,8 @@ pub struct AtomgitTreeEntry {
     pub size: Option<u64>,
 }
 
-impl From<&AtomgitTreeEntry> for TreeEntry {
-    fn from(val: &AtomgitTreeEntry) -> Self {
+impl From<&AtomGitTreeEntry> for TreeEntry {
+    fn from(val: &AtomGitTreeEntry) -> Self {
         Self {
             mode: val.mode.clone(),
             path: val.path.clone(),
@@ -224,8 +224,8 @@ impl From<&AtomgitTreeEntry> for TreeEntry {
     }
 }
 
-struct AtomgitTreeEndpoint;
+struct AtomGitTreeEndpoint;
 
-impl Endpoint for AtomgitTreeEndpoint {
+impl Endpoint for AtomGitTreeEndpoint {
     type Output = Vec<TreeEntry>;
 }

@@ -21,11 +21,11 @@ use super::constants::ATOMGIT_PATH_CONTENTS;
 use crate::http::{Client, Endpoint};
 use crate::scm::content::{Content, ContentService, File};
 
-pub struct AtomgitContentService {
+pub struct AtomGitContentService {
     pub client: Client,
 }
 
-impl ContentService for AtomgitContentService {
+impl ContentService for AtomGitContentService {
     /// Gets the contents of a file in a repository.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
@@ -64,7 +64,7 @@ impl ContentService for AtomgitContentService {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitContent {
+pub struct AtomGitContent {
     pub name: String,
     pub path: String,
     pub sha: String,
@@ -73,10 +73,10 @@ pub struct AtomgitContent {
     pub kind: String,
 }
 
-impl TryFrom<AtomgitContent> for Content {
+impl TryFrom<AtomGitContent> for Content {
     type Error = data_encoding::DecodeError;
 
-    fn try_from(val: AtomgitContent) -> Result<Self, Self::Error> {
+    fn try_from(val: AtomGitContent) -> Result<Self, Self::Error> {
         Ok(Self {
             path: val.path,
             data: BASE64.decode(val.content.as_bytes())?,
@@ -90,12 +90,12 @@ impl TryFrom<AtomgitContent> for Content {
 struct GithubContentEndpoint;
 
 impl Endpoint for GithubContentEndpoint {
-    type Output = AtomgitContent;
+    type Output = AtomGitContent;
 }
 
 /// represents a file in a repository.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct AtomgitFile {
+pub struct AtomGitFile {
     pub name: String,
     pub path: String,
     pub sha: String,
@@ -103,8 +103,8 @@ pub struct AtomgitFile {
     pub kind: String,
 }
 
-impl From<&AtomgitFile> for File {
-    fn from(val: &AtomgitFile) -> Self {
+impl From<&AtomGitFile> for File {
+    fn from(val: &AtomGitFile) -> Self {
         Self {
             name: val.name.clone(),
             path: val.path.clone(),
@@ -118,5 +118,5 @@ impl From<&AtomgitFile> for File {
 struct GithubFileEndpoint;
 
 impl Endpoint for GithubFileEndpoint {
-    type Output = Vec<AtomgitFile>;
+    type Output = Vec<AtomGitFile>;
 }

@@ -25,7 +25,7 @@ const DESCRIPTION: Option<&str> = Some("My first repository on AtomGit!");
 #[test]
 fn test_find() {
     let path = ATOMGIT_PATH_REPOS.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/amtogit/repo/find-repo-success");
+    let setup = mock("GET", &path, "scm/atomgit/repo/find-repo-success");
 
     let service = AtomGitRepoService { client: setup.0 };
     let result = service.find(REPO);

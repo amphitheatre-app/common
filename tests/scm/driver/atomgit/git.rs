@@ -26,7 +26,7 @@ const REFERENCE: &str = "master";
 #[test]
 fn test_list_branches() {
     let path = ATOMGIT_PATH_BRANCHES.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/amtogit/git/list-branches-success");
+    let setup = mock("GET", &path, "scm/atomgit/git/list-branches-success");
 
     let service = AtomGitService { client: setup.0 };
     let result = service.list_branches(REPO, ListOptions::default());
@@ -38,7 +38,7 @@ fn test_list_branches() {
 #[test]
 fn test_list_tags() {
     let path = ATOMGIT_PATH_TAGS.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/amtogit/git/list-tags-success");
+    let setup = mock("GET", &path, "scm/atomgit/git/list-tags-success");
 
     let service = AtomGitService { client: setup.0 };
     let result = service.list_tags(REPO, ListOptions::default());
@@ -51,7 +51,7 @@ fn test_find_commit() {
     let path = ATOMGIT_PATH_COMMITS
         .replace("{repo}", REPO)
         .replace("{reference}", REFERENCE);
-    let setup = mock("GET", &path, "scm/amtogit/git/find-commit-success");
+    let setup = mock("GET", &path, "scm/atomgit/git/find-commit-success");
 
     let service = AtomGitService { client: setup.0 };
     let result = service.find_commit(REPO, REFERENCE);
@@ -68,7 +68,7 @@ fn test_git_trees() {
         .replace("{repo}", REPO)
         .replace("{tree_sha}", REFERENCE);
 
-    let setup = mock("GET", &path, "scm/amtogit/git/trees-success");
+    let setup = mock("GET", &path, "scm/atomgit/git/trees-success");
     let service = AtomGitService { client: setup.0 };
     let result = service.get_tree(REPO, REFERENCE, Some(true));
     assert!(result.is_ok());

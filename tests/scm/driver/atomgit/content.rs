@@ -25,7 +25,7 @@ fn test_find() {
     let path = ATOMGIT_PATH_CONTENTS
         .replace("{repo}", repo)
         .replace("{file}", file);
-    let setup = mock("GET", &path, "scm/amtogit/contents/get-readme-success");
+    let setup = mock("GET", &path, "scm/atomgit/contents/get-readme-success");
 
     let service = AtomGitContentService { client: setup.0 };
     let result = service.find(repo, file, "master");

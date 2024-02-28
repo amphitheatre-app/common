@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod atomgit;
-mod github;
-mod gitlab;
+use std::collections::HashMap;
+
+use crate::scm::client::ListOptions;
+
+pub fn convert_list_options(opts: ListOptions) -> HashMap<String, String> {
+    let mut options: HashMap<String, String> = HashMap::new();
+
+    if opts.page != 0 {
+        options.insert(String::from("page"), opts.page.to_string());
+    }
+    if opts.size != 0 {
+        options.insert(String::from("per_page"), opts.size.to_string());
+    }
+
+    options
+}

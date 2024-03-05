@@ -30,7 +30,7 @@ tracing = "0.1.37"
 ureq = { version = "2.5.0", features = ["json"] }
 url = "2.3.1"
 utoipa = { version = "4.1.0", features = ["axum_extras", "uuid", "chrono"] }
-validator = { version = "0.16.0", features = ["derive"] }
+validator = { version = "0.17.0", features = ["derive"] }
 
 [dev-dependencies]
 assert_matches = "1.5"

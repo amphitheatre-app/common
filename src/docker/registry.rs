@@ -21,7 +21,7 @@ use super::DockerCredential;
 
 /// Check if the docker image exists on remote registry.
 pub async fn exists(image: &str, credential: Option<DockerCredential>) -> anyhow::Result<bool> {
-    let mut client = Client::new(ClientConfig::default());
+    let client = Client::new(ClientConfig::default());
     let reference: Reference = image.parse()?;
 
     let auth = match credential {

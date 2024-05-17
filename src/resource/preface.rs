@@ -23,7 +23,8 @@ use utoipa::ToSchema;
 #[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize, JsonSchema, ToSchema)]
 pub struct Preface {
     /// The name of the character.
-    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// The preface from registry.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registry: Option<RegisteredPartner>,
@@ -38,7 +39,7 @@ pub struct Preface {
 impl Preface {
     pub fn registry(name: &str, registry: &str, version: &str) -> Self {
         Self {
-            name: name.to_string(),
+            name: Some(name.to_string()),
             registry: Some(RegisteredPartner {
                 registry: Some(registry.to_string()),
                 version: version.to_string(),
@@ -49,7 +50,7 @@ impl Preface {
 
     pub fn repository(repository: &str) -> Self {
         Self {
-            name: repository.to_string(),
+            name: None,
             repository: Some(GitReference::new(repository.to_string())),
             ..Preface::default()
         }
@@ -57,7 +58,7 @@ impl Preface {
 
     pub fn manifest(manifest: &CharacterSpec) -> Self {
         Self {
-            name: manifest.meta.name.clone(),
+            name: Some(manifest.meta.name.clone()),
             manifest: Some(manifest.clone()),
             ..Preface::default()
         }

@@ -15,9 +15,10 @@
 use notify::event::{CreateKind, DataChange, MetadataKind, ModifyKind, RemoveKind};
 use notify::EventKind::{self, Create, Modify, Remove};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 /// EventKinds
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize, ToSchema)]
 pub enum EventKinds {
     /// for initial file synchronization, full override.
     Overwrite,

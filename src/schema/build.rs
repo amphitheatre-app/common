@@ -51,7 +51,7 @@ pub struct Build {
 
 impl Build {
     pub fn env(&self) -> Option<Vec<EnvVar>> {
-        return self.env.as_ref().map(to_env_var);
+        self.env.as_ref().map(to_env_var)
     }
 
     pub fn method(&self) -> BuildMethod {

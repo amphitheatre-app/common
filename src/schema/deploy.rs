@@ -67,7 +67,7 @@ pub struct Deploy {
 /// Helpers for Kubernetes resources.
 impl Deploy {
     pub fn env(&self) -> Option<Vec<EnvVar>> {
-        return self.env.as_ref().map(to_env_var);
+        self.env.as_ref().map(to_env_var)
     }
 
     pub fn container_ports(&self) -> Option<Vec<ContainerPort>> {

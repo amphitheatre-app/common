@@ -40,7 +40,7 @@ impl<'a> Finder<'a> {
     }
 }
 
-impl<'a> Default for Finder<'a> {
+impl Default for Finder<'_> {
     fn default() -> Self {
         Self::new()
     }

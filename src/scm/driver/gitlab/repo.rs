@@ -16,9 +16,10 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 use super::utils::encode;
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
 use crate::scm::constants::Visibility;
 use crate::scm::driver::gitlab::constants::GITLAB_PATH_REPOS;
+use crate::scm::errors::SCMError;
 use crate::scm::repo::{Repository, RepositoryService};
 
 pub struct GitlabRepoService {
@@ -31,9 +32,14 @@ impl RepositoryService for GitlabRepoService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/projects.html#get-single-project
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test
-    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> Result<Option<Repository>, SCMError> {
         let path = GITLAB_PATH_REPOS.replace("{repo}", &encode(repo));
-        let res = self.client.get::<GitlabRepoEndpoint>(&path, None).await?;
+        let res = self
+            .client
+            .get::<GitlabRepository>(&path, None)
+            .await
+            .map_err(SCMError::ClientError)?;
+
         Ok(res.data.map(|v| v.into()))
     }
 }
@@ -96,8 +102,6 @@ impl From<GitlabRepository> for Repository {
     }
 }
 
-struct GitlabRepoEndpoint;
-
-impl Endpoint for GitlabRepoEndpoint {
+impl Endpoint for GitlabRepository {
     type Output = GitlabRepository;
 }

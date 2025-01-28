@@ -68,9 +68,9 @@ impl TryFrom<&RepositoryCredential> for Driver {
 
     fn try_from(credential: &RepositoryCredential) -> Result<Self, Self::Error> {
         match credential.driver.as_str() {
-            "github" => Ok(github::new(&credential.server, credential.token.clone())),
-            "gitlab" => Ok(gitlab::new(&credential.server, credential.token.clone())),
-            "atomgit" => Ok(atomgit::new(&credential.server, credential.token.clone())),
+            "github" => Ok(github::new(&credential.server, credential.token.clone())?),
+            "gitlab" => Ok(gitlab::new(&credential.server, credential.token.clone())?),
+            "atomgit" => Ok(atomgit::new(&credential.server, credential.token.clone())?),
             _ => Err(SCMError::UnknownDriver(credential.driver.to_string())),
         }
     }
@@ -82,9 +82,9 @@ impl TryFrom<&str> for Driver {
     fn try_from(url: &str) -> Result<Self, Self::Error> {
         let server = host(url).ok_or_else(|| SCMError::InvalidRepoAddress(url.to_string()))?;
         match server.as_str() {
-            "github.com" => Ok(github::default()),
-            "gitlab.com" => Ok(gitlab::default()),
-            "atomgit.com" => Ok(atomgit::default()),
+            "github.com" => Ok(github::default()?),
+            "gitlab.com" => Ok(gitlab::default()?),
+            "atomgit.com" => Ok(atomgit::default()?),
             _ => Err(SCMError::UnknownDriver(url.to_string())),
         }
     }

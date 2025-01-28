@@ -51,11 +51,11 @@ mod test {
 
     #[test]
     fn return_git_service() {
-        atomgit::default().git();
+        atomgit::default().unwrap().git();
     }
 
     #[test]
     fn return_repo_service() {
-        atomgit::default().repositories();
+        atomgit::default().unwrap().repositories();
     }
 }

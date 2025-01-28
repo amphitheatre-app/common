@@ -1,0 +1,34 @@
+// Copyright (c) The Amphitheatre Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use serde::de::DeserializeOwned;
+
+/// Defines the Endpoint trait for the different API endpoints
+pub trait Endpoint {
+    type Output: DeserializeOwned;
+}
+
+/// Represents an empty endpoint, used for endpoints that don't return any data
+pub struct Empty;
+
+impl Endpoint for Empty {
+    type Output = ();
+}
+
+/// Represents a JSON value endpoint, used for endpoints that return a raw JSON value
+pub struct JsonValue;
+
+impl Endpoint for JsonValue {
+    type Output = serde_json::Value;
+}

@@ -19,8 +19,9 @@ use std::collections::HashMap;
 use super::constants::{GITHUB_PATH_BRANCHES, GITHUB_PATH_COMMITS, GITHUB_PATH_GIT_TREES, GITHUB_PATH_TAGS};
 use super::utils::convert_list_options;
 use super::GithubFile;
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
 use crate::scm::client::ListOptions;
+use crate::scm::errors::SCMError;
 use crate::scm::git::{Commit, GitService, Reference, Signature, Tree, TreeEntry};
 use crate::scm::utils;
 
@@ -34,10 +35,14 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/branches/branches?apiVersion=2022-11-28#list-branches
     /// Example: https://api.github.com/repos/octocat/Hello-World/branches
-    async fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_branches(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError> {
         let path = GITHUB_PATH_BRANCHES.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchesEndpoint>(&path, options).await?;
+        let res = self
+            .client
+            .get::<Vec<GithubBranch>>(&path, options)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -50,10 +55,14 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-tags
     /// Example: https://api.github.com/repos/octocat/Hello-World/tags
-    async fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_tags(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError> {
         let path = GITHUB_PATH_TAGS.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchesEndpoint>(&path, options).await?;
+        let res = self
+            .client
+            .get::<Vec<GithubBranch>>(&path, options)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -66,11 +75,15 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#get-a-commit
     /// Example: https://api.github.com/repos/octocat/Hello-World/commits/master
-    async fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
+    async fn find_commit(&self, repo: &str, reference: &str) -> Result<Option<Commit>, SCMError> {
         let path = GITHUB_PATH_COMMITS
             .replace("{repo}", repo)
             .replace("{reference}", reference);
-        let res = self.client.get::<GithubCommitEndpoint>(&path, None).await?;
+        let res = self
+            .client
+            .get::<GithubCommit>(&path, None)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -84,14 +97,18 @@ impl GitService for GithubGitService {
         repo: &str,
         tree_sha: &str,
         recursive: Option<bool>,
-    ) -> anyhow::Result<Option<Tree>> {
+    ) -> Result<Option<Tree>, SCMError> {
         let path = GITHUB_PATH_GIT_TREES
             .replace("{repo}", repo)
             .replace("{tree_sha}", tree_sha);
         let options = recursive
             .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
             .unwrap_or_default();
-        let res = self.client.get::<GithubTreeEndpoint>(&path, options).await?;
+        let res = self
+            .client
+            .get::<GithubTree>(&path, options)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -174,15 +191,11 @@ pub struct GithubAuthor {
     pub login: String,
 }
 
-struct GithubBranchesEndpoint;
-
-impl Endpoint for GithubBranchesEndpoint {
+impl Endpoint for Vec<GithubBranch> {
     type Output = Vec<GithubBranch>;
 }
 
-struct GithubCommitEndpoint;
-
-impl Endpoint for GithubCommitEndpoint {
+impl Endpoint for GithubCommit {
     type Output = GithubCommit;
 }
 
@@ -225,8 +238,6 @@ impl From<&GithubTreeEntry> for TreeEntry {
     }
 }
 
-struct GithubTreeEndpoint;
-
-impl Endpoint for GithubTreeEndpoint {
+impl Endpoint for GithubTree {
     type Output = GithubTree;
 }

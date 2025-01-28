@@ -16,6 +16,7 @@ use self::constants::GITLAB_ENDPOINT;
 use self::driver::GitlabDriver;
 use super::Driver;
 use crate::http::Client;
+use crate::scm::errors::SCMError;
 
 pub mod constants;
 pub mod content;
@@ -25,18 +26,18 @@ pub mod repo;
 pub mod utils;
 
 /// Returns a new Gitlab driver using the default gitlab.com address.
-pub fn default() -> Driver {
-    from(Client::new(GITLAB_ENDPOINT, None).expect("Failed to create Gitlab client"))
+pub fn default() -> Result<Driver, SCMError> {
+    from(Client::new(GITLAB_ENDPOINT, None).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new Gitlab driver.
-pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token).expect("Failed to create Gitlab client"))
+pub fn new(url: &str, token: Option<String>) -> Result<Driver, SCMError> {
+    from(Client::new(url, token).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new Gitlab driver using the given client.
-pub fn from(client: Client) -> Driver {
-    Driver::Gitlab(GitlabDriver { client })
+pub fn from(client: Client) -> Result<Driver, SCMError> {
+    Ok(Driver::Gitlab(GitlabDriver { client }))
 }
 
 #[cfg(test)]
@@ -52,8 +53,7 @@ mod test {
 
     #[test]
     fn create_gitlab_driver_from_client() {
-        let _driver =
-            gitlab::from(Client::new(GITLAB_ENDPOINT, None).expect("Failed to create Gitlab client"));
+        let _driver = gitlab::from(Client::new(GITLAB_ENDPOINT, None).unwrap());
     }
 
     #[test]

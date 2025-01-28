@@ -14,7 +14,7 @@
 
 use async_trait::async_trait;
 
-use super::constants::Visibility;
+use super::{constants::Visibility, errors::SCMError};
 
 /// represents a git repository.
 #[derive(Debug)]
@@ -37,5 +37,5 @@ pub struct Repository {
 #[async_trait]
 pub trait RepositoryService {
     /// Returns a repository by name.
-    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>>;
+    async fn find(&self, repo: &str) -> Result<Option<Repository>, SCMError>;
 }

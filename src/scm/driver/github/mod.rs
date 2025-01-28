@@ -25,22 +25,23 @@ use self::driver::GithubDriver;
 use self::pr::GithubFile;
 use super::Driver;
 use crate::http::Client;
+use crate::scm::errors::SCMError;
 
 /// Returns a new GitHub driver using the default api.github.com address.
 #[inline]
-pub fn default() -> Driver {
-    from(Client::new(GITHUB_ENDPOINT, None).expect("Failed to create GitHub client"))
+pub fn default() -> Result<Driver, SCMError> {
+    from(Client::new(GITHUB_ENDPOINT, None).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new GitHub driver.
 #[inline]
-pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token).expect("Failed to create GitHub client"))
+pub fn new(url: &str, token: Option<String>) -> Result<Driver, SCMError> {
+    from(Client::new(url, token).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new GitHub driver using the given client.
-pub fn from(client: Client) -> Driver {
-    Driver::Github(GithubDriver { client })
+pub fn from(client: Client) -> Result<Driver, SCMError> {
+    Ok(Driver::Github(GithubDriver { client }))
 }
 
 #[cfg(test)]
@@ -55,8 +56,7 @@ mod test {
 
     #[test]
     fn create_github_driver_from_client() {
-        let _driver =
-            github::from(Client::new(GITHUB_ENDPOINT, None).expect("Failed to create GitHub client"));
+        let _driver = github::from(Client::new(GITHUB_ENDPOINT, None).unwrap());
     }
 
     #[test]

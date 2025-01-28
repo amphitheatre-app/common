@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::client::ListOptions;
+use super::{client::ListOptions, errors::SCMError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -57,13 +57,13 @@ pub struct Tree {
 #[async_trait]
 pub trait GitService {
     /// Returns a list of git branches.
-    async fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>>;
+    async fn list_branches(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError>;
 
     /// Returns a list of git tags.
-    async fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>>;
+    async fn list_tags(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError>;
 
     /// Finds a git commit by reference
-    async fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>>;
+    async fn find_commit(&self, repo: &str, reference: &str) -> Result<Option<Commit>, SCMError>;
 
     /// Returns a single tree using the SHA1 value or ref name for that tree.
     async fn get_tree(
@@ -71,7 +71,7 @@ pub trait GitService {
         repo: &str,
         tree_sha: &str,
         recursive: Option<bool>,
-    ) -> anyhow::Result<Option<Tree>>;
+    ) -> Result<Option<Tree>, SCMError>;
 }
 #[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct TreeEntry {

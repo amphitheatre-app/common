@@ -20,8 +20,9 @@ use serde::{Deserialize, Serialize};
 
 use super::constants::GITLAB_PATH_CONTENTS;
 use super::utils::{encode, encode_path};
-use crate::http::{Client, Endpoint};
-use crate::scm::content::{Content, ContentService};
+use crate::http::{endpoint::Endpoint, Client};
+use crate::scm::content::{Content, ContentService, File};
+use crate::scm::errors::SCMError;
 
 pub struct GitlabContentService {
     pub client: Client,
@@ -33,30 +34,26 @@ impl ContentService for GitlabContentService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/repository_files.html#get-file-from-repository
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/files/VERSION?ref=master
-    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> Result<Content, SCMError> {
         let path = GITLAB_PATH_CONTENTS
             .replace("{repo}", &encode(repo))
             .replace("{file}", &encode_path(file));
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self
             .client
-            .get::<GitlabContentEndpoint>(&path, Some(options))
-            .await?;
+            .get::<GitlabContent>(&path, Some(options))
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(content) = res.data {
-            Ok(content.try_into()?)
+            Ok(content.try_into().map_err(SCMError::DecodeError)?)
         } else {
-            Err(anyhow::anyhow!("Not found: {}", path))
+            Err(SCMError::NotFound(path))
         }
     }
 
     /// @TODO: Get file list from repository.
-    async fn list(
-        &self,
-        _repo: &str,
-        _path: &str,
-        _reference: &str,
-    ) -> anyhow::Result<Vec<crate::scm::content::File>> {
+    async fn list(&self, _repo: &str, _path: &str, _reference: &str) -> Result<Vec<File>, SCMError> {
         todo!()
     }
 }
@@ -88,8 +85,6 @@ impl TryFrom<GitlabContent> for Content {
     }
 }
 
-struct GitlabContentEndpoint;
-
-impl Endpoint for GitlabContentEndpoint {
+impl Endpoint for GitlabContent {
     type Output = GitlabContent;
 }

@@ -25,22 +25,23 @@ use self::pr::AtomGitFile;
 use super::Driver;
 use crate::http::Client;
 use crate::scm::driver::atomgit::driver::AtomGitDriver;
+use crate::scm::errors::SCMError;
 
 /// Returns a new AtomGit driver using the default api.atomgit.com address.
 #[inline]
-pub fn default() -> Driver {
-    from(Client::new(ATOMGIT_ENDPOINT, None).expect("Failed to create AtomGit client"))
+pub fn default() -> Result<Driver, SCMError> {
+    from(Client::new(ATOMGIT_ENDPOINT, None).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new AtomGit driver.
 #[inline]
-pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token).expect("Failed to create AtomGit client"))
+pub fn new(url: &str, token: Option<String>) -> Result<Driver, SCMError> {
+    from(Client::new(url, token).map_err(SCMError::ClientError)?)
 }
 
 /// Returns a new AtomGit driver using the given client.
-pub fn from(client: Client) -> Driver {
-    Driver::AtomGit(AtomGitDriver { client })
+pub fn from(client: Client) -> Result<Driver, SCMError> {
+    Ok(Driver::AtomGit(AtomGitDriver { client }))
 }
 
 #[cfg(test)]
@@ -55,8 +56,7 @@ mod test {
 
     #[test]
     fn create_atomgit_driver_from_client() {
-        let _driver =
-            atomgit::from(Client::new(ATOMGIT_ENDPOINT, None).expect("Failed to create AtomGit client"));
+        let _driver = atomgit::from(Client::new(ATOMGIT_ENDPOINT, None).unwrap());
     }
 
     #[test]

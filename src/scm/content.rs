@@ -16,6 +16,8 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use super::errors::SCMError;
+
 /// represents a file content in a repository.
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Content {
@@ -40,8 +42,8 @@ pub struct File {
 #[async_trait]
 pub trait ContentService {
     /// Returns the repository file content by path.
-    async fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content>;
+    async fn find(&self, repo: &str, path: &str, reference: &str) -> Result<Content, SCMError>;
 
     /// Returns the file list in a repository folder.
-    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>>;
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> Result<Vec<File>, SCMError>;
 }

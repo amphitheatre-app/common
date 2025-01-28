@@ -15,7 +15,8 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
+use crate::scm::errors::SCMError;
 use crate::scm::repo::{Repository, RepositoryService};
 
 use super::constants::ATOMGIT_PATH_REPOS;
@@ -30,9 +31,13 @@ impl RepositoryService for AtomGitRepoService {
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repository/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation
-    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> Result<Option<Repository>, SCMError> {
         let path = ATOMGIT_PATH_REPOS.replace("{repo}", repo);
-        let res = self.client.get::<AtomGitRepoEndpoint>(&path, None).await?;
+        let res = self
+            .client
+            .get::<AtomGitRepository>(&path, None)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -80,8 +85,6 @@ impl From<AtomGitRepository> for Repository {
     }
 }
 
-struct AtomGitRepoEndpoint;
-
-impl Endpoint for AtomGitRepoEndpoint {
+impl Endpoint for AtomGitRepository {
     type Output = AtomGitRepository;
 }

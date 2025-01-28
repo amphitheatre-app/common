@@ -76,19 +76,19 @@ mod test {
 
     #[test]
     fn call_content_service() {
-        let client = Client::new(github::default());
+        let client = Client::new(github::default().unwrap());
         let _ = client.contents();
     }
 
     #[test]
     fn call_get_service() {
-        let client = Client::new(github::default());
+        let client = Client::new(github::default().unwrap());
         let _ = client.git();
     }
 
     #[test]
     fn call_repo_service() {
-        let client = Client::new(github::default());
+        let client = Client::new(github::default().unwrap());
         let _ = client.repositories();
     }
 }

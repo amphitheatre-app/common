@@ -19,8 +19,9 @@ use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
 use super::constants::ATOMGIT_PATH_CONTENTS;
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
 use crate::scm::content::{Content, ContentService, File};
+use crate::scm::errors::SCMError;
 
 pub struct AtomGitContentService {
     pub client: Client,
@@ -32,20 +33,21 @@ impl ContentService for AtomGitContentService {
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/jia-hao-li
-    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> Result<Content, SCMError> {
         let path = ATOMGIT_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self
             .client
-            .get::<AtomGitContentEndpoint>(&path, Some(options))
-            .await?;
+            .get::<AtomGitContent>(&path, Some(options))
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(content) = res.data {
-            Ok(content.try_into()?)
+            Ok(content.try_into().map_err(SCMError::DecodeError)?)
         } else {
-            Err(anyhow::anyhow!("Not found: {}", path))
+            Err(SCMError::NotFound(path))
         }
     }
 
@@ -53,15 +55,16 @@ impl ContentService for AtomGitContentService {
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/jia-hao-li
-    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> Result<Vec<File>, SCMError> {
         let path = ATOMGIT_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", path);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self
             .client
-            .get::<AtomGitFileEndpoint>(&path, Some(options))
-            .await?;
+            .get::<Vec<AtomGitFile>>(&path, Some(options))
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(list) = res.data {
             return Ok(list.iter().map(|v| v.into()).collect());
@@ -95,9 +98,7 @@ impl TryFrom<AtomGitContent> for Content {
     }
 }
 
-struct AtomGitContentEndpoint;
-
-impl Endpoint for AtomGitContentEndpoint {
+impl Endpoint for AtomGitContent {
     type Output = AtomGitContent;
 }
 
@@ -123,8 +124,6 @@ impl From<&AtomGitFile> for File {
     }
 }
 
-struct AtomGitFileEndpoint;
-
-impl Endpoint for AtomGitFileEndpoint {
+impl Endpoint for Vec<AtomGitFile> {
     type Output = Vec<AtomGitFile>;
 }

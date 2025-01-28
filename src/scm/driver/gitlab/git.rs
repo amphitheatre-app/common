@@ -17,8 +17,9 @@ use serde::{Deserialize, Serialize};
 
 use super::constants::{GITLAB_PATH_BRANCHES, GITLAB_PATH_COMMITS, GITLAB_PATH_TAGS};
 use super::utils::{convert_list_options, encode};
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
 use crate::scm::client::ListOptions;
+use crate::scm::errors::SCMError;
 use crate::scm::git::{Commit, GitService, Reference, Signature, Tree};
 use crate::scm::utils;
 
@@ -32,10 +33,14 @@ impl GitService for GitlabGitService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/branches.html#list-repository-branches
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/branches
-    async fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_branches(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError> {
         let path = GITLAB_PATH_BRANCHES.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options).await?;
+        let res = self
+            .client
+            .get::<Vec<GitlabBranch>>(&path, options)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -48,10 +53,14 @@ impl GitService for GitlabGitService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/tags.html#list-project-repository-tags
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/tags
-    async fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_tags(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError> {
         let path = GITLAB_PATH_TAGS.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options).await?;
+        let res = self
+            .client
+            .get::<Vec<GitlabBranch>>(&path, options)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -64,11 +73,15 @@ impl GitService for GitlabGitService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/commits/master
-    async fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
+    async fn find_commit(&self, repo: &str, reference: &str) -> Result<Option<Commit>, SCMError> {
         let path = GITLAB_PATH_COMMITS
             .replace("{repo}", &encode(repo))
             .replace("{reference}", reference);
-        let res = self.client.get::<GitlabCommitEndpoint>(&path, None).await?;
+        let res = self
+            .client
+            .get::<GitlabCommit>(&path, None)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -79,7 +92,7 @@ impl GitService for GitlabGitService {
         _repo: &str,
         _tree_sha: &str,
         _recursive: Option<bool>,
-    ) -> anyhow::Result<Option<Tree>> {
+    ) -> Result<Option<Tree>, SCMError> {
         todo!()
     }
 }
@@ -100,9 +113,7 @@ impl From<&GitlabBranch> for Reference {
     }
 }
 
-struct GitlabBranchesEndpoint;
-
-impl Endpoint for GitlabBranchesEndpoint {
+impl Endpoint for Vec<GitlabBranch> {
     type Output = Vec<GitlabBranch>;
 }
 
@@ -144,8 +155,7 @@ impl From<GitlabCommit> for Commit {
         }
     }
 }
-struct GitlabCommitEndpoint;
 
-impl Endpoint for GitlabCommitEndpoint {
+impl Endpoint for GitlabCommit {
     type Output = GitlabCommit;
 }

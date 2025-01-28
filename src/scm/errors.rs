@@ -4,15 +4,21 @@ use crate::http::HTTPError;
 
 #[derive(Debug, Error)]
 pub enum SCMError {
-    #[error("ClientError: {0}")]
+    #[error("Client Error: {0}")]
     ClientError(#[source] HTTPError),
 
-    #[error("InvalidRepoAddress: {0}")]
+    #[error("Invalid Repo Address: {0}")]
     InvalidRepoAddress(String),
 
-    #[error("UnknownDriver: {0}")]
+    #[error("Unknown Driver: {0}")]
     UnknownDriver(String),
 
-    #[error("InvalidHostname")]
+    #[error("Invalid Hostname")]
     InvalidHostname,
+
+    #[error("Decode Error: {0}")]
+    DecodeError(#[source] data_encoding::DecodeError),
+
+    #[error("Not Found: {0}")]
+    NotFound(String),
 }

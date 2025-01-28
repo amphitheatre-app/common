@@ -15,7 +15,8 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
+use crate::scm::errors::SCMError;
 use crate::scm::repo::{Repository, RepositoryService};
 
 use super::constants::GITHUB_PATH_REPOS;
@@ -30,9 +31,13 @@ impl RepositoryService for GithubRepoService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
     /// Example: https://api.github.com/repos/octocat/Hello-World
-    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> Result<Option<Repository>, SCMError> {
         let path = GITHUB_PATH_REPOS.replace("{repo}", repo);
-        let res = self.client.get::<GithubRepoEndpoint>(&path, None).await?;
+        let res = self
+            .client
+            .get::<GithubRepository>(&path, None)
+            .await
+            .map_err(SCMError::ClientError)?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -80,8 +85,6 @@ impl From<GithubRepository> for Repository {
     }
 }
 
-struct GithubRepoEndpoint;
-
-impl Endpoint for GithubRepoEndpoint {
+impl Endpoint for GithubRepository {
     type Output = GithubRepository;
 }

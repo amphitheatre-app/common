@@ -19,8 +19,9 @@ use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
 use super::constants::GITHUB_PATH_CONTENTS;
-use crate::http::{Client, Endpoint};
+use crate::http::{endpoint::Endpoint, Client};
 use crate::scm::content::{Content, ContentService, File};
+use crate::scm::errors::SCMError;
 
 pub struct GithubContentService {
     pub client: Client,
@@ -32,20 +33,21 @@ impl ContentService for GithubContentService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README
-    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> Result<Content, SCMError> {
         let path = GITHUB_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self
             .client
-            .get::<GithubContentEndpoint>(&path, Some(options))
-            .await?;
+            .get::<GithubContent>(&path, Some(options))
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(content) = res.data {
-            Ok(content.try_into()?)
+            Ok(content.try_into().map_err(SCMError::DecodeError)?)
         } else {
-            Err(anyhow::anyhow!("Not found: {}", path))
+            Err(SCMError::NotFound(path))
         }
     }
 
@@ -53,15 +55,16 @@ impl ContentService for GithubContentService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/
-    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> Result<Vec<File>, SCMError> {
         let path = GITHUB_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", path);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
         let res = self
             .client
-            .get::<GithubFileEndpoint>(&path, Some(options))
-            .await?;
+            .get::<Vec<GithubFile>>(&path, Some(options))
+            .await
+            .map_err(SCMError::ClientError)?;
 
         if let Some(list) = res.data {
             return Ok(list.iter().map(|v| v.into()).collect());
@@ -95,9 +98,7 @@ impl TryFrom<GithubContent> for Content {
     }
 }
 
-struct GithubContentEndpoint;
-
-impl Endpoint for GithubContentEndpoint {
+impl Endpoint for GithubContent {
     type Output = GithubContent;
 }
 
@@ -123,8 +124,6 @@ impl From<&GithubFile> for File {
     }
 }
 
-struct GithubFileEndpoint;
-
-impl Endpoint for GithubFileEndpoint {
+impl Endpoint for Vec<GithubFile> {
     type Output = Vec<GithubFile>;
 }

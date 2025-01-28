@@ -16,13 +16,13 @@ use std::collections::HashMap;
 
 use reqwest::{
     header::{self, HeaderValue},
-    ClientBuilder, RequestBuilder, StatusCode,
+    ClientBuilder, RequestBuilder,
 };
-use serde::de::DeserializeOwned;
+use serde::Serialize;
 use serde_json::{from_value, Value};
 use url::Url;
 
-use super::HTTPError;
+use super::{endpoint::Endpoint, HTTPError, Response};
 
 /// Represents the Rust client for the API
 ///
@@ -41,22 +41,6 @@ use super::HTTPError;
 pub struct Client {
     base_url: Url,
     client: reqwest::Client,
-}
-
-/// Defines the Endpoint trait for the different API endpoints
-pub trait Endpoint {
-    type Output: DeserializeOwned;
-}
-
-/// Represents the response from an API call
-#[derive(Debug)]
-pub struct Response<T> {
-    /// The HTTP Status Code
-    pub status: StatusCode,
-    /// The object or a Vec<T> objects (the type `T` will depend on the endpoint).
-    pub data: Option<T>,
-    /// The body as a JSON `Value`
-    pub body: Option<Value>,
 }
 
 impl Client {
@@ -112,11 +96,14 @@ impl Client {
     /// `path`: the path to the endpoint
     /// `options`: optionally a `RequestOptions` with things like pagination,
     /// filtering and sorting
-    pub async fn get<E: Endpoint>(
+    pub async fn get<E>(
         &self,
         path: &str,
         options: Option<HashMap<String, String>>,
-    ) -> Result<Response<E::Output>, HTTPError> {
+    ) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+    {
         let mut request = self.client.get(self.url(path)?);
         if let Some(options) = options {
             for (key, value) in options {
@@ -132,11 +119,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub async fn post<E: Endpoint>(
-        &self,
-        path: &str,
-        data: &Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
+    pub async fn post<E, T>(&self, path: &str, data: &T) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+        T: Serialize + ?Sized,
+    {
         let request = self.client.post(self.url(path)?).json(data);
         self.execute::<E>(request).await
     }
@@ -147,11 +134,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub async fn put<E: Endpoint>(
-        &self,
-        path: &str,
-        data: &Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
+    pub async fn put<E, T>(&self, path: &str, data: &T) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+        T: Serialize + ?Sized,
+    {
         let request = self.client.put(self.url(path)?).json(data);
         self.execute::<E>(request).await
     }
@@ -162,11 +149,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub async fn patch<E: Endpoint>(
-        &self,
-        path: &str,
-        data: &Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, HTTPError> {
+    pub async fn patch<E, T>(&self, path: &str, data: &T) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+        T: Serialize + ?Sized,
+    {
         let request = self.client.patch(self.url(path)?).json(data);
         self.execute::<E>(request).await
     }
@@ -176,11 +163,17 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub async fn delete<E: Endpoint>(&self, path: &str) -> Result<Response<E::Output>, HTTPError> {
+    pub async fn delete<E>(&self, path: &str) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+    {
         self.execute::<E>(self.client.delete(self.url(path)?)).await
     }
 
-    async fn execute<E: Endpoint>(&self, request: RequestBuilder) -> Result<Response<E::Output>, HTTPError> {
+    async fn execute<E>(&self, request: RequestBuilder) -> Result<Response<E::Output>, HTTPError>
+    where
+        E: Endpoint,
+    {
         let result = request.send().await;
 
         match result {
@@ -196,8 +189,9 @@ impl Client {
         }
     }
 
+    /// Helper function to create a URL from a path by joining it with the base URL
     #[inline]
-    fn url(&self, path: &str) -> Result<Url, HTTPError> {
+    pub fn url(&self, path: &str) -> Result<Url, HTTPError> {
         self.base_url.join(path).map_err(HTTPError::UrlParse)
     }
 }

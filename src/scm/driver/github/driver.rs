@@ -51,11 +51,11 @@ mod test {
 
     #[test]
     fn return_git_service() {
-        github::default().git();
+        github::default().unwrap().git();
     }
 
     #[test]
     fn return_repo_service() {
-        github::default().repositories();
+        github::default().unwrap().repositories();
     }
 }

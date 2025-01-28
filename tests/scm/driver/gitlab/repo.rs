@@ -23,13 +23,13 @@ const REPO: &str = "octocat/Hello-World";
 const REFERENCE: &str = "master";
 const DESCRIPTION: Option<&str> = Some("Repository used by GitLab CE/EE  and Gitaly tests");
 
-#[test]
-fn test_find() {
+#[tokio::test]
+async fn test_find() {
     let path = GITLAB_PATH_REPOS.replace("{repo}", &encode(REPO));
-    let setup = mock("GET", &path, "scm/gitlab/repo/find-repo-success");
+    let setup = mock("GET", &path, "scm/gitlab/repo/find-repo-success").await;
 
     let service = GitlabRepoService { client: setup.0 };
-    let result = service.find(REPO);
+    let result = service.find(REPO).await;
 
     println!("{:?}", result);
     assert!(result.is_ok());

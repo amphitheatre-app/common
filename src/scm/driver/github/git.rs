@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -27,15 +28,16 @@ pub struct GithubGitService {
     pub client: Client,
 }
 
+#[async_trait]
 impl GitService for GithubGitService {
     /// Returns a list of branches for the specified repository.
     ///
     /// Docs: https://docs.github.com/en/rest/branches/branches?apiVersion=2022-11-28#list-branches
     /// Example: https://api.github.com/repos/octocat/Hello-World/branches
-    fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITHUB_PATH_BRANCHES.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchesEndpoint>(&path, options).await?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -48,10 +50,10 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-tags
     /// Example: https://api.github.com/repos/octocat/Hello-World/tags
-    fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITHUB_PATH_TAGS.replace("{repo}", repo);
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GithubBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubBranchesEndpoint>(&path, options).await?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -64,11 +66,11 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#get-a-commit
     /// Example: https://api.github.com/repos/octocat/Hello-World/commits/master
-    fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
+    async fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
         let path = GITHUB_PATH_COMMITS
             .replace("{repo}", repo)
             .replace("{reference}", reference);
-        let res = self.client.get::<GithubCommitEndpoint>(&path, None)?;
+        let res = self.client.get::<GithubCommitEndpoint>(&path, None).await?;
 
         Ok(res.data.map(|v| v.into()))
     }
@@ -77,14 +79,19 @@ impl GitService for GithubGitService {
     ///
     /// Docs: https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree
     /// Example: https://api.github.com/repos/octocat/Hello-World/git/trees/master
-    fn get_tree(&self, repo: &str, tree_sha: &str, recursive: Option<bool>) -> anyhow::Result<Option<Tree>> {
+    async fn get_tree(
+        &self,
+        repo: &str,
+        tree_sha: &str,
+        recursive: Option<bool>,
+    ) -> anyhow::Result<Option<Tree>> {
         let path = GITHUB_PATH_GIT_TREES
             .replace("{repo}", repo)
             .replace("{tree_sha}", tree_sha);
         let options = recursive
             .map(|r| Some(HashMap::from([("recursive".to_string(), r.to_string())])))
             .unwrap_or_default();
-        let res = self.client.get::<GithubTreeEndpoint>(&path, options)?;
+        let res = self.client.get::<GithubTreeEndpoint>(&path, options).await?;
 
         Ok(res.data.map(|v| v.into()))
     }

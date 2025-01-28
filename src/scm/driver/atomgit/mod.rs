@@ -26,19 +26,19 @@ use super::Driver;
 use crate::http::Client;
 use crate::scm::driver::atomgit::driver::AtomGitDriver;
 
-/// Returns a new atomgit driver using the default api.atomgit.com address.
+/// Returns a new AtomGit driver using the default api.atomgit.com address.
 #[inline]
 pub fn default() -> Driver {
-    from(Client::new(ATOMGIT_ENDPOINT, None))
+    from(Client::new(ATOMGIT_ENDPOINT, None).expect("Failed to create AtomGit client"))
 }
 
-/// Returns a new atomgit driver.
+/// Returns a new AtomGit driver.
 #[inline]
 pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token))
+    from(Client::new(url, token).expect("Failed to create AtomGit client"))
 }
 
-/// Returns a new atomgit driver using the given client.
+/// Returns a new AtomGit driver using the given client.
 pub fn from(client: Client) -> Driver {
     Driver::AtomGit(AtomGitDriver { client })
 }
@@ -55,7 +55,8 @@ mod test {
 
     #[test]
     fn create_atomgit_driver_from_client() {
-        let _driver = atomgit::from(Client::new(ATOMGIT_ENDPOINT, None));
+        let _driver =
+            atomgit::from(Client::new(ATOMGIT_ENDPOINT, None).expect("Failed to create AtomGit client"));
     }
 
     #[test]

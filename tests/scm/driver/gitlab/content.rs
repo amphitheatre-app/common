@@ -18,18 +18,18 @@ use amp_common::scm::driver::gitlab::constants::GITLAB_PATH_CONTENTS;
 use amp_common::scm::driver::gitlab::content::GitlabContentService;
 use amp_common::scm::driver::gitlab::utils::{encode, encode_path};
 
-#[test]
-fn test_find() {
+#[tokio::test]
+async fn test_find() {
     let repo = "gitlab-org/gitlab-test";
     let file = "VERSION";
 
     let path = GITLAB_PATH_CONTENTS
         .replace("{repo}", &encode(repo))
         .replace("{file}", &encode_path(file));
-    let setup = mock("GET", &path, "scm/gitlab/contents/get-readme-success");
+    let setup = mock("GET", &path, "scm/gitlab/contents/get-readme-success").await;
 
     let service = GitlabContentService { client: setup.0 };
-    let result = service.find(repo, file, "master");
+    let result = service.find(repo, file, "master").await;
 
     assert!(result.is_ok());
     let content = result.unwrap();

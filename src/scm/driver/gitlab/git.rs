@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 use super::constants::{GITLAB_PATH_BRANCHES, GITLAB_PATH_COMMITS, GITLAB_PATH_TAGS};
@@ -25,15 +26,16 @@ pub struct GitlabGitService {
     pub client: Client,
 }
 
+#[async_trait]
 impl GitService for GitlabGitService {
     /// List repository branches.
     ///
     /// Docs: https://docs.gitlab.com/ee/api/branches.html#list-repository-branches
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/branches
-    fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_branches(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITLAB_PATH_BRANCHES.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options).await?;
 
         if let Some(branches) = res.data {
             return Ok(branches.iter().map(|v| v.into()).collect());
@@ -46,10 +48,10 @@ impl GitService for GitlabGitService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/tags.html#list-project-repository-tags
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/tags
-    fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
+    async fn list_tags(&self, repo: &str, opts: ListOptions) -> anyhow::Result<Vec<Reference>> {
         let path = GITLAB_PATH_TAGS.replace("{repo}", &encode(repo));
         let options = Some(convert_list_options(opts));
-        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options)?;
+        let res = self.client.get::<GitlabBranchesEndpoint>(&path, options).await?;
 
         if let Some(tags) = res.data {
             return Ok(tags.iter().map(|v| v.into()).collect());
@@ -62,17 +64,17 @@ impl GitService for GitlabGitService {
     ///
     /// Docs: https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/commits/master
-    fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
+    async fn find_commit(&self, repo: &str, reference: &str) -> anyhow::Result<Option<Commit>> {
         let path = GITLAB_PATH_COMMITS
             .replace("{repo}", &encode(repo))
             .replace("{reference}", reference);
-        let res = self.client.get::<GitlabCommitEndpoint>(&path, None)?;
+        let res = self.client.get::<GitlabCommitEndpoint>(&path, None).await?;
 
         Ok(res.data.map(|v| v.into()))
     }
 
     /// @TODO: Get a tree of a project.
-    fn get_tree(
+    async fn get_tree(
         &self,
         _repo: &str,
         _tree_sha: &str,

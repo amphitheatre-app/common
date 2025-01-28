@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 use crate::http::{Client, Endpoint};
@@ -23,14 +24,15 @@ pub struct GithubRepoService {
     pub client: Client,
 }
 
+#[async_trait]
 impl RepositoryService for GithubRepoService {
     /// Returns a repository by name.
     ///
     /// Docs: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#get-a-repository
     /// Example: https://api.github.com/repos/octocat/Hello-World
-    fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
         let path = GITHUB_PATH_REPOS.replace("{repo}", repo);
-        let res = self.client.get::<GithubRepoEndpoint>(&path, None)?;
+        let res = self.client.get::<GithubRepoEndpoint>(&path, None).await?;
 
         Ok(res.data.map(|v| v.into()))
     }

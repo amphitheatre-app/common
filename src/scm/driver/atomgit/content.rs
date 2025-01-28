@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use async_trait::async_trait;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
@@ -25,17 +26,21 @@ pub struct AtomGitContentService {
     pub client: Client,
 }
 
+#[async_trait]
 impl ContentService for AtomGitContentService {
     /// Gets the contents of a file in a repository.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/jia-hao-li
-    fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
         let path = ATOMGIT_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<AtomGitContentEndpoint>(&path, Some(options))?;
+        let res = self
+            .client
+            .get::<AtomGitContentEndpoint>(&path, Some(options))
+            .await?;
 
         if let Some(content) = res.data {
             Ok(content.try_into()?)
@@ -48,12 +53,15 @@ impl ContentService for AtomGitContentService {
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repo-conent/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation/contents/jia-hao-li
-    fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
         let path = ATOMGIT_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", path);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<AtomGitFileEndpoint>(&path, Some(options))?;
+        let res = self
+            .client
+            .get::<AtomGitFileEndpoint>(&path, Some(options))
+            .await?;
 
         if let Some(list) = res.data {
             return Ok(list.iter().map(|v| v.into()).collect());

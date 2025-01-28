@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use async_trait::async_trait;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
@@ -25,17 +26,21 @@ pub struct GithubContentService {
     pub client: Client,
 }
 
+#[async_trait]
 impl ContentService for GithubContentService {
     /// Gets the contents of a file in a repository.
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/README
-    fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
         let path = GITHUB_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", file);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<GithubContentEndpoint>(&path, Some(options))?;
+        let res = self
+            .client
+            .get::<GithubContentEndpoint>(&path, Some(options))
+            .await?;
 
         if let Some(content) = res.data {
             Ok(content.try_into()?)
@@ -48,12 +53,15 @@ impl ContentService for GithubContentService {
     ///
     /// Docs: https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     /// Example: https://api.github.com/repos/octocat/Hello-World/contents/
-    fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>> {
         let path = GITHUB_PATH_CONTENTS
             .replace("{repo}", repo)
             .replace("{file}", path);
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<GithubFileEndpoint>(&path, Some(options))?;
+        let res = self
+            .client
+            .get::<GithubFileEndpoint>(&path, Some(options))
+            .await?;
 
         if let Some(list) = res.data {
             return Ok(list.iter().map(|v| v.into()).collect());

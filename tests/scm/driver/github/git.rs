@@ -23,51 +23,51 @@ use amp_common::scm::git::GitService;
 const REPO: &str = "octocat/Hello-World";
 const REFERENCE: &str = "master";
 
-#[test]
-fn test_list_branches() {
+#[tokio::test]
+async fn test_list_branches() {
     let path = GITHUB_PATH_BRANCHES.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/github/git/list-branches-success");
+    let setup = mock("GET", &path, "scm/github/git/list-branches-success").await;
 
     let service = GithubGitService { client: setup.0 };
-    let result = service.list_branches(REPO, ListOptions::default());
+    let result = service.list_branches(REPO, ListOptions::default()).await;
     assert!(result.is_ok());
     assert!(result.unwrap().iter().any(|v| v.name.eq(&REFERENCE.to_string())));
 }
 
-#[test]
-fn test_list_tags() {
+#[tokio::test]
+async fn test_list_tags() {
     let path = GITHUB_PATH_TAGS.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/github/git/list-tags-success");
+    let setup = mock("GET", &path, "scm/github/git/list-tags-success").await;
 
     let service = GithubGitService { client: setup.0 };
-    let result = service.list_tags(REPO, ListOptions::default());
+    let result = service.list_tags(REPO, ListOptions::default()).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), vec![]);
 }
 
-#[test]
-fn test_find_commit() {
+#[tokio::test]
+async fn test_find_commit() {
     let path = GITHUB_PATH_COMMITS
         .replace("{repo}", REPO)
         .replace("{reference}", REFERENCE);
-    let setup = mock("GET", &path, "scm/github/git/find-commit-success");
+    let setup = mock("GET", &path, "scm/github/git/find-commit-success").await;
 
     let service = GithubGitService { client: setup.0 };
-    let result = service.find_commit(REPO, REFERENCE);
+    let result = service.find_commit(REPO, REFERENCE).await;
     assert!(result.is_ok());
 
     let commit = result.unwrap().unwrap();
     assert_eq!(commit.sha, "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d".to_string());
 }
 
-#[test]
-fn test_git_trees() {
+#[tokio::test]
+async fn test_git_trees() {
     let path = GITHUB_PATH_GIT_TREES
         .replace("{repo}", REPO)
         .replace("{tree_sha}", REFERENCE);
 
-    let setup = mock("GET", &path, "scm/github/git/trees-success");
+    let setup = mock("GET", &path, "scm/github/git/trees-success").await;
     let service = GithubGitService { client: setup.0 };
-    let result = service.get_tree(REPO, REFERENCE, Some(true));
+    let result = service.get_tree(REPO, REFERENCE, Some(true)).await;
     assert!(result.is_ok());
 }

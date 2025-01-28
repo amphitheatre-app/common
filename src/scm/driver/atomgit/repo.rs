@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 use crate::http::{Client, Endpoint};
@@ -23,14 +24,15 @@ pub struct AtomGitRepoService {
     pub client: Client,
 }
 
+#[async_trait]
 impl RepositoryService for AtomGitRepoService {
     /// Returns a repository by name.
     ///
     /// Docs: https://docs.atomgit.com/en/openAPI/api_versioned/get-repository/
     /// Example: https://api.atomgit.com/repos/jia-hao-li/atomgit_evaluation
-    fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
         let path = ATOMGIT_PATH_REPOS.replace("{repo}", repo);
-        let res = self.client.get::<AtomGitRepoEndpoint>(&path, None)?;
+        let res = self.client.get::<AtomGitRepoEndpoint>(&path, None).await?;
 
         Ok(res.data.map(|v| v.into()))
     }

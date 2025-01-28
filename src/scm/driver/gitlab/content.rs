@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use async_trait::async_trait;
 use data_encoding::BASE64_MIME as BASE64;
 use serde::{Deserialize, Serialize};
 
@@ -26,17 +27,21 @@ pub struct GitlabContentService {
     pub client: Client,
 }
 
+#[async_trait]
 impl ContentService for GitlabContentService {
     /// Get file from repository.
     ///
     /// Docs: https://docs.gitlab.com/ee/api/repository_files.html#get-file-from-repository
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test/repository/files/VERSION?ref=master
-    fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
+    async fn find(&self, repo: &str, file: &str, reference: &str) -> anyhow::Result<Content> {
         let path = GITLAB_PATH_CONTENTS
             .replace("{repo}", &encode(repo))
             .replace("{file}", &encode_path(file));
         let options = HashMap::from([("ref".to_string(), reference.to_string())]);
-        let res = self.client.get::<GitlabContentEndpoint>(&path, Some(options))?;
+        let res = self
+            .client
+            .get::<GitlabContentEndpoint>(&path, Some(options))
+            .await?;
 
         if let Some(content) = res.data {
             Ok(content.try_into()?)
@@ -46,7 +51,7 @@ impl ContentService for GitlabContentService {
     }
 
     /// @TODO: Get file list from repository.
-    fn list(
+    async fn list(
         &self,
         _repo: &str,
         _path: &str,

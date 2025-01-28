@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
+
 use super::constants::Visibility;
 
 /// represents a git repository.
@@ -32,7 +34,8 @@ pub struct Repository {
 }
 
 /// Provides access to repository resources.
+#[async_trait]
 pub trait RepositoryService {
     /// Returns a repository by name.
-    fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>>;
+    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>>;
 }

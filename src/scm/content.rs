@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -36,10 +37,11 @@ pub struct File {
 }
 
 /// Provides access to repository content.
+#[async_trait]
 pub trait ContentService {
     /// Returns the repository file content by path.
-    fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content>;
+    async fn find(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Content>;
 
     /// Returns the file list in a repository folder.
-    fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>>;
+    async fn list(&self, repo: &str, path: &str, reference: &str) -> anyhow::Result<Vec<File>>;
 }

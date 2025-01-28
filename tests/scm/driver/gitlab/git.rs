@@ -24,36 +24,36 @@ use amp_common::scm::git::GitService;
 const REPO: &str = "gitlab-org/gitlab-test";
 const REFERENCE: &str = "master";
 
-#[test]
-fn test_list_branches() {
+#[tokio::test]
+async fn test_list_branches() {
     let path = GITLAB_PATH_BRANCHES.replace("{repo}", &encode(REPO));
-    let setup = mock("GET", &path, "scm/gitlab/git/list-branches-success");
+    let setup = mock("GET", &path, "scm/gitlab/git/list-branches-success").await;
 
     let service = GitlabGitService { client: setup.0 };
-    let result = service.list_branches(REPO, ListOptions::default());
+    let result = service.list_branches(REPO, ListOptions::default()).await;
     assert!(result.is_ok());
     assert!(result.unwrap().iter().any(|v| v.name.eq(&"'test'".to_string())));
 }
 
-#[test]
-fn test_list_tags() {
+#[tokio::test]
+async fn test_list_tags() {
     let path = GITLAB_PATH_TAGS.replace("{repo}", &encode(REPO));
-    let setup = mock("GET", &path, "scm/gitlab/git/list-tags-success");
+    let setup = mock("GET", &path, "scm/gitlab/git/list-tags-success").await;
 
     let service = GitlabGitService { client: setup.0 };
-    let result = service.list_tags(REPO, ListOptions::default());
+    let result = service.list_tags(REPO, ListOptions::default()).await;
     assert!(result.is_ok());
 }
 
-#[test]
-fn test_find_commit() {
+#[tokio::test]
+async fn test_find_commit() {
     let path = GITLAB_PATH_COMMITS
         .replace("{repo}", &encode(REPO))
         .replace("{reference}", REFERENCE);
-    let setup = mock("GET", &path, "scm/gitlab/git/find-commit-success");
+    let setup = mock("GET", &path, "scm/gitlab/git/find-commit-success").await;
 
     let service = GitlabGitService { client: setup.0 };
-    let result = service.find_commit(REPO, REFERENCE);
+    let result = service.find_commit(REPO, REFERENCE).await;
     assert!(result.is_ok());
 
     let commit = result.unwrap().unwrap();

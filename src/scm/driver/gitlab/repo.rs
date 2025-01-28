@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 use super::utils::encode;
@@ -24,14 +25,15 @@ pub struct GitlabRepoService {
     pub client: Client,
 }
 
+#[async_trait]
 impl RepositoryService for GitlabRepoService {
     /// Get single project.
     ///
     /// Docs: https://docs.gitlab.com/ee/api/projects.html#get-single-project
     /// Example: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-test
-    fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
+    async fn find(&self, repo: &str) -> anyhow::Result<Option<Repository>> {
         let path = GITLAB_PATH_REPOS.replace("{repo}", &encode(repo));
-        let res = self.client.get::<GitlabRepoEndpoint>(&path, None)?;
+        let res = self.client.get::<GitlabRepoEndpoint>(&path, None).await?;
         Ok(res.data.map(|v| v.into()))
     }
 }

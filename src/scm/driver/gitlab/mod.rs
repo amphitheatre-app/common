@@ -26,12 +26,12 @@ pub mod utils;
 
 /// Returns a new Gitlab driver using the default gitlab.com address.
 pub fn default() -> Driver {
-    from(Client::new(GITLAB_ENDPOINT, None))
+    from(Client::new(GITLAB_ENDPOINT, None).expect("Failed to create Gitlab client"))
 }
 
 /// Returns a new Gitlab driver.
 pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token))
+    from(Client::new(url, token).expect("Failed to create Gitlab client"))
 }
 
 /// Returns a new Gitlab driver using the given client.
@@ -52,7 +52,8 @@ mod test {
 
     #[test]
     fn create_gitlab_driver_from_client() {
-        let _driver = gitlab::from(Client::new(GITLAB_ENDPOINT, None));
+        let _driver =
+            gitlab::from(Client::new(GITLAB_ENDPOINT, None).expect("Failed to create Gitlab client"));
     }
 
     #[test]

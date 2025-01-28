@@ -17,18 +17,18 @@ use amp_common::scm::content::ContentService;
 use amp_common::scm::driver::atomgit::constants::ATOMGIT_PATH_CONTENTS;
 use amp_common::scm::driver::atomgit::content::AtomGitContentService;
 
-#[test]
-fn test_find() {
+#[tokio::test]
+async fn test_find() {
     let repo = "jia-hao-li/atomgit_evaluation";
     let file = "README";
 
     let path = ATOMGIT_PATH_CONTENTS
         .replace("{repo}", repo)
         .replace("{file}", file);
-    let setup = mock("GET", &path, "scm/atomgit/contents/get-readme-success");
+    let setup = mock("GET", &path, "scm/atomgit/contents/get-readme-success").await;
 
     let service = AtomGitContentService { client: setup.0 };
-    let result = service.find(repo, file, "master");
+    let result = service.find(repo, file, "master").await;
 
     assert!(result.is_ok());
     let content = result.unwrap();

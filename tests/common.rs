@@ -29,7 +29,7 @@ use mockito::{Server, ServerGuard};
 /// `method`: the HTTP method we are going to use (GET, POST, DELETE, ...)
 /// `path`: the path in the server (i.e. `/me`)
 /// `fixture`: the path to the fixture inside the `api` directory
-pub fn mock(method: &str, path: &str, fixture: &str) -> (Client, ServerGuard) {
+pub async fn mock(method: &str, path: &str, fixture: &str) -> (Client, ServerGuard) {
     let file = format!("./tests/fixtures/{}.http", fixture);
     let content =
         fs::read_to_string(file).unwrap_or_else(|_| panic!("Couldn't read the fixture file: {}", fixture));
@@ -46,14 +46,15 @@ pub fn mock(method: &str, path: &str, fixture: &str) -> (Client, ServerGuard) {
     let _ = status_parts.next().expect("Invalid version");
     let status_code = status_parts.next().expect("Invalid status code");
 
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     server
         .mock(method, path)
         .match_query(mockito::Matcher::Any)
         .with_status(status_code.parse().unwrap())
         .with_body(parts[1])
-        .create();
-    let client = Client::new(&server.url(), None);
+        .create_async()
+        .await;
+    let client = Client::new(&server.url(), None).expect("Failed to create client");
 
     (client, server)
 }

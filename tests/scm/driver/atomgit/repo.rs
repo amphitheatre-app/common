@@ -22,13 +22,13 @@ const REPO: &str = "jia-hao-li/atomgit_evaluation";
 const REFERENCE: &str = "master";
 const DESCRIPTION: Option<&str> = Some("My first repository on AtomGit!");
 
-#[test]
-fn test_find() {
+#[tokio::test]
+async fn test_find() {
     let path = ATOMGIT_PATH_REPOS.replace("{repo}", REPO);
-    let setup = mock("GET", &path, "scm/atomgit/repo/find-repo-success");
+    let setup = mock("GET", &path, "scm/atomgit/repo/find-repo-success").await;
 
     let service = AtomGitRepoService { client: setup.0 };
-    let result = service.find(REPO);
+    let result = service.find(REPO).await;
 
     println!("{:?}", result);
     assert!(result.is_ok());

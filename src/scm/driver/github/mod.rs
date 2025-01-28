@@ -29,13 +29,13 @@ use crate::http::Client;
 /// Returns a new GitHub driver using the default api.github.com address.
 #[inline]
 pub fn default() -> Driver {
-    from(Client::new(GITHUB_ENDPOINT, None))
+    from(Client::new(GITHUB_ENDPOINT, None).expect("Failed to create GitHub client"))
 }
 
 /// Returns a new GitHub driver.
 #[inline]
 pub fn new(url: &str, token: Option<String>) -> Driver {
-    from(Client::new(url, token))
+    from(Client::new(url, token).expect("Failed to create GitHub client"))
 }
 
 /// Returns a new GitHub driver using the given client.
@@ -55,7 +55,8 @@ mod test {
 
     #[test]
     fn create_github_driver_from_client() {
-        let _driver = github::from(Client::new(GITHUB_ENDPOINT, None));
+        let _driver =
+            github::from(Client::new(GITHUB_ENDPOINT, None).expect("Failed to create GitHub client"));
     }
 
     #[test]

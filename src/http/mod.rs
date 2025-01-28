@@ -2,8 +2,8 @@ mod client;
 pub mod endpoint;
 mod errors;
 
+use bytes::Bytes;
 use reqwest::StatusCode;
-use serde_json::Value;
 
 // Re-export the client and errors
 pub use self::client::*;
@@ -16,6 +16,6 @@ pub struct Response<T> {
     pub status: StatusCode,
     /// The object or a Vec<T> objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
-    /// The body as a JSON `Value`
-    pub body: Option<Value>,
+    /// The body's raw bytes
+    pub body: Option<Bytes>,
 }

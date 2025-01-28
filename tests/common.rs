@@ -19,8 +19,8 @@ use std::fs;
 use amp_common::http::Client;
 use mockito::{Server, ServerGuard};
 
-/// Creates a mockserver and a client (changing the url of the client
-/// to that of the mockserver to capture the requests).
+/// Creates a mock server and a client (changing the url of the client
+/// to that of the mock server to capture the requests).
 ///
 /// It builds a response struct for the mock server using the fixture.
 ///

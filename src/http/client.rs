@@ -19,7 +19,6 @@ use reqwest::{
     ClientBuilder, RequestBuilder,
 };
 use serde::Serialize;
-use serde_json::{from_value, Value};
 use url::Url;
 
 use super::{endpoint::Endpoint, HTTPError, Response};
@@ -39,7 +38,7 @@ use super::{endpoint::Endpoint, HTTPError, Response};
 /// ```
 #[derive(Clone)]
 pub struct Client {
-    base_url: Url,
+    base_url: String,
     client: reqwest::Client,
 }
 
@@ -59,7 +58,7 @@ impl Client {
     /// `base_url`: the base URL of the API
     /// `token`: the bearer authentication token
     pub fn new(base_url: &str, token: Option<String>) -> Result<Client, HTTPError> {
-        let base_url = Url::parse(base_url).map_err(HTTPError::UrlParse)?;
+        let base_url = String::from(base_url);
 
         // Set the default headers for every request
         let mut headers = header::HeaderMap::new();
@@ -170,6 +169,7 @@ impl Client {
         self.execute::<E>(self.client.delete(self.url(path)?)).await
     }
 
+    /// Executes the request and returns a `Response`
     async fn execute<E>(&self, request: RequestBuilder) -> Result<Response<E::Output>, HTTPError>
     where
         E: Endpoint,
@@ -179,9 +179,14 @@ impl Client {
         match result {
             Ok(response) => {
                 let status = response.status();
-                let json = response.json::<Value>().await.map_err(HTTPError::ReqwestError)?;
-                let data = from_value(json.clone()).map_err(HTTPError::Deserialization)?;
-                let body = Some(json);
+
+                let mut data = None;
+                let body = response.bytes().await.ok();
+                if let Some(bytes) = &body {
+                    data = serde_json::from_slice(bytes)
+                        .map_err(HTTPError::Deserialization)
+                        .ok();
+                }
 
                 Ok(Response { status, data, body })
             }
@@ -192,14 +197,14 @@ impl Client {
     /// Helper function to create a URL from a path by joining it with the base URL
     #[inline]
     pub fn url(&self, path: &str) -> Result<Url, HTTPError> {
-        self.base_url.join(path).map_err(HTTPError::UrlParse)
+        Url::parse(format!("{}{}", self.base_url, path).as_str()).map_err(HTTPError::UrlParse)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::Client;
-    const BASE_URL: &str = "https://cloud.amphitheatre.app/";
+    const BASE_URL: &str = "https://cloud.amphitheatre.app";
 
     #[test]
     fn creates_a_client() {

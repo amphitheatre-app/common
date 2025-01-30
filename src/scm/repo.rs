@@ -35,7 +35,7 @@ pub struct Repository {
 
 /// Provides access to repository resources.
 #[async_trait]
-pub trait RepositoryService {
+pub trait RepositoryService: Send + Sync {
     /// Returns a repository by name.
     async fn find(&self, repo: &str) -> Result<Option<Repository>, SCMError>;
 }

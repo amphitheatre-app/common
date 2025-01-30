@@ -40,7 +40,7 @@ pub struct File {
 
 /// Provides access to repository content.
 #[async_trait]
-pub trait ContentService {
+pub trait ContentService: Send + Sync {
     /// Returns the repository file content by path.
     async fn find(&self, repo: &str, path: &str, reference: &str) -> Result<Content, SCMError>;
 

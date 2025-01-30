@@ -53,9 +53,19 @@ pub struct Tree {
     pub truncated: bool,
 }
 
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
+pub struct TreeEntry {
+    pub mode: String,
+    pub path: String,
+    pub sha: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub size: Option<u64>,
+}
+
 /// Provides access to git resources.
 #[async_trait]
-pub trait GitService {
+pub trait GitService: Send + Sync {
     /// Returns a list of git branches.
     async fn list_branches(&self, repo: &str, opts: ListOptions) -> Result<Vec<Reference>, SCMError>;
 
@@ -69,16 +79,7 @@ pub trait GitService {
     async fn get_tree(
         &self,
         repo: &str,
-        tree_sha: &str,
+        sha: &str,
         recursive: Option<bool>,
     ) -> Result<Option<Tree>, SCMError>;
-}
-#[derive(Debug, Default, PartialEq, Serialize, Deserialize, ToSchema)]
-pub struct TreeEntry {
-    pub mode: String,
-    pub path: String,
-    pub sha: String,
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub size: Option<u64>,
 }

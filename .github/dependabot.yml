@@ -12,10 +12,11 @@ updates:
     labels:
       - "dependencies"
     groups:
-      kube:
+      kube-and-schemars:
         patterns:
           - kube
           - k8s-openapi
+          - schemars
 
   - package-ecosystem: "github-actions"
     directory: "/"

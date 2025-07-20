@@ -29,5 +29,5 @@ pub fn expand_ref(name: &str, prefix: &str) -> String {
         return name.to_string();
     }
 
-    format!("{}/{}", prefix, name)
+    format!("{prefix}/{name}")
 }

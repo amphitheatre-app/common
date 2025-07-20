@@ -74,7 +74,7 @@ impl Client {
         if let Some(token) = token {
             headers.insert(
                 reqwest::header::AUTHORIZATION,
-                HeaderValue::from_str(&format!("Bearer {}", token)).map_err(HTTPError::InvalidHeaderValue)?,
+                HeaderValue::from_str(&format!("Bearer {token}")).map_err(HTTPError::InvalidHeaderValue)?,
             );
         }
 

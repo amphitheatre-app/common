@@ -30,9 +30,9 @@ use mockito::{Server, ServerGuard};
 /// `path`: the path in the server (i.e. `/me`)
 /// `fixture`: the path to the fixture inside the `api` directory
 pub async fn mock(method: &str, path: &str, fixture: &str) -> (Client, ServerGuard) {
-    let file = format!("./tests/fixtures/{}.http", fixture);
+    let file = format!("./tests/fixtures/{fixture}.http");
     let content =
-        fs::read_to_string(file).unwrap_or_else(|_| panic!("Couldn't read the fixture file: {}", fixture));
+        fs::read_to_string(file).unwrap_or_else(|_| panic!("Couldn't read the fixture file: {fixture}"));
 
     // Split the raw response into headers and body parts
     let parts: Vec<&str> = content.split("\r\n\r\n").collect();

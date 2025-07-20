@@ -31,7 +31,7 @@ async fn test_find() {
     let service = GitlabRepoService { client: setup.0 };
     let result = service.find(REPO).await;
 
-    println!("{:?}", result);
+    println!("{result:?}");
     assert!(result.is_ok());
 
     let repo = result.unwrap().unwrap();

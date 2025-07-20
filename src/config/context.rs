@@ -73,7 +73,7 @@ impl ContextConfiguration {
             return Err(anyhow!("Context with name `{}` does not exist", name));
         }
         self.clusters.remove(name);
-        println!("Deleted context with name `{}`", name);
+        println!("Deleted context with name `{name}`");
 
         Ok(())
     }
@@ -100,7 +100,7 @@ impl ContextConfiguration {
         }
 
         self.current = Some(name.to_owned());
-        println!("Set current context to `{}`", name);
+        println!("Set current context to `{name}`");
 
         Ok(())
     }
@@ -113,7 +113,7 @@ impl ContextConfiguration {
 
         self.clusters.insert(name.to_owned(), cluster);
         self.current = Some(name.to_owned());
-        println!("Added context with name `{}`", name);
+        println!("Added context with name `{name}`");
 
         Ok(())
     }

@@ -42,7 +42,7 @@ impl error::Error for Error {
 impl fmt::Display for Error {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Error::Io(err) => write!(fmt, "{}", err),
+            Error::Io(err) => write!(fmt, "{err}"),
         }
     }
 }
@@ -77,8 +77,8 @@ mod test {
         let err = Error::Io(std::io::ErrorKind::PermissionDenied.into());
         let io_err: std::io::Error = std::io::ErrorKind::PermissionDenied.into();
 
-        let err_desc = format!("{}", err);
-        let io_err_desc = format!("{}", io_err);
+        let err_desc = format!("{err}");
+        let io_err_desc = format!("{io_err}");
         assert_eq!(io_err_desc, err_desc);
     }
 }

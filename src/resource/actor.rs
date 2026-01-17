@@ -15,8 +15,8 @@
 use std::fmt::Display;
 
 use convert_case::{Case, Casing};
+use jiff::Timestamp;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::{Condition, Time};
-use k8s_openapi::chrono::Utc;
 use kube::CustomResource;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -148,7 +148,7 @@ impl ActorState {
         Condition {
             type_: state.to_string(),
             status: status.to_string().to_case(Case::Pascal),
-            last_transition_time: Time(Utc::now()),
+            last_transition_time: Time(Timestamp::now()),
             reason: reason.to_case(Case::Pascal),
             observed_generation: None,
             message: match message {

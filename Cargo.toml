@@ -10,31 +10,31 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.100"
-async-trait = "0.1.89"
-bytes = "1.11.0"
-confy = "2.0.0"
-convert_case = "0.11.0"
-data-encoding = "2.10.0"
-dirs = "6.0.0"
+anyhow = "1.0"
+async-trait = "0.1"
+bytes = "1.11"
+confy = "2.0"
+convert_case = "0.11"
+data-encoding = "2.10"
+dirs = "6.0"
 jiff = "0.2"
-json_comments = "0.2.2"
-k8s-openapi = { version = "0.27.0", default-features = false, features = ["schemars", "latest"] }
-kube = { version = "3.0.0", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
-notify = "8.2.0"
-oci-distribution = { version = "0.11.0", default-features = false, features = ["rustls-tls", "test-registry"] }
+json_comments = "0.2"
+k8s-openapi = { version = "0.27", default-features = false, features = ["schemars", "latest"] }
+kube = { version = "3.0", default-features = false, features = ["client", "runtime", "derive", "rustls-tls"] }
+notify = "8.2"
+oci-distribution = { version = "0.11", default-features = false, features = ["rustls-tls", "test-registry"] }
 reqwest = { version = "0.13", default-features = false, features = ["json", "stream", "query"] }
-schemars = "1.2.0"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
-thiserror = "2.0.17"
+schemars = "1.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
 tokio = { version = "1", features = ["full"] }
-toml = "1.0.2"
-tracing = "0.1.44"
-url = "2.5.8"
-utoipa = { version = "5.4.0", features = ["axum_extras", "uuid", "chrono", "macros"] }
-validator = { version = "0.20.0", features = ["derive"] }
+toml = "1.0"
+tracing = "0.1"
+url = "2.5"
+utoipa = { version = "5.4", features = ["axum_extras", "uuid", "chrono", "macros"] }
+validator = { version = "0.20", features = ["derive"] }
 
 [dev-dependencies]
-assert_matches = "1.5.0"
-mockito = "1.7.1"
+assert_matches = "1.5"
+mockito = "1.7"

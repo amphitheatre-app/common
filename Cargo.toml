@@ -33,7 +33,7 @@ toml = "1.0"
 tracing = "0.1"
 url = "2.5"
 utoipa = { version = "5.4", features = ["axum_extras", "uuid", "chrono", "macros"] }
-validator = { version = "0.20", features = ["derive"] }
+validator = { version = "0.21", features = ["derive"] }
 
 [dev-dependencies]
 assert_matches = "1.5"

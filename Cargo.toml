@@ -32,7 +32,7 @@ tokio = { version = "1", features = ["full"] }
 toml = "1.0"
 tracing = "0.1"
 url = "2.5"
-utoipa = { version = "5.4", features = ["axum_extras", "uuid", "chrono", "macros"] }
+utoipa = { version = "6.0", features = ["axum_extras", "uuid", "chrono", "macros"] }
 validator = { version = "0.21", features = ["derive"] }
 
 [dev-dependencies]
